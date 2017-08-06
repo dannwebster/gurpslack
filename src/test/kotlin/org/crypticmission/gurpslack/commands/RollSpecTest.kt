@@ -99,6 +99,29 @@ class RollSpecTest {
 
     }
 
+    @Test fun shouldUse6WhenDiceIsImplicitWithAdds() {
+        // given
+        val spec = "1d+1"
+
+        // when
+        val subject = RollSpec.spec(spec)
+
+        // then
+        assertEquals("1d6+1", subject.canonical)
+    }
+
+    @Test fun shouldUse6WhenDiceIsImplicitNoAdds() {
+        // given
+        val spec = "2d"
+
+        // when
+        val subject = RollSpec.spec(spec)
+
+        // then
+        assertEquals("2d6", subject.canonical)
+    }
+
+
     @Rule @JvmField val ex = ExpectedException.none()
 
     @Test fun shouldThrowExceptionWhenRollSpecIsInvalid() {
@@ -109,10 +132,30 @@ class RollSpecTest {
         ex.reportMissingExceptionWithMessage("Should be invalid specification ${spec}")
 
         // when
-        val subject = RollSpec.spec(spec)
+        RollSpec.spec(spec) // throws exception
 
         // then
 
+    }
+
+    @Test fun shouldCreateEqualRollSpecWhenParsingToString() {
+        // given
+        val a = RollSpec.spec("3d6+3") // full
+        val b = RollSpec.spec("3D6+3") // full with Capital D
+        val c = RollSpec.spec("3d6") // implicit Ads
+        val d = RollSpec.spec("d6+3") // implicit dice
+        val e = RollSpec.spec("d6") // implicit dice and adds
+        val f = RollSpec.spec("1d") // implicit dice and adds
+
+        // when
+
+        // then
+        assertEquals(a, RollSpec.spec(a.toString()))
+        assertEquals(b, RollSpec.spec(b.toString()))
+        assertEquals(c, RollSpec.spec(c.toString()))
+        assertEquals(d, RollSpec.spec(d.toString()))
+        assertEquals(e, RollSpec.spec(e.toString()))
+        assertEquals(f, RollSpec.spec(f.toString()))
     }
 
 }
