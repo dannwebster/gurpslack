@@ -106,15 +106,17 @@ class RollablesTest {
         assertEquals("FAILURE: A roll of 15 vs HT+3 (13) was a failure with a margin of failure of 2", outcome.message)
     }
 
-    @Test fun shouldGetDamageStringWhenRollingAgainstDamage() {
+    @Test fun shouldGetDamageStringWhenRollingWithoutDR() {
         // given
-        val subject = Damage("damage-name", RollSpec.spec("1d+1"))
+        val subject = Damage("damage-name", RollSpec.spec("1d+2"), DamageType.cut)
 
         // when
-        val outcome = subject.rollVs(Randomizer.MAX)
+        val outcome = subject.rollVs(Randomizer.MAX, 2)
 
         // then
-        assertEquals("7 Total Damage [(7 impact damage - 2 DR) * 1.5 for cutting] = A hit with damage-name against DR 2 caused 1d+1 cut damage. Rolled 7 impact damage vs DR: 2 ", outcome.message)
-
+        assertEquals(
+                "9 DAMAGE: damage-name causes 1d6+2 cut vs DR 2. " +
+                "Rolled 1d6+2 = 8. " +
+                "[(8 impact damage - DR 2) * 1.5 for cutting]", outcome.message)
     }
 }

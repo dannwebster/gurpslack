@@ -14,6 +14,7 @@ class CharacterRoller(val characterName: String,
     companion object {
         val DEFAULT_ATTIRIBUTE_VALUE = 10
         val DEFAULT_DAMAGE_ROLL_SPEC = RollSpec(1, 6)
+        val DEFAULT_DAMAGE_ROLL_TYPE = DamageType.cru
         val REGEX: Regex = """(\w+)([\+-]\d+)?""".toRegex()
     }
 
@@ -34,7 +35,7 @@ class CharacterRoller(val characterName: String,
 
     fun rollDamage(name: String, modifier: Int = 0): DamageRollOutcome =
         damages.getOrPut(name)
-            {Damage(name, DEFAULT_DAMAGE_ROLL_SPEC)}
+            {Damage(name, DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE)}
                 .modify(modifier)
                 .rollVs(randomizer)
 

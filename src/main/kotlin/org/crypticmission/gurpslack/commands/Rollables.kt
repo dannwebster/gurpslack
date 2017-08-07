@@ -7,37 +7,36 @@ interface Rollable {
     val rollSpec: RollSpec
     fun modify(modifier: Int): Rollable
     fun roll(randomizer: Randomizer) : Int = this.rollSpec.roll(randomizer)
-    fun rollVs(randomizer: Randomizer) : Outcome
+    fun rollVs(randomizer: Randomizer, modifier: Int=0) : Outcome
 }
 
-enum class DamageType(name: String, multiplier: Double) {
-    cru("crushing", 1.0),
-    cut("cutting", 1.5),
-    imp("impaling", 2.0),
-    pi("piercing", 1.0),
-    pi_plus("large pierceing", 1.5),
-    pi_plus_plus("huge piercing", 2.0),
-    burn("burning", 1.0);
+enum class DamageType(val longForm: String, val shortForm: String, val multiplier: Double) {
+    cru("crushing", "cru", 1.0),
+    cut("cutting", "cut", 1.5),
+    imp("impaling", "imp", 2.0),
+    pi("piercing", "pi", 1.0),
+    pi_plus("large pierceing", "pi+", 1.5),
+    pi_plus_plus("huge piercing", "pi++", 2.0),
+    burn("burning", "burn", 1.0);
 
     companion object {
-        fun fromName(name: String) = DamageType.values().find { type -> type.name.equals(name) }
+        fun fromLongForm(longForm: String) = DamageType.values().find { type -> type.longForm.equals(longForm) }
+        fun fromShortForm(shortForm: String) = DamageType.values().find { type -> type.shortForm.equals(shortForm) }
     }
 }
 
-data class Damage(override val name: String, override val rollSpec: RollSpec, val type: DamageType = DamageType.cru) : Rollable {
-    override fun modify(modifier: Int) = Damage(name, rollSpec.modify(modifier))
-    override fun rollVs(randomizer: Randomizer) = DamageRollOutcome(this.modify(0), rollSpec.roll(randomizer))
+data class Damage(override val name: String, override val rollSpec: RollSpec, val type: DamageType) : Rollable {
+    override fun modify(modifier: Int) = Damage(name, rollSpec.modify(modifier), type)
+    override fun rollVs(randomizer: Randomizer, dr: Int) = DamageRollOutcome(this, rollSpec.roll(randomizer), dr)
 }
 
 data class Attribute(override val name: String, val value: Int, override val rollSpec: RollSpec = Attribute.ROLL_SPEC)  : Rollable {
 
-    override fun modify(modifier: Int) = ModifiedAttribute(this, modifier)
-    override fun rollVs(randomizer: Randomizer) = AttributeRollOutcome(this.modify(0), rollSpec.roll(randomizer))
-
     companion object {
         val ROLL_SPEC = RollSpec(3, 6)
     }
-
+    override fun modify(modifier: Int) = ModifiedAttribute(this, modifier)
+    override fun rollVs(randomizer: Randomizer, modifier: Int) = AttributeRollOutcome(this.modify(modifier), rollSpec.roll(randomizer))
     override fun toString(): String = "${name}: ${value}"
 }
 
@@ -50,7 +49,9 @@ data class ModifiedAttribute(val attribute: Attribute, val modifier: Int=0) : Ro
 
     override fun modify(modifier: Int) = ModifiedAttribute(this.attribute, this.modifier+modifier)
 
-    override fun rollVs(randomizer: Randomizer) = AttributeRollOutcome(this, this.roll(randomizer))
+    override fun rollVs(randomizer: Randomizer, modifier: Int) =
+            AttributeRollOutcome(this.modify(modifier), this.roll(randomizer))
+
     override fun toString() = "${name} (${value})"
 }
 
@@ -58,8 +59,15 @@ interface Outcome {
     val message: String
 }
 
-data class DamageRollOutcome(val damage: Damage, val roll: Int) : Outcome{
-    override val message =""
+data class DamageRollOutcome(val damage: Damage, val roll: Int, val dr: Int) : Outcome{
+    val amount = Math.floor((roll - dr) * damage.type.multiplier).toInt()
+
+    override val message =
+            "${amount} DAMAGE: ${damage.name} causes " +
+            "${damage.rollSpec.canonical} ${damage.type.shortForm} vs DR ${dr}. " +
+            "Rolled ${damage.rollSpec.canonical} = ${roll}. " +
+            "[(${roll} impact damage - DR ${dr}) * ${damage.type.multiplier} for ${damage.type.longForm}]"
+
     override fun toString() = message
 }
 
@@ -80,5 +88,5 @@ data class AttributeRollOutcome(val modifiedAttribute: ModifiedAttribute, val ro
             "A roll of ${roll} vs ${modifiedAttribute} was a ${isCriticalString}${isSuccessString} " +
             "with a margin of ${isSuccessString} of ${margin}"
 
-    override fun toString() = ""
+    override fun toString() = message
 }
