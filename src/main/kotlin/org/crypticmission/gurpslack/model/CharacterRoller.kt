@@ -1,7 +1,7 @@
-package org.crypticmission.gurpslack.commands
+package org.crypticmission.gurpslack.model
 
-import org.crypticmission.gurpslack.commands.RollSpec.Companion.d
-import org.crypticmission.gurpslack.util.Randomizer
+import org.crypticmission.gurpslack.model.RollSpec.Companion.d
+import org.crypticmission.gurpslack.repositories.Randomizer
 
 class CharacterRoller(val characterName: String,
                       val randomizer: Randomizer = Randomizer.system(),

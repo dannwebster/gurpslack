@@ -1,15 +1,16 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.commands.RollSpec
-import org.crypticmission.gurpslack.util.Randomizer
+import org.crypticmission.gurpslack.model.RollSpec
+import org.crypticmission.gurpslack.repositories.CharacterRepository
+import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class RollController {
+class RollController(val npcRepository: CharacterRepository) {
     companion object {
         private val logger = LoggerFactory.getLogger(RollController::class.java)
     }
@@ -29,15 +30,25 @@ class RollController {
      */
     @PostMapping(value = "/roll")
     fun roll(slashData: SlashData) : RichMessage {
-        // validate token
-//        if (slashData.token != slackToken) {
-//            return RichMessage("Sorry! You're not lucky enough to use our slack command. token: ${slashData.token}")
-//        }
-
         val spec = RollSpec.spec(slashData.text)
         val roll = spec.roll(randomizer)
         val richMessage = RichMessage("Rolled ${roll} on ${spec.canonical}")
         richMessage.responseType = "in_channel"
         return richMessage.encodedMessage()
+    }
+
+    @PostMapping(value = "/rollvs")
+    fun rollvs(slashData: SlashData) : RichMessage {
+        val data = slashData.text.split("""\s""")
+        val characterAbbrev = data[0]
+        val attributeName = data[1]
+
+        val character = npcRepository.get(characterAbbrev)
+        if (character != null) {
+            val outcome = character.rollVsAttribute(attributeName)
+            return RichMessage(outcome.message).encodedMessage()
+        } else {
+            return RichMessage("No character with abbreviation ${characterAbbrev}").encodedMessage()
+        }
     }
 }

@@ -1,6 +1,6 @@
-package org.crypticmission.gurpslack.commands
+package org.crypticmission.gurpslack.model
 
-import org.crypticmission.gurpslack.util.Randomizer
+import org.crypticmission.gurpslack.repositories.Randomizer
 
 interface Rollable {
     val name: String
