@@ -30,9 +30,9 @@ class RollController {
     @PostMapping(value = "/roll")
     fun roll(slashData: SlashData) : RichMessage {
         // validate token
-        if (slashData.token != slackToken) {
-            return RichMessage("Sorry! You're not lucky enough to use our slack command. token: ${slashData.token}")
-        }
+//        if (slashData.token != slackToken) {
+//            return RichMessage("Sorry! You're not lucky enough to use our slack command. token: ${slashData.token}")
+//        }
 
         val spec = RollSpec.spec(slashData.text)
         val roll = spec.roll(randomizer)
