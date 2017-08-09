@@ -6,7 +6,7 @@ interface Rollable {
     val name: String
     val rollSpec: RollSpec
     fun modify(modifier: Int): Rollable
-    fun roll(randomizer: Randomizer) : Int = this.rollSpec.roll(randomizer)
+    fun roll(randomizer: Randomizer) : RollDetails = this.rollSpec.roll(randomizer)
     fun rollVs(randomizer: Randomizer, modifier: Int=0) : Outcome
 }
 
@@ -57,35 +57,38 @@ data class ModifiedAttribute(val attribute: Attribute, val modifier: Int=0) : Ro
 
 interface Outcome {
     val message: String
+    val rollDetails: RollDetails
 }
 
-data class DamageRollOutcome(val damage: Damage, val roll: Int, val dr: Int) : Outcome{
-    val amount = Math.floor((roll - dr) * damage.type.multiplier).toInt()
+data class DamageRollOutcome(val damage: Damage, override val rollDetails: RollDetails, val dr: Int) : Outcome{
+    val total = rollDetails.total
+    val amount = Math.floor((total - dr) * damage.type.multiplier).toInt()
 
     override val message =
             "${amount} DAMAGE: ${damage.name} causes " +
             "${damage.rollSpec.canonical} ${damage.type.shortForm} vs DR ${dr}. " +
-            "Rolled ${damage.rollSpec.canonical} = ${roll}. " +
-            "[(${roll} impact damage - DR ${dr}) * ${damage.type.multiplier} for ${damage.type.longForm}]"
+            "Rolled ${damage.rollSpec.canonical} = ${total}. " +
+            "[(${total} impact damage - DR ${dr}) * ${damage.type.multiplier} for ${damage.type.longForm}]"
 
     override fun toString() = message
 }
 
-data class AttributeRollOutcome(val modifiedAttribute: ModifiedAttribute, val roll: Int) : Outcome {
-    val isSuccess = roll <= modifiedAttribute.value
-    val margin = Math.abs((roll - modifiedAttribute.value))
+data class AttributeRollOutcome(val modifiedAttribute: ModifiedAttribute, override val rollDetails: RollDetails) : Outcome {
+    val total = rollDetails.total
+    val isSuccess = total <= modifiedAttribute.value
+    val margin = Math.abs((total - modifiedAttribute.value))
     val isCritical =
-            roll == 3 ||
-                    roll == 4 ||
-                    roll == 17 ||
-                    roll == 18 ||
+            total == 3 ||
+                    total == 4 ||
+                    total == 17 ||
+                    total == 18 ||
                     margin >= 10
 
     val isCriticalString = if (isCritical) "critical " else ""
     val isSuccessString = if (isSuccess) "success" else "failure"
 
     override val message = "${(isCriticalString+isSuccessString).toUpperCase()}: " +
-            "A roll of ${roll} vs ${modifiedAttribute} was a ${isCriticalString}${isSuccessString} " +
+            "A roll of ${total} vs ${modifiedAttribute} was a ${isCriticalString}${isSuccessString} " +
             "with a margin of ${isSuccessString} of ${margin}"
 
     override fun toString() = message

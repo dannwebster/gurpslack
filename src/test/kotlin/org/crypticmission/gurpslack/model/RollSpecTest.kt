@@ -17,7 +17,8 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max)
+        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
 
     }
 
@@ -30,7 +31,8 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max)
+        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
 
     }
 
@@ -43,7 +45,8 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max)
+        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
 
     }
 
@@ -56,7 +59,8 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 - 1, max)
+        assertEquals(3 * 6 - 1, max.total)
+        assertEquals(RollDetails(listOf(6, 6, 6), -1), max)
 
     }
 
@@ -69,7 +73,8 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 0, max)
+        assertEquals(3 * 6 + 0, max.total)
+        assertEquals(RollDetails(listOf(6, 6, 6), 0), max)
 
     }
 
@@ -82,7 +87,7 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(1 * 6 + 1, max)
+        assertEquals(1 * 6 + 1, max.total)
 
     }
 
@@ -95,7 +100,8 @@ class RollSpecTest {
         val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(1 * 6 + 0, max)
+        assertEquals(1 * 6 + 0, max.total)
+        assertEquals(RollDetails(listOf(6), 0), max)
 
     }
 

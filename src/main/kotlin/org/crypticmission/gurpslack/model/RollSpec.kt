@@ -2,8 +2,13 @@ package org.crypticmission.gurpslack.model
 
 import org.crypticmission.gurpslack.repositories.Randomizer
 
+data class RollDetails(val rollValues: List<Int>, val adds: Int) {
+    val total = rollValues.sum() + adds
+}
+
 data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
 
+    val rolls: List<Int> = listOf()
     val max = dice * sides + adds
     val min = dice * 1 + adds
 
@@ -33,8 +38,8 @@ data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
 
     override fun toString() = canonical
 
-    fun roll(rand: Randomizer) =
-            1.rangeTo(dice)
-                    .map { rand.random(sides) }
-                    .sum() + adds
+    fun roll(rand: Randomizer): RollDetails =
+            RollDetails(
+                1.rangeTo(dice).map { rand.random(sides) },
+                adds)
 }

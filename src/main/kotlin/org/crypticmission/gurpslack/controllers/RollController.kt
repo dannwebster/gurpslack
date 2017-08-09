@@ -1,13 +1,18 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.crypticmission.gurpslack.model.RollDetails
 import org.crypticmission.gurpslack.model.RollSpec
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.repositories.Randomizer
+import org.crypticmission.gurpslack.toSignedString
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
+
+
+fun RollDetails.emoji() = this.rollValues.map{ ":d6-${it}:"} + this.adds.toSignedString()
 
 @RestController
 class RollController(val npcRepository: CharacterRepository) {
@@ -32,7 +37,7 @@ class RollController(val npcRepository: CharacterRepository) {
     fun roll(slashData: SlashData) : RichMessage {
         val spec = RollSpec.spec(slashData.text)
         val roll = spec.roll(randomizer)
-        val richMessage = RichMessage("Rolled ${roll} on ${spec.canonical}")
+        val richMessage = RichMessage("Rolled ${roll.total} on ${spec.canonical} (${roll.emoji()}) ")
         richMessage.responseType = "in_channel"
         return richMessage.encodedMessage()
     }
@@ -46,7 +51,7 @@ class RollController(val npcRepository: CharacterRepository) {
         val character = npcRepository.get(characterAbbrev)
         if (character != null) {
             val outcome = character.rollVsAttribute(attributeName)
-            return RichMessage(outcome.message).encodedMessage()
+            return RichMessage(outcome.message + outcome.rollDetails.emoji()).encodedMessage()
         } else {
             return RichMessage("No character with abbreviation ${characterAbbrev}").encodedMessage()
         }
