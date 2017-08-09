@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-fun RollDetails.emoji() = this.rollValues.map{ ":d6-${it}:"} + this.adds.toSignedString()
+fun RollDetails.emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString() + this.adds.toSignedString()
 
 @RestController
 class RollController(val npcRepository: CharacterRepository) {
