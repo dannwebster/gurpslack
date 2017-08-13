@@ -59,7 +59,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
 
         val (characterName, characterAbbrev) = parseName(slashData.text)
 
-        val message =  when (npcRepository.add(characterName, characterAbbrev)) {
+        val message =  when (npcRepository.add(characterAbbrev, characterName)) {
             true -> RichMessage("Created Character ${characterName} with abbreviation ${characterAbbrev}")
             false -> RichMessage("Character with abbreviation ${characterAbbrev} already exists")
         }

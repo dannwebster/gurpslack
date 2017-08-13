@@ -13,15 +13,19 @@ class CharacterRepository() {
 
     private val charactersByAbbrev = HashMap<String, Character>()
 
-    fun add(characterName: String, abbrev: String) : Boolean {
-        if (charactersByAbbrev.get(abbrev) != null) {
-            return false
-        } else {
-            charactersByAbbrev[abbrev] = Character(characterName, randomizer)
-            return true
+    fun key(abbrev: String) = abbrev.trim().toLowerCase()
+
+    fun add(abbrev: String, characterName: String) : Boolean {
+        val key = key(abbrev)
+        return when (charactersByAbbrev.get(key)) {
+            null -> {
+                charactersByAbbrev[key] = Character(characterName, randomizer)
+                return true
+            }
+            else -> false
         }
     }
 
-    fun get(abbrev: String) = charactersByAbbrev[abbrev]
-    fun remove(abbrev: String) = charactersByAbbrev.remove(abbrev)
+    fun get(abbrev: String) = charactersByAbbrev[key(abbrev)]
+    fun remove(abbrev: String) = charactersByAbbrev.remove(key(abbrev))
 }
