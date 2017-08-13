@@ -68,7 +68,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
 
     @PostMapping(value = "/addattr")
     fun attr(slashData: SlashData): RichMessage {
-        val data = slashData.text.split("""\s""")
+        val data = slashData.text.split("""\s+""")
         val characterAbbrev = data[0]
         val attributeName = data[1]
         val value = data[2].toInt()
