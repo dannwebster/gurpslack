@@ -41,6 +41,17 @@ class CharacterController(val npcRepository: CharacterRepository) {
         return message.encodedMessage()
     }
 
+    @PostMapping("/npc", "/getnpc")
+    fun getNpc(slashData: SlashData): RichMessage {
+
+        val abbrev = slashData.text.trim()
+        val npc = npcRepository.get(abbrev)
+        val message =  when (npc) {
+            null -> RichMessage("Character with abbreviation ${abbrev} does not exist")
+            else -> RichMessage(npc.message())
+        }
+        return message.encodedMessage()
+    }
 
     @PostMapping("/npcs", "/listnpcs")
     fun listNpcs(slashData: SlashData): RichMessage {
