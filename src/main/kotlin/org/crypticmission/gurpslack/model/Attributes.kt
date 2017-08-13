@@ -37,7 +37,7 @@ data class AttributeRollOutcome(val attribute: Attribute, val rollOutcome: RollO
             "was a ${isCriticalString}${isSuccessString} " +
             "with a margin of ${isSuccessString} of ${margin}"
 
-    val messageWithEmoji = "${message} (${rollOutcome.emoji()})"
+    val messageWithEmoji = "${rollOutcome.emoji()} => ${message} "
 
     override fun toString() = message
 }

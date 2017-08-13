@@ -37,6 +37,6 @@ data class DamageRollOutcome(val damageSpec: DamageSpec, val rollOutcome: RollOu
             "[(${rollOutcome.total} impact damage - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
                     "for ${damageSpec.damageType.longForm}]"
 
-    val messageWithEmoji = "${message} (${rollOutcome.emoji()})"
+    val messageWithEmoji = "${rollOutcome.emoji()} => ${message}"
     override fun toString() = message
 }
