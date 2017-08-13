@@ -3,13 +3,18 @@ package org.crypticmission.gurpslack.model
 import org.crypticmission.gurpslack.model.RollSpec.Companion.d
 import org.crypticmission.gurpslack.repositories.Randomizer
 
-class CharacterRoller(val characterName: String,
-                      val randomizer: Randomizer = Randomizer.system(),
-                      attributes: Map<String, Attribute> = emptyMap(),
-                      damages: Map<String, DamageSpec> = emptyMap()) {
+class Character(val characterName: String,
+                val randomizer: Randomizer = Randomizer.system(),
+                attributes: Map<String, Attribute> = emptyMap(),
+                damages: Map<String, DamageSpec> = emptyMap()) {
 
     val attributes = HashMap<String, Attribute>(attributes)
     val damages = HashMap<String, DamageSpec>(damages)
+    fun message() = "Character Name: ${characterName}\n" +
+            "Attributes:\n" +
+            attributes.values.map { "    " + it.message }.joinToString("\n", postfix = "\n") +
+            "Damage Rolls:\n" +
+            damages.map { (name, dmg) -> "    ${name}: ${dmg.canonical}"  }.sorted().joinToString("\n", postfix = "\n")
 
     companion object {
         val DEFAULT_ATTIRIBUTE_VALUE = 10
@@ -26,6 +31,8 @@ class CharacterRoller(val characterName: String,
         val specModifier = matchResult.d(2, 0)
         return rollVsAttribute(name, modifier+specModifier)
     }
+
+    override fun toString(): String = message()
 
     fun rollVsAttribute(name: String, modifier: Int = 0): AttributeRollOutcome =
         attributes.getOrPut(name)

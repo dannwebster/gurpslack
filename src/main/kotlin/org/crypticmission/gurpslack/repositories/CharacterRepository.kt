@@ -1,6 +1,6 @@
 package org.crypticmission.gurpslack.repositories
 
-import org.crypticmission.gurpslack.model.CharacterRoller
+import org.crypticmission.gurpslack.model.Character
 import org.springframework.stereotype.Repository
 
 /**
@@ -11,13 +11,13 @@ class CharacterRepository() {
 
     val randomizer = Randomizer.system()
 
-    private val charactersByAbbrev = HashMap<String, CharacterRoller>()
+    private val charactersByAbbrev = HashMap<String, Character>()
 
     fun add(characterName: String, abbrev: String) : Boolean {
         if (charactersByAbbrev.get(abbrev) != null) {
             return false
         } else {
-            charactersByAbbrev[abbrev] = CharacterRoller(characterName, randomizer)
+            charactersByAbbrev[abbrev] = Character(characterName, randomizer)
             return true
         }
     }

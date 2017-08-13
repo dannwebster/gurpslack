@@ -6,11 +6,44 @@ import org.junit.Test
 
 /**
  */
-class CharacterRollerTest {
+class CharacterTest {
+    @Test fun shouldCreatProperMessageWhenMessageCalled() {
+        // given
+        val subject = Character("Foo Bar", Randomizer.MAX)
+
+        subject.addAttribute(Attribute("ST", 10))
+        subject.addAttribute(Attribute("DX", 14))
+        subject.addAttribute(Attribute("IQ", 12))
+        subject.addAttribute(Attribute("HT", 13))
+
+        subject.addDamage("punch", RollSpec.DEFAULT.toDamage(DamageType.cru))
+        subject.addDamage("sword slash", RollSpec.DEFAULT.toDamage(DamageType.cut))
+        subject.addDamage("sword stab", RollSpec.DEFAULT.toDamage(DamageType.imp))
+
+        val expected =
+"""Character Name: Foo Bar
+Attributes:
+    ST: 10
+    DX: 14
+    IQ: 12
+    HT: 13
+Damage Rolls:
+    punch: 3d6 cru
+    sword slash: 3d6 cut
+    sword stab: 3d6 imp
+"""
+
+        // when
+        val message = subject.message()
+
+        // then
+        assertEquals(expected, message)
+
+    }
 
     @Test fun shouldRollDefaultWhenRollingMissingAttribute() {
         // given
-        val subject = CharacterRoller("character-name", Randomizer.MAX)
+        val subject = Character("character-name", Randomizer.MAX)
 
         // when
         val outcome = subject.rollVsAttribute("FOO", -3)
@@ -22,7 +55,7 @@ class CharacterRollerTest {
 
     @Test fun shouldRollVsAttributeWhenAttributeIsAvailable() {
         // given
-        val subject = CharacterRoller("character-name", Randomizer.MAX)
+        val subject = Character("character-name", Randomizer.MAX)
         subject.addAttribute(Attribute("BAR", 15))
 
         // when
@@ -34,7 +67,7 @@ class CharacterRollerTest {
 
     @Test fun shouldRollVsDefaultWhenRollingMissingDamage() {
         // given
-        val subject = CharacterRoller("character-name", Randomizer.MAX)
+        val subject = Character("character-name", Randomizer.MAX)
 
         // when
         val damageOutcome = subject.rollDamage("damageSpec-name")

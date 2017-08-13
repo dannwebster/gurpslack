@@ -34,13 +34,25 @@ class CharacterController(val npcRepository: CharacterRepository) {
         val characterAbbrev = slashData.text
 
         val removed = npcRepository.remove(characterAbbrev)
-        if (removed != null) {
-            return RichMessage("Removed Character ${removed.characterName} with abbreviation ${characterAbbrev}")
-        } else {
-            return RichMessage("No character with abbreviation ${characterAbbrev} exists, so none removed")
+        val message = when (removed) {
+            null -> RichMessage("No character with abbreviation ${characterAbbrev} exists, so none removed")
+            else -> RichMessage("Removed Character ${removed.characterName} with abbreviation ${characterAbbrev}")
         }
+        return message.encodedMessage()
     }
 
+
+    @PostMapping("/npc", "/getnpc")
+    fun getNpc(slashData: SlashData): RichMessage {
+
+        val abbrev = slashData.text.trim()
+        val npc = npcRepository.get(abbrev)
+        val message =  when (npc) {
+            null -> RichMessage("Character with abbreviation ${abbrev} does not exist")
+            else -> RichMessage(npc.message())
+        }
+        return message.encodedMessage()
+    }
 
     @PostMapping(value = "/addnpc")
     fun addNpc(slashData: SlashData): RichMessage {
@@ -51,7 +63,6 @@ class CharacterController(val npcRepository: CharacterRepository) {
             true -> RichMessage("Created Character ${characterName} with abbreviation ${characterAbbrev}")
             false -> RichMessage("Character with abbreviation ${characterAbbrev} already exists")
         }
-        message.responseType = "in_channel"
         return message.encodedMessage()
     }
 

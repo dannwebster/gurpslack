@@ -10,11 +10,13 @@ data class Attribute(val name: String, val level: Int, val modifier: Int=0, val 
     val effectiveLevel = level + modifier
     val modString = if (modifier == 0) "" else if (modifier < 0) "-${-1*modifier}" else "+${modifier}"
     val effectiveName = "${name}${modString}"
+    val message = "${name}: ${level}"
+    val messageWithModifiers = "${effectiveName}: ${effectiveLevel}"
 
     fun modify(modifier: Int) = Attribute(this.name, this.level, this.modifier + modifier, this.rollSpec)
     fun roll(randomizer: Randomizer)  = AttributeRollOutcome(this, this.rollSpec.roll(randomizer))
-    override fun toString(): String = "${name}: ${level}"
-    fun toStringWithModifiers(): String = "${effectiveName}: ${effectiveLevel}"
+    override fun toString(): String = message
+    fun toStringWithModifiers(): String = messageWithModifiers
 
 }
 

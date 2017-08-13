@@ -10,6 +10,10 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 
+fun RichMessage.inChannel(inChannel: Boolean) = when(inChannel) {
+    true -> {this.responseType = "in_channel"; this}
+    false -> this
+}
 
 @RestController
 class RollController(val npcRepository: CharacterRepository) {
@@ -37,12 +41,11 @@ class RollController(val npcRepository: CharacterRepository) {
             null -> RichMessage("${slashData.text} is not a valid rollSpec")
             else -> RichMessage(rollDetail.messageWithEmoji)
         }
-        if (inChannel) message.responseType = "in_channel"
-        return message.encodedMessage()
+        return message.inChannel(inChannel).encodedMessage()
     }
 
     @PostMapping("/dmg", "/damage")
-    fun rollDmg(slashData: SlashData) : RichMessage {
+    fun rollDmg(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
         val spec = DamageSpec.fromString(slashData.text)
         val damageRollOutcome = spec?.roll(randomizer)
         val message = when (damageRollOutcome) {
@@ -50,22 +53,24 @@ class RollController(val npcRepository: CharacterRepository) {
             else -> RichMessage(damageRollOutcome.messageWithEmoji)
         }
         message.responseType = "in_channel"
-        return message.encodedMessage()
+        return message.inChannel(inChannel).encodedMessage()
 
     }
 
     @PostMapping("/rollvs", "/rollattr")
-    fun rollattr(slashData: SlashData) : RichMessage {
+    fun rollattr(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
         val data = slashData.text.split("""\s+""".toRegex())
         val characterAbbrev = data[0]
         val attributeName = data[1]
 
         val character = npcRepository.get(characterAbbrev)
-        if (character != null) {
-            val outcome = character.rollVsAttribute(attributeName)
-            return RichMessage(outcome.message + outcome.rollOutcome.emoji()).encodedMessage()
-        } else {
-            return RichMessage("No character with abbreviation ${characterAbbrev}").encodedMessage()
+        val message = when (character) {
+            null -> RichMessage("No character with abbreviation ${characterAbbrev}")
+            else -> {
+                val outcome = character.rollVsAttribute(attributeName)
+                RichMessage(outcome.message)
+            }
         }
+        return message.inChannel(inChannel).encodedMessage()
     }
 }
