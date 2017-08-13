@@ -5,8 +5,8 @@ import org.crypticmission.gurpslack.toSignedString
 
 data class RollOutcome(val rollSpec: RollSpec, val rollValues: List<Int>, val adds: Int) {
     val total = rollValues.sum() + adds
-    fun emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString("") + this.adds.toSignedString()
-    val message = "${total} on ${rollSpec.canonical} (${emoji()})"
+    fun emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString(" ") + this.adds.toSignedString()
+    val message = "Rolled *${total}* on ${rollSpec.canonical}"
     val messageWithEmoji = "${message} (${emoji()})"
     override fun toString(): String = message
 }

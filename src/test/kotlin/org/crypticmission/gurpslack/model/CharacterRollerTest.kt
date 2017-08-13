@@ -40,7 +40,7 @@ class CharacterRollerTest {
         val damageOutcome = subject.rollDamage("damageSpec-name")
 
         // then
-        assertEquals("6 crushing damage after DR: damageSpec-name causes 1d6 cru vs DR 0. Rolled 1d6 = 6. [(6 impact damageSpec - DR 0) * 1.0 for crushing]", damageOutcome.message)
+        assertEquals("Dealt *6* crushing damage after DR: damageSpec-name causes 1d6 cru vs DR 0. Rolled 1d6 = 6. [(6 impact damageSpec - DR 0) * 1.0 for crushing]", damageOutcome.message)
 
     }
 }

@@ -31,7 +31,7 @@ data class DamageRollOutcome(val damageSpec: DamageSpec, val rollOutcome: RollOu
     val totalDamage = Math.floor(impactDamage * damageSpec.damageType.multiplier).toInt()
 
     val message =
-            "${totalDamage} ${damageSpec.damageType.longForm} damage after DR: ${attackName} causes " +
+            "Dealt *${totalDamage}* ${damageSpec.damageType.longForm} damage after DR: ${attackName} causes " +
             "${damageSpec.rollSpec.canonical} ${damageSpec.damageType.shortForm} vs DR ${damageSpec.damageResistance}. " +
             "Rolled ${damageSpec.rollSpec.canonical} = ${rollOutcome.total}. " +
             "[(${rollOutcome.total} impact damageSpec - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
