@@ -21,6 +21,20 @@ class DamageRollOutcomeTest {
 
     }
 
+    @Test fun shouldDealZeroDamageWhenDamageIsLessThanDR() {
+        // given
+        val spec = DamageSpec.fromString("2d6+1 cut vs dr 80") ?: throw IllegalArgumentException()
+        val rand = Randomizer.MAX
+
+        // when
+        val outcome = spec.roll(rand)
+
+        // then
+        assertEquals("Dealt *0* cutting damage after DR: attack causes 2d6+1 cut vs DR 80. " +
+                "Rolled 2d6+1 = 13. [(13 impact damageSpec - DR 80) * 1.5 for cutting]", outcome.message)
+
+    }
+
     @Test fun shouldCorrectStringWhenHasDr() {
         // given
         val spec = DamageSpec.fromString("2d6+1 pi+ vs. DR: 3") ?: throw IllegalArgumentException()

@@ -34,7 +34,7 @@ data class DamageRollOutcome(val damageSpec: DamageSpec, val rollOutcome: RollOu
             "Dealt *${totalDamage}* ${damageSpec.damageType.longForm} damage after DR: ${attackName} causes " +
             "${damageSpec.rollSpec.canonical} ${damageSpec.damageType.shortForm} vs DR ${damageSpec.damageResistance}. " +
             "Rolled ${damageSpec.rollSpec.canonical} = ${rollOutcome.total}. " +
-            "[(${rollOutcome.total} impact damageSpec - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
+            "[(${rollOutcome.total} impact damage - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
                     "for ${damageSpec.damageType.longForm}]"
 
     val messageWithEmoji = "${message} (${rollOutcome.emoji()})"
