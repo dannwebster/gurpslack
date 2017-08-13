@@ -37,12 +37,12 @@ class CharacterRollerTest {
         val subject = CharacterRoller("character-name", Randomizer.MAX)
 
         // when
-        val damageOutcome = subject.rollDamage("damage-name")
+        val damageOutcome = subject.rollDamage("damageSpec-name")
 
         // then
-        assertEquals("6 DAMAGE: damage-name causes 1d6 cru vs DR 0. " +
+        assertEquals("6 DAMAGE: damageSpec-name causes 1d6 cru vs DR 0. " +
                 "Rolled 1d6 = 6. " +
-                "[(6 impact damage - DR 0) * 1.0 for crushing]", damageOutcome.message)
+                "[(6 impact damageSpec - DR 0) * 1.0 for crushing]", damageOutcome.message)
 
     }
 }

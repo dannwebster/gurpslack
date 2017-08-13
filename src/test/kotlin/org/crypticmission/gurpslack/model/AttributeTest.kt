@@ -7,7 +7,7 @@ import org.junit.Assert.*
 /**
  */
 
-class RollablesTest {
+class AttributeTest {
     val THREE_D6 = RollSpec(3, 6)
     val ROLL_1 = Randomizer.MIN
     val ROLL_3 = Randomizer.specified(3)
@@ -26,36 +26,36 @@ class RollablesTest {
 
     }
 
-    @Test fun shouldFormatPositiveModifiedAttributeString() {
+    @Test fun shouldFormatPositiveAttributeString() {
         // given
-        val subject = ModifiedAttribute(Attribute("HT", 10), +3)
+        val subject = Attribute("HT", 10, +3)
 
         // when
-        val s = subject.toString()
+        val s = subject.toStringWithModifiers()
 
         // then
-        assertEquals(s, "HT+3 (13)")
+        assertEquals(s, "HT+3: 13")
 
     }
 
-    @Test fun shouldFormatNegativeModifiedAttributeString() {
+    @Test fun shouldFormatNegativeAttributeString() {
         // given
-        val subject = ModifiedAttribute(Attribute("HT", 10), -3)
+        val subject = Attribute("HT", 10, -3)
 
         // when
-        val s = subject.toString()
+        val s = subject.toStringWithModifiers()
 
         // then
-        assertEquals(s, "HT-3 (7)")
+        assertEquals(s, "HT-3: 7")
 
     }
 
     @Test fun shouldSucccedWhenRollIsLower() {
         // given
-        val subject = ModifiedAttribute(Attribute("HT", 10), +3)
+        val subject = Attribute("HT", 10, +3)
 
         // when
-        val outcome = subject.rollVs(ROLL_3)
+        val outcome = subject.roll(ROLL_3)
 
         // then
         assertEquals(true, outcome.isSuccess)
@@ -66,10 +66,10 @@ class RollablesTest {
 
     @Test fun shouldCriticallyFailWhenRollIs18() {
         // given
-        val subject = ModifiedAttribute(Attribute("HT", 10), +3)
+        val subject = Attribute("HT", 10, +3)
 
         // when
-        val outcome = subject.rollVs(ROLL_6)
+        val outcome = subject.roll(ROLL_6)
 
         // then
         assertEquals(false, outcome.isSuccess)
@@ -80,10 +80,10 @@ class RollablesTest {
 
     @Test fun shouldCriticallySucceedWhenRollIs3() {
         // given
-        val subject = ModifiedAttribute(Attribute("HT", 10), +3)
+        val subject = Attribute("HT", 10, +3)
 
         // when
-        val outcome = subject.rollVs(ROLL_1)
+        val outcome = subject.roll(ROLL_1)
 
         // then
         assertEquals(true, outcome.isSuccess)
@@ -94,29 +94,15 @@ class RollablesTest {
 
     @Test fun shouldFailWhenRollIsHigher() {
         // given
-        val subject = ModifiedAttribute(Attribute("HT", 10), +3)
+        val subject = Attribute("HT", 10, +3)
 
         // when
-        val outcome = subject.rollVs(ROLL_5)
+        val outcome = subject.roll(ROLL_5)
 
         // then
         assertEquals(false, outcome.isSuccess)
         assertEquals(2, outcome.margin)
         assertEquals(false, outcome.isCritical)
         assertEquals("FAILURE: A roll of 15 vs HT+3 (13) was a failure with a margin of failure of 2", outcome.message)
-    }
-
-    @Test fun shouldGetDamageStringWhenRollingWithoutDR() {
-        // given
-        val subject = Damage("damage-name", RollSpec.spec("1d+2"), DamageType.cut)
-
-        // when
-        val outcome = subject.rollVs(Randomizer.MAX, 2)
-
-        // then
-        assertEquals(
-                "9 DAMAGE: damage-name causes 1d6+2 cut vs DR 2. " +
-                "Rolled 1d6+2 = 8. " +
-                "[(8 impact damage - DR 2) * 1.5 for cutting]", outcome.message)
     }
 }

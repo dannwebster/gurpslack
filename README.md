@@ -2,6 +2,8 @@
 
 ## Rolls
 * Remove Whitespace in Rollspec
+* Remove commas from Emoji
+* Add Damage rolls directly to roll controller (/dmg)
 * Tests for Emoji Output
 * Make Emoji output handle
     - d4

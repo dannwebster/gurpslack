@@ -25,13 +25,13 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithPositiveMod() {
         // given
         val spec = "3d6+1"
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // when
-        val max = subject.roll(Randomizer.MAX)
+        val max = subject?.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(3 * 6 + 1, max?.total)
         assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
 
     }
@@ -39,13 +39,13 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithCapitalD() {
         // given
         val spec = "3D6+1"
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // when
-        val max = subject.roll(Randomizer.MAX)
+        val max = subject?.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(3 * 6 + 1, max?.total)
         assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
 
     }
@@ -53,13 +53,13 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithNegativeMod() {
         // given
         val spec = "3d6-1"
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // when
-        val max = subject.roll(Randomizer.MAX)
+        val max = subject?.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 - 1, max.total)
+        assertEquals(3 * 6 - 1, max?.total)
         assertEquals(RollDetails(listOf(6, 6, 6), -1), max)
 
     }
@@ -67,13 +67,13 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueNoMod() {
         // given
         val spec = "3d6"
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // when
-        val max = subject.roll(Randomizer.MAX)
+        val max = subject?.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 0, max.total)
+        assertEquals(3 * 6 + 0, max?.total)
         assertEquals(RollDetails(listOf(6, 6, 6), 0), max)
 
     }
@@ -81,26 +81,26 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndImplicitDice() {
         // given
         val spec = "d6+1"
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // when
-        val max = subject.roll(Randomizer.MAX)
+        val max = subject?.roll(Randomizer.MAX)
 
         // then
-        assertEquals(1 * 6 + 1, max.total)
+        assertEquals(1 * 6 + 1, max?.total)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndImplicitDiceAndNoMod() {
         // given
         val spec = "d6"
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // when
-        val max = subject.roll(Randomizer.MAX)
+        val max = subject?.roll(Randomizer.MAX)
 
         // then
-        assertEquals(1 * 6 + 0, max.total)
+        assertEquals(1 * 6 + 0, max?.total)
         assertEquals(RollDetails(listOf(6), 0), max)
 
     }
@@ -110,10 +110,10 @@ class RollSpecTest {
         val spec = "1d+1"
 
         // when
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // then
-        assertEquals("1d6+1", subject.canonical)
+        assertEquals("1d6+1", subject?.canonical)
     }
 
     @Test fun shouldUse6WhenDiceIsImplicitNoAdds() {
@@ -121,47 +121,45 @@ class RollSpecTest {
         val spec = "2d"
 
         // when
-        val subject = RollSpec.spec(spec)
+        val subject = RollSpec.fromString(spec)
 
         // then
-        assertEquals("2d6", subject.canonical)
+        assertEquals("2d6", subject?.canonical)
     }
 
 
     @Rule @JvmField val ex = ExpectedException.none()
 
-    @Test fun shouldThrowExceptionWhenRollSpecIsInvalid() {
+    @Test fun shouldReturnNullWhenRollSpecIsInvalid() {
         // given
         val spec = "foo"
-        ex.expect(IllegalArgumentException::class.java)
-        ex.expectMessage("'foo' is not a valid roll specification")
-        ex.reportMissingExceptionWithMessage("Should be invalid specification ${spec}")
 
         // when
-        RollSpec.spec(spec) // throws exception
+        val subject = RollSpec.fromString(spec) // throws exception
 
         // then
+        assertNull(subject)
 
     }
 
     @Test fun shouldCreateEqualRollSpecWhenParsingToString() {
         // given
-        val a = RollSpec.spec("3d6+3") // full
-        val b = RollSpec.spec("3D6+3") // full with Capital D
-        val c = RollSpec.spec("3d6") // implicit Ads
-        val d = RollSpec.spec("d6+3") // implicit dice
-        val e = RollSpec.spec("d6") // implicit dice and adds
-        val f = RollSpec.spec("1d") // implicit dice and adds
+        val a = RollSpec.fromString("3d6+3") // full
+        val b = RollSpec.fromString("3D6+3") // full with Capital D
+        val c = RollSpec.fromString("3d6") // implicit Ads
+        val d = RollSpec.fromString("d6+3") // implicit dice
+        val e = RollSpec.fromString("d6") // implicit dice and adds
+        val f = RollSpec.fromString("1d") // implicit dice and adds
 
         // when
 
         // then
-        assertEquals(a, RollSpec.spec(a.toString()))
-        assertEquals(b, RollSpec.spec(b.toString()))
-        assertEquals(c, RollSpec.spec(c.toString()))
-        assertEquals(d, RollSpec.spec(d.toString()))
-        assertEquals(e, RollSpec.spec(e.toString()))
-        assertEquals(f, RollSpec.spec(f.toString()))
+        assertEquals(a, RollSpec.fromString(a.toString()))
+        assertEquals(b, RollSpec.fromString(b.toString()))
+        assertEquals(c, RollSpec.fromString(c.toString()))
+        assertEquals(d, RollSpec.fromString(d.toString()))
+        assertEquals(e, RollSpec.fromString(e.toString()))
+        assertEquals(f, RollSpec.fromString(f.toString()))
     }
 
 }

@@ -6,10 +6,10 @@ import org.crypticmission.gurpslack.repositories.Randomizer
 class CharacterRoller(val characterName: String,
                       val randomizer: Randomizer = Randomizer.system(),
                       attributes: Map<String, Attribute> = emptyMap(),
-                      damages: Map<String, Damage> = emptyMap()) {
+                      damages: Map<String, DamageSpec> = emptyMap()) {
 
     val attributes = HashMap<String, Attribute>(attributes)
-    val damages = HashMap<String, Damage>(damages)
+    val damages = HashMap<String, DamageSpec>(damages)
 
     companion object {
         val DEFAULT_ATTIRIBUTE_VALUE = 10
@@ -31,19 +31,18 @@ class CharacterRoller(val characterName: String,
         attributes.getOrPut(name)
             {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
                 .modify(modifier)
-                .rollVs(randomizer)
+                .roll(randomizer)
 
-    fun rollDamage(name: String, modifier: Int = 0): DamageRollOutcome =
-        damages.getOrPut(name)
-            {Damage(name, DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE)}
-                .modify(modifier)
-                .rollVs(randomizer)
+    fun rollDamage(attackName: String, dr: Int = 0): DamageRollOutcome =
+            damages.getOrPut(attackName)
+            {DamageSpec(DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE)}
+                    .vsDr(dr)
+                    .roll(randomizer, attackName)
 
-    fun addDamage(newDamage: Damage) = addDamages(arrayOf(newDamage)) //replace with varArg
+    fun addDamage(name: String, newDamage: DamageSpec) { damages[name] = newDamage }
     fun addAttribute(newAttribute: Attribute) = addAttributes(arrayOf(newAttribute)) //replace with varArg
 
-    fun addDamages(newDamages: Array<Damage>) =
-            newDamages.forEach { damage -> damages[damage.name] = damage }
+    fun addDamages(newDamages: Map<String, DamageSpec>) = damages.putAll(newDamages)
 
     fun addAttributes(newAttributes: Array<Attribute>) =
             newAttributes.forEach { attribute -> attributes[attribute.name] = attribute }
