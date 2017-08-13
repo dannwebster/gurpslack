@@ -56,7 +56,7 @@ class RollController(val npcRepository: CharacterRepository) {
 
     @PostMapping("/rollvs", "/rollattr")
     fun rollattr(slashData: SlashData) : RichMessage {
-        val data = slashData.text.split("""\s""")
+        val data = slashData.text.split("""\s+""".toRegex())
         val characterAbbrev = data[0]
         val attributeName = data[1]
 
