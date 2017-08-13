@@ -7,7 +7,7 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
     cut("cutting", "cut", 1.5),
     imp("impaling", "imp", 2.0),
     pi_plus_plus("huge piercing", "pi++", 2.0),
-    pi_plus("large pierceing", "pi+", 1.5),
+    pi_plus("large piercing", "pi+", 1.5),
     pi("piercing", "pi", 1.0),
     burn("burning", "burn", 1.0);
 
@@ -26,16 +26,17 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
     }
 }
 
-data class DamageRollOutcome(val damageSpec: DamageSpec, val rollDetails: RollDetails, val attackName: String = "attack") {
-    val impactDamage = Math.floor((rollDetails.total - damageSpec.damageResistance) * damageSpec.damageType.multiplier).toInt()
+data class DamageRollOutcome(val damageSpec: DamageSpec, val rollOutcome: RollOutcome, val attackName: String = "attack") {
+    val impactDamage =  (rollOutcome.total - damageSpec.damageResistance)
+    val totalDamage = Math.floor(impactDamage * damageSpec.damageType.multiplier).toInt()
 
     val message =
-            "${impactDamage} DAMAGE: ${attackName} causes " +
+            "${totalDamage} ${damageSpec.damageType.longForm} damage after DR: ${attackName} causes " +
             "${damageSpec.rollSpec.canonical} ${damageSpec.damageType.shortForm} vs DR ${damageSpec.damageResistance}. " +
-            "Rolled ${damageSpec.rollSpec.canonical} = ${rollDetails.total}. " +
-            "[(${rollDetails.total} impact damageSpec - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
+            "Rolled ${damageSpec.rollSpec.canonical} = ${rollOutcome.total}. " +
+            "[(${rollOutcome.total} impact damageSpec - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
                     "for ${damageSpec.damageType.longForm}]"
 
-    val messageWithEmoji = "${message} ${rollDetails.emoji()}"
+    val messageWithEmoji = "${message} (${rollOutcome.emoji()})"
     override fun toString() = message
 }

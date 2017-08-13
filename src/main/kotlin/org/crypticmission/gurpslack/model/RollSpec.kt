@@ -3,14 +3,15 @@ package org.crypticmission.gurpslack.model
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.crypticmission.gurpslack.toSignedString
 
-data class RollDetails(val rollValues: List<Int>, val adds: Int) {
+data class RollOutcome(val rollSpec: RollSpec, val rollValues: List<Int>, val adds: Int) {
     val total = rollValues.sum() + adds
-    fun emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString() + this.adds.toSignedString()
+    fun emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString("") + this.adds.toSignedString()
+    val message = "${total} on ${rollSpec.canonical} (${emoji()})"
+    val messageWithEmoji = "${message} (${emoji()})"
+    override fun toString(): String = message
 }
 
 data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
-
-    val rolls: List<Int> = listOf()
     val max = dice * sides + adds
     val min = dice * 1 + adds
 
@@ -41,8 +42,8 @@ data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
     fun toDamage(type: DamageType) = DamageSpec(this, type)
     override fun toString() = canonical
 
-    fun roll(rand: Randomizer): RollDetails =
-            RollDetails(
+    fun roll(rand: Randomizer): RollOutcome =
+            RollOutcome(this,
                 1.rangeTo(dice).map { rand.random(sides) },
                 adds)
 }

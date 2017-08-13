@@ -35,7 +35,7 @@ class RollController(val npcRepository: CharacterRepository) {
         val rollDetail = spec?.roll(randomizer)
         val message = when (rollDetail) {
             null -> RichMessage("${slashData.text} is not a valid rollSpec")
-            else -> RichMessage("Rolled ${rollDetail.total} on ${spec.canonical} (${rollDetail.emoji()}) ")
+            else -> RichMessage(rollDetail.messageWithEmoji)
         }
         message.responseType = "in_channel"
         return message.encodedMessage()
@@ -47,7 +47,7 @@ class RollController(val npcRepository: CharacterRepository) {
         val damageRollOutcome = spec?.roll(randomizer)
         val message = when (damageRollOutcome) {
             null -> RichMessage("${slashData.text} is not a valid rollSpec")
-            else -> RichMessage("Rolled ${damageRollOutcome.messageWithEmoji}")
+            else -> RichMessage(damageRollOutcome.messageWithEmoji)
         }
         message.responseType = "in_channel"
         return message.encodedMessage()
@@ -63,7 +63,7 @@ class RollController(val npcRepository: CharacterRepository) {
         val character = npcRepository.get(characterAbbrev)
         if (character != null) {
             val outcome = character.rollVsAttribute(attributeName)
-            return RichMessage(outcome.message + outcome.rollDetails.emoji()).encodedMessage()
+            return RichMessage(outcome.message + outcome.rollOutcome.emoji()).encodedMessage()
         } else {
             return RichMessage("No character with abbreviation ${characterAbbrev}").encodedMessage()
         }

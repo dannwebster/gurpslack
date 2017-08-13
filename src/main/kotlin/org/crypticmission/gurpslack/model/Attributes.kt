@@ -18,10 +18,10 @@ data class Attribute(val name: String, val level: Int, val modifier: Int=0, val 
 
 }
 
-data class AttributeRollOutcome(val attribute: Attribute, val rollDetails: RollDetails) {
-    val isSuccess = rollDetails.total <= attribute.effectiveLevel
-    val margin = Math.abs(rollDetails.total - attribute.effectiveLevel)
-    val isCritical = with(rollDetails) {
+data class AttributeRollOutcome(val attribute: Attribute, val rollOutcome: RollOutcome) {
+    val isSuccess = rollOutcome.total <= attribute.effectiveLevel
+    val margin = Math.abs(rollOutcome.total - attribute.effectiveLevel)
+    val isCritical = with(rollOutcome) {
         total == 3 ||
         total == 4 ||
         total == 17 ||
@@ -33,10 +33,11 @@ data class AttributeRollOutcome(val attribute: Attribute, val rollDetails: RollD
     val isSuccessString = if (isSuccess) "success" else "failure"
 
     val message = "${(isCriticalString+isSuccessString).toUpperCase()}: " +
-            "A roll of ${rollDetails.total} vs ${attribute.effectiveName} (${attribute.effectiveLevel}) " +
+            "A roll of ${rollOutcome.total} vs ${attribute.effectiveName} (${attribute.effectiveLevel}) " +
             "was a ${isCriticalString}${isSuccessString} " +
             "with a margin of ${isSuccessString} of ${margin}"
-    val messageWithEmoji = "${message} ${rollDetails.emoji()}"
+
+    val messageWithEmoji = "${message} (${rollOutcome.emoji()})"
 
     override fun toString() = message
 }

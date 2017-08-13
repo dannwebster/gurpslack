@@ -18,90 +18,90 @@ class RollSpecTest {
 
         // then
         assertEquals(3 * 6 + 1, max.total)
-        assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
+        assertEquals(RollOutcome(subject, listOf(6, 6, 6), 1), max)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithPositiveMod() {
         // given
         val spec = "3d6+1"
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // when
-        val max = subject?.roll(Randomizer.MAX)
+        val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max?.total)
-        assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
+        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(RollOutcome(subject, listOf(6, 6, 6), 1), max)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithCapitalD() {
         // given
         val spec = "3D6+1"
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // when
-        val max = subject?.roll(Randomizer.MAX)
+        val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 1, max?.total)
-        assertEquals(RollDetails(listOf(6, 6, 6), 1), max)
+        assertEquals(3 * 6 + 1, max.total)
+        assertEquals(RollOutcome(subject, listOf(6, 6, 6), 1), max)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithNegativeMod() {
         // given
         val spec = "3d6-1"
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // when
-        val max = subject?.roll(Randomizer.MAX)
+        val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 - 1, max?.total)
-        assertEquals(RollDetails(listOf(6, 6, 6), -1), max)
+        assertEquals(3 * 6 - 1, max.total)
+        assertEquals(RollOutcome(subject, listOf(6, 6, 6), -1), max)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueNoMod() {
         // given
         val spec = "3d6"
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // when
-        val max = subject?.roll(Randomizer.MAX)
+        val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(3 * 6 + 0, max?.total)
-        assertEquals(RollDetails(listOf(6, 6, 6), 0), max)
+        assertEquals(3 * 6 + 0, max.total)
+        assertEquals(RollOutcome(subject, listOf(6, 6, 6), 0), max)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndImplicitDice() {
         // given
         val spec = "d6+1"
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // when
-        val max = subject?.roll(Randomizer.MAX)
+        val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(1 * 6 + 1, max?.total)
+        assertEquals(1 * 6 + 1, max.total)
 
     }
 
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndImplicitDiceAndNoMod() {
         // given
         val spec = "d6"
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // when
-        val max = subject?.roll(Randomizer.MAX)
+        val max = subject.roll(Randomizer.MAX)
 
         // then
-        assertEquals(1 * 6 + 0, max?.total)
-        assertEquals(RollDetails(listOf(6), 0), max)
+        assertEquals(1 * 6 + 0, max.total)
+        assertEquals(RollOutcome(subject, listOf(6), 0), max)
 
     }
 
@@ -110,10 +110,10 @@ class RollSpecTest {
         val spec = "1d+1"
 
         // when
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // then
-        assertEquals("1d6+1", subject?.canonical)
+        assertEquals("1d6+1", subject.canonical)
     }
 
     @Test fun shouldUse6WhenDiceIsImplicitNoAdds() {
@@ -121,10 +121,10 @@ class RollSpecTest {
         val spec = "2d"
 
         // when
-        val subject = RollSpec.fromString(spec)
+        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
 
         // then
-        assertEquals("2d6", subject?.canonical)
+        assertEquals("2d6", subject.canonical)
     }
 
 
@@ -135,7 +135,7 @@ class RollSpecTest {
         val spec = "foo"
 
         // when
-        val subject = RollSpec.fromString(spec) // throws exception
+        val subject = RollSpec.fromString(spec)
 
         // then
         assertNull(subject)
