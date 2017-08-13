@@ -17,7 +17,7 @@ class DamageRollOutcomeTest {
 
         // then
         assertEquals("Dealt *19* cutting damage after DR: attack causes 2d6+1 cut vs DR 0. " +
-                "Rolled 2d6+1 = 13. [(13 impact damageSpec - DR 0) * 1.5 for cutting]", outcome.message)
+                "Rolled 2d6+1 = 13. [(13 impact damage - DR 0) * 1.5 for cutting]", outcome.message)
 
     }
 
@@ -31,7 +31,7 @@ class DamageRollOutcomeTest {
 
         // then
         assertEquals("Dealt *0* cutting damage after DR: attack causes 2d6+1 cut vs DR 80. " +
-                "Rolled 2d6+1 = 13. [(13 impact damageSpec - DR 80) * 1.5 for cutting]", outcome.message)
+                "Rolled 2d6+1 = 13. [(13 impact damage - DR 80) * 1.5 for cutting]", outcome.message)
 
     }
 
@@ -45,7 +45,7 @@ class DamageRollOutcomeTest {
 
         // then
         assertEquals("Dealt *15* large piercing damage after DR: attack causes 2d6+1 pi+ vs DR 3. " +
-                "Rolled 2d6+1 = 13. [(13 impact damageSpec - DR 3) * 1.5 for large piercing]", outcome.message)
+                "Rolled 2d6+1 = 13. [(13 impact damage - DR 3) * 1.5 for large piercing]", outcome.message)
 
     }
 
@@ -59,7 +59,7 @@ class DamageRollOutcomeTest {
 
         // then
         assertEquals("Dealt *20* impaling damage after DR: sword stab causes 2d6+1 imp vs DR 3. " +
-                "Rolled 2d6+1 = 13. [(13 impact damageSpec - DR 3) * 2.0 for impaling]", outcome.message)
+                "Rolled 2d6+1 = 13. [(13 impact damage - DR 3) * 2.0 for impaling]", outcome.message)
 
     }
 }

@@ -8,6 +8,17 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
+//val NPC_REGEX = """\s*((\w+)\s+)(\w+)\s*""".toRegex()
+fun parseName(nameLine: String) : Pair<String, String> {
+    val parts = nameLine.split("""\s+""".toRegex())
+    val abbrev = parts.first()
+    val nameParts = parts.drop(1)
+    val name = when (nameParts.isEmpty()) {
+        true -> abbrev
+        false -> nameParts.joinToString(" ")
+    }
+    return Pair(abbrev, name)
+}
 
 @RestController
 class CharacterController(val npcRepository: CharacterRepository) {
@@ -30,17 +41,18 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }
     }
 
+
     @PostMapping(value = "/addnpc")
     fun addNpc(slashData: SlashData): RichMessage {
-        val data = slashData.text.split("""\s""")
-        val characterName = data[0]
-        val characterAbbrev = data[1]
 
-        if (npcRepository.add(characterName, characterAbbrev)) {
-            return RichMessage("Created Character ${characterName} with abbreviation ${characterAbbrev}")
-        } else {
-            return RichMessage("Character with abbreviation ${characterAbbrev} already exists")
+        val (characterName, characterAbbrev) = parseName(slashData.text)
+
+        val message =  when (npcRepository.add(characterName, characterAbbrev)) {
+            true -> RichMessage("Created Character ${characterName} with abbreviation ${characterAbbrev}")
+            false -> RichMessage("Character with abbreviation ${characterAbbrev} already exists")
         }
+        message.responseType = "in_channel"
+        return message.encodedMessage()
     }
 
     @PostMapping(value = "/addattr")
