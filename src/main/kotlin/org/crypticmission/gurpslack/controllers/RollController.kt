@@ -21,16 +21,13 @@ class RollController(val npcRepository: CharacterRepository) {
     @Value("\${slashCommandToken}")
     lateinit var slackToken: String
 
-    /**
-     * Slash Command handler. When a user types for example "/app help"
-     * then slack sends a POST request to this endpoint. So, this endpoint
-     * should match the url you set while creating the Slack Slash Command.
+    @PostMapping("/gmroll", "/gm")
+    fun gmRoll(slashData: SlashData) : RichMessage {
+       return roll(slashData, false)
+    }
 
-     * @param slashData
-     * @return
-     */
     @PostMapping(value = "/roll")
-    fun roll(slashData: SlashData) : RichMessage {
+    fun roll(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
         val spec = when(slashData.text.isBlank()) {
             true -> RollSpec.DEFAULT
             false -> RollSpec.fromString(slashData.text)
@@ -40,11 +37,11 @@ class RollController(val npcRepository: CharacterRepository) {
             null -> RichMessage("${slashData.text} is not a valid rollSpec")
             else -> RichMessage(rollDetail.messageWithEmoji)
         }
-        message.responseType = "in_channel"
+        if (inChannel) message.responseType = "in_channel"
         return message.encodedMessage()
     }
 
-    @PostMapping(value = "/dmg")
+    @PostMapping("/dmg", "/damage")
     fun rollDmg(slashData: SlashData) : RichMessage {
         val spec = DamageSpec.fromString(slashData.text)
         val damageRollOutcome = spec?.roll(randomizer)
@@ -57,7 +54,7 @@ class RollController(val npcRepository: CharacterRepository) {
 
     }
 
-    @PostMapping(value = "/rollattr")
+    @PostMapping("/rollvs", "/rollattr")
     fun rollattr(slashData: SlashData) : RichMessage {
         val data = slashData.text.split("""\s""")
         val characterAbbrev = data[0]
