@@ -31,7 +31,10 @@ class RollController(val npcRepository: CharacterRepository) {
      */
     @PostMapping(value = "/roll")
     fun roll(slashData: SlashData) : RichMessage {
-        val spec = RollSpec.fromString(slashData.text)
+        val spec = when(slashData.text.isBlank()) {
+            true -> RollSpec.DEFAULT
+            false -> RollSpec.fromString(slashData.text)
+        }
         val rollDetail = spec?.roll(randomizer)
         val message = when (rollDetail) {
             null -> RichMessage("${slashData.text} is not a valid rollSpec")

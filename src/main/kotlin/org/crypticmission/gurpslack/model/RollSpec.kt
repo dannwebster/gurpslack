@@ -17,6 +17,7 @@ data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
 
     companion object {
         val REGEX: Regex = """(\d*)[Dd](\d+)?([\+-]\d+)?""".toRegex()
+        val DEFAULT = RollSpec(3, 6)
 
         fun MatchResult.d(index: Int, default: Int) =
                 if (this.groupValues[index] == "") default else this.groupValues[index].toInt()

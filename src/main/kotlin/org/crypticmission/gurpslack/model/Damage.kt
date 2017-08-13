@@ -27,7 +27,7 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
 }
 
 data class DamageRollOutcome(val damageSpec: DamageSpec, val rollOutcome: RollOutcome, val attackName: String = "attack") {
-    val impactDamage =  (rollOutcome.total - damageSpec.damageResistance)
+    val impactDamage =  Math.max(rollOutcome.total - damageSpec.damageResistance, 0)
     val totalDamage = Math.floor(impactDamage * damageSpec.damageType.multiplier).toInt()
 
     val message =
