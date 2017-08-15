@@ -62,7 +62,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
     @PostMapping(value = "/addnpc")
     fun addNpc(slashData: SlashData): RichMessage {
 
-        val (characterName, characterAbbrev) = parseName(slashData.text)
+        val (characterAbbrev, characterName) = parseName(slashData.text)
 
         val message =  when (npcRepository.add(characterAbbrev, characterName)) {
             true -> RichMessage("Created Character ${characterName} with abbreviation ${characterAbbrev}")
