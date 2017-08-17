@@ -12,23 +12,9 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
     pi_plus("large piercing", "pi+", 1.5),
     pi("piercing", "pi", 1.0),
     burn("burning", "burn", 1.0);
-
-    companion object {
-        val LONG_REGEX = DamageType.values()
-                .joinToString("|")
-                .toRegex()
-
-        val SHORT_REGEX = DamageType.values()
-                .map { it.shortForm }
-                .map { it.replace("""\+""".toRegex(), """\\+""") }
-                .joinToString("|")
-                .toRegex()
-        fun fromLongForm(longForm: String) = DamageType.values().find { type -> type.longForm.equals(longForm) }
-        fun fromShortForm(shortForm: String) = DamageType.values().find { type -> type.shortForm.equals(shortForm) }
-    }
 }
 
-fun String.dmgType() = DamageType.fromLongForm(this) ?: DamageType.fromShortForm(this) ?: DamageType.cru
+
 
 fun firstValue(regex: Regex, text: String) : String? {
     val m = regex.find(text)

@@ -23,7 +23,7 @@ class DamageRollOutcomeTest {
         assertEquals("Dealt *19* cutting damage after DR:\n" +
                 "This attack causes 2d6+1 cut vs DR 0.\n" +
                 "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`[(13 impact damage - DR 0) * 1.5 for cutting]`", outcome.toString())
+                "`19 = [(13 impact damage - DR 0) * 1.5 for cutting]`\n", outcome.toString())
 
     }
 
@@ -41,7 +41,7 @@ class DamageRollOutcomeTest {
         assertEquals("Dealt *0* cutting damage after DR:\n" +
                 "This attack causes 2d6+1 cut vs DR 80.\n" +
                 "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`[(13 impact damage - DR 80) * 1.5 for cutting]`", outcome.toString())
+                "`0 = [(13 impact damage - DR 80) * 1.5 for cutting]`\n", outcome.toString())
 
     }
 
@@ -59,7 +59,7 @@ class DamageRollOutcomeTest {
         assertEquals("Dealt *15* large piercing damage after DR:\n" +
                 "This attack causes 2d6+1 pi+ vs DR 3.\n" +
                 "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`[(13 impact damage - DR 3) * 1.5 for large piercing]`", outcome.toString())
+                "`15 = [(13 impact damage - DR 3) * 1.5 for large piercing]`\n", outcome.toString())
 
     }
 
@@ -77,7 +77,7 @@ class DamageRollOutcomeTest {
         assertEquals("Dealt *20* impaling damage after DR:\n" +
                 "This attack causes 2d6+1 imp vs DR 3.\n" +
                 "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`[(13 impact damage - DR 3) * 2.0 for impaling]`", outcome.toString())
+                "`20 = [(13 impact damage - DR 3) * 2.0 for impaling]`\n", outcome.toString())
 
     }
 }

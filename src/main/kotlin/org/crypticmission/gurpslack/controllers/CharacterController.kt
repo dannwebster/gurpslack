@@ -1,10 +1,7 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.model.Attack
-import org.crypticmission.gurpslack.model.Attribute
-import org.crypticmission.gurpslack.model.DamageSpec
-import org.crypticmission.gurpslack.model.richMessage
+import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -60,22 +57,21 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-//    @PostMapping(value = "/addattack")
-//    fun addDmg(slashData: SlashData): RichMessage {
-//        val attributeData = parseAttack(slashData.text) ?:
-//                return RichMessage("Can't add an attack from data '${slashData.text}'")
-//        val key = attributeData.first
-//        val character = npcRepository.get(key)
-//        return when (character) {
-//            null -> RichMessage("No character with abbreviation ${key}")
-//            else -> {
-//                val damage = DamageSpec(rollSpec, type)
-//                val attack = Attack(attackName, damageSpec)
-//                character.addAttack(attack)
-//                return RichMessage("Created Attack ${attackName} for character ${character.characterName}")
-//            }
-//        }.encodedMessage()
-//    }
+    @PostMapping(value = "/addattack")
+    fun addDmg(slashData: SlashData): RichMessage {
+        val attackData = parseAttack(slashData.text) ?:
+                return RichMessage("Can't add an attack from data '${slashData.text}'")
+        val key = attackData.first
+        val character = npcRepository.get(key)
+        return when (character) {
+            null -> RichMessage("No character with abbreviation ${key}")
+            else -> {
+                val attack = attackData.second
+                character.addAttack(attack)
+                return RichMessage("Created Attack ${attack.attackName} for character ${character.characterName}")
+            }
+        }.encodedMessage()
+    }
 
     @PostMapping(value = "/addattr")
     fun addAttr(slashData: SlashData): RichMessage {

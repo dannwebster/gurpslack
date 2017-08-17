@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.controllers.parseRollSpec
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Test
 import org.junit.Assert.*
@@ -25,7 +26,7 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithPositiveMod() {
         // given
         val spec = "3d6+1"
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // when
         val max = subject.roll(Randomizer.MAX)
@@ -39,7 +40,7 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithCapitalD() {
         // given
         val spec = "3D6+1"
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // when
         val max = subject.roll(Randomizer.MAX)
@@ -53,7 +54,7 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueWithNegativeMod() {
         // given
         val spec = "3d6-1"
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // when
         val max = subject.roll(Randomizer.MAX)
@@ -67,7 +68,7 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndStringValueNoMod() {
         // given
         val spec = "3d6"
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // when
         val max = subject.roll(Randomizer.MAX)
@@ -81,7 +82,7 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndImplicitDice() {
         // given
         val spec = "d6+1"
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // when
         val max = subject.roll(Randomizer.MAX)
@@ -94,7 +95,7 @@ class RollSpecTest {
     @Test fun shouldCreateMaxValuesWhenRolledWithConstRandomizerAndImplicitDiceAndNoMod() {
         // given
         val spec = "d6"
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // when
         val max = subject.roll(Randomizer.MAX)
@@ -110,7 +111,7 @@ class RollSpecTest {
         val spec = "1d+1"
 
         // when
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // then
         assertEquals("1d6+1", subject.canonical)
@@ -121,7 +122,7 @@ class RollSpecTest {
         val spec = "2d"
 
         // when
-        val subject = RollSpec.fromString(spec) ?: throw IllegalArgumentException()
+        val subject = parseRollSpec(spec) ?: throw IllegalArgumentException()
 
         // then
         assertEquals("2d6", subject.canonical)
@@ -135,7 +136,7 @@ class RollSpecTest {
         val spec = "foo"
 
         // when
-        val subject = RollSpec.fromString(spec)
+        val subject = parseRollSpec(spec)
 
         // then
         assertNull(subject)
@@ -144,22 +145,22 @@ class RollSpecTest {
 
     @Test fun shouldCreateEqualRollSpecWhenParsingToString() {
         // given
-        val a = RollSpec.fromString("3d6+3") // full
-        val b = RollSpec.fromString("3D6+3") // full with Capital D
-        val c = RollSpec.fromString("3d6") // implicit Ads
-        val d = RollSpec.fromString("d6+3") // implicit dice
-        val e = RollSpec.fromString("d6") // implicit dice and adds
-        val f = RollSpec.fromString("1d") // implicit dice and adds
+        val a = parseRollSpec("3d6+3") // full
+        val b = parseRollSpec("3D6+3") // full with Capital D
+        val c = parseRollSpec("3d6") // implicit Ads
+        val d = parseRollSpec("d6+3") // implicit dice
+        val e = parseRollSpec("d6") // implicit dice and adds
+        val f = parseRollSpec("1d") // implicit dice and adds
 
         // when
 
         // then
-        assertEquals(a, RollSpec.fromString(a.toString()))
-        assertEquals(b, RollSpec.fromString(b.toString()))
-        assertEquals(c, RollSpec.fromString(c.toString()))
-        assertEquals(d, RollSpec.fromString(d.toString()))
-        assertEquals(e, RollSpec.fromString(e.toString()))
-        assertEquals(f, RollSpec.fromString(f.toString()))
+        assertEquals(a, parseRollSpec(a.toString()))
+        assertEquals(b, parseRollSpec(b.toString()))
+        assertEquals(c, parseRollSpec(c.toString()))
+        assertEquals(d, parseRollSpec(d.toString()))
+        assertEquals(e, parseRollSpec(e.toString()))
+        assertEquals(f, parseRollSpec(f.toString()))
     }
 
 }

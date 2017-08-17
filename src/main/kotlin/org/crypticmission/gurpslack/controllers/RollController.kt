@@ -35,7 +35,7 @@ class RollController(val npcRepository: CharacterRepository) {
     fun roll(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
         val spec = when(slashData.text.isBlank()) {
             true -> RollSpec.DEFAULT
-            false -> RollSpec.fromString(slashData.text)
+            false -> parseRollSpec(slashData.text)
         }
         val rollDetail = spec?.roll(randomizer)
         val message = when (rollDetail) {

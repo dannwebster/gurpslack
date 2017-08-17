@@ -50,7 +50,7 @@ _*Attacks*_:
 
         // then
         assertEquals("character-name rolled vs. FOO:\n" +
-                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs FOO-3 (7) was a critical failure with a margin of failure of 11", outcome.toString())
+                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs FOO-3 (7) was a critical failure with a margin of failure of 11\n", outcome.toString())
 
     }
 
@@ -64,7 +64,7 @@ _*Attacks*_:
 
         // then
         assertEquals("character-name rolled vs. BAR:\n" +
-                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6", outcome.toString())
+                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6\n", outcome.toString())
     }
 
     @Test fun shouldRollVsDefaultWhenRollingMissingDamage() {
@@ -79,7 +79,7 @@ _*Attacks*_:
                 "Dealt *6* crushing damage after DR:\n" +
                 "This attack causes 1d6 cru vs DR 0.\n" +
                 "Rolled 1d6 => :d6-6: => 6.\n" +
-                "`[(6 impact damage - DR 0) * 1.0 for crushing]`", attackOutcome.toString())
+                "`[(6 impact damage - DR 0) * 1.0 for crushing]`\n", attackOutcome.toString())
 
     }
 }

@@ -16,7 +16,7 @@ fun message(attributeRollOutcome: AttributeRollOutcome) = with (attributeRollOut
         "${(isCriticalString+isSuccessString).toUpperCase()}: " +
                 "A roll of ${rollOutcome.emoji()} => ${rollOutcome.total} vs ${attribute.effectiveName} (${attribute.effectiveLevel}) " +
                 "was a ${isCriticalString}${isSuccessString} " +
-                "with a margin of ${isSuccessString} of ${margin}"
+                "with a margin of ${isSuccessString} of ${margin}\n"
 }
 
 fun message(character: Character) = with (character) {
@@ -40,8 +40,8 @@ fun message(damageRollOutcome: DamageRollOutcome) = with (damageRollOutcome) {
         "Dealt *${totalDamage}* ${damageSpec.damageType.longForm} damage after DR:\n" +
                 "This attack causes ${damageSpec.rollSpec.canonical} ${damageSpec.damageType.shortForm} vs DR ${damageResistance}.\n" +
                 "Rolled ${damageSpec.rollSpec.canonical} => ${rollOutcome.emoji()} => ${rollOutcome.total}.\n" +
-                "`[(${rollOutcome.total} impact damage - DR ${damageResistance}) * ${damageSpec.damageType.multiplier} " +
-                "for ${damageSpec.damageType.longForm}]`"
+                "`${totalDamage} = [(${rollOutcome.total} impact damage - DR ${damageResistance}) * ${damageSpec.damageType.multiplier} " +
+                "for ${damageSpec.damageType.longForm}]`\n"
 }
 
 fun message(rollOutcome: RollOutcome) = with (rollOutcome) {

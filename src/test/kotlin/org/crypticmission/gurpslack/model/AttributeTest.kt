@@ -61,7 +61,7 @@ class AttributeTest {
         assertEquals(true, outcome.isSuccess)
         assertEquals(4, outcome.margin)
         assertEquals(false, outcome.isCritical)
-        assertEquals("SUCCESS: A roll of :d6-3: :d6-3: :d6-3: => 9 vs HT+3 (13) was a success with a margin of success of 4", outcome.toString())
+        assertEquals("SUCCESS: A roll of :d6-3: :d6-3: :d6-3: => 9 vs HT+3 (13) was a success with a margin of success of 4\n", outcome.toString())
     }
 
     @Test fun shouldCriticallyFailWhenRollIs18() {
@@ -75,7 +75,7 @@ class AttributeTest {
         assertEquals(false, outcome.isSuccess)
         assertEquals(5, outcome.margin)
         assertEquals(true, outcome.isCritical)
-        assertEquals("CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs HT+3 (13) was a critical failure with a margin of failure of 5", outcome.toString())
+        assertEquals("CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs HT+3 (13) was a critical failure with a margin of failure of 5\n", outcome.toString())
     }
 
     @Test fun shouldCriticallySucceedWhenRollIs3() {
@@ -89,7 +89,7 @@ class AttributeTest {
         assertEquals(true, outcome.isSuccess)
         assertEquals(10, outcome.margin)
         assertEquals(true, outcome.isCritical)
-        assertEquals("CRITICAL SUCCESS: A roll of :d6-1: :d6-1: :d6-1: => 3 vs HT+3 (13) was a critical success with a margin of success of 10", outcome.toString())
+        assertEquals("CRITICAL SUCCESS: A roll of :d6-1: :d6-1: :d6-1: => 3 vs HT+3 (13) was a critical success with a margin of success of 10\n", outcome.toString())
     }
 
     @Test fun shouldFailWhenRollIsHigher() {
@@ -103,6 +103,6 @@ class AttributeTest {
         assertEquals(false, outcome.isSuccess)
         assertEquals(2, outcome.margin)
         assertEquals(false, outcome.isCritical)
-        assertEquals("FAILURE: A roll of :d6-5: :d6-5: :d6-5: => 15 vs HT+3 (13) was a failure with a margin of failure of 2", outcome.toString())
+        assertEquals("FAILURE: A roll of :d6-5: :d6-5: :d6-5: => 15 vs HT+3 (13) was a failure with a margin of failure of 2\n", outcome.toString())
     }
 }
