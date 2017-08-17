@@ -10,7 +10,7 @@ val LONG_DAMAGE_TYPE_REGEX = DamageType.values()
         .joinToString("|")
         .toRegex()
 
-val MODIFIER_REGEX = """[+-]\d+$""".toRegex()
+val MODIFIER_REGEX = """(\s*[+-]\d+)$""".toRegex()
 val SHORT_DAMAGE_TYPE_REGEX = DamageType.values()
         .map { it.shortForm }
         .map { it.replace("""\+""".toRegex(), """\\+""") }
@@ -104,7 +104,8 @@ fun parseVsData(vsDataLine: String): Triple<String, String, Int>? {
             val characterKey = data.first()
             val modString = firstValue(MODIFIER_REGEX, data.last()) ?: ""
             val mod = modString.toIntOrNull() ?: 0
-            val name = data.drop(1).joinToString(" ").dropLast(modString.length)
+            println("${modString.length} : '${modString}'")
+            val name = data.drop(1).joinToString(" ").dropLast(modString.length).trim()
             Triple(characterKey, name, mod)
         }
     }
