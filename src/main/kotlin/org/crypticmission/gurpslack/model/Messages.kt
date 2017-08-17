@@ -4,6 +4,7 @@ import me.ramswaroop.jbot.core.slack.models.RichMessage
 
 /**
  */
+fun String.toKey() = this.toLowerCase().trim()
 
 fun Int.toSignedString(): String =
         if (this > 0) "+${this}"
@@ -12,9 +13,20 @@ fun Int.toSignedString(): String =
 
 fun RollOutcome.emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString(" ") + this.adds.toSignedString()
 
+fun message(attribute: Attribute) = with (attribute) {
+    "${name}: ${level}"
+}
+
+fun message(modifiedAttribute: ModifiedAttribute) = with (modifiedAttribute) {
+    val modString = if (modifier == 0) "" else if (modifier < 0) "-${-1*modifier}" else "+${modifier}"
+    val effectiveName = "${attribute.name}${modString}"
+    "${effectiveName} (${effectiveLevel})"
+}
+
 fun message(attributeRollOutcome: AttributeRollOutcome) = with (attributeRollOutcome)  {
         "${(isCriticalString+isSuccessString).toUpperCase()}: " +
-                "A roll of ${rollOutcome.emoji()} => ${rollOutcome.total} vs ${attribute.effectiveName} (${attribute.effectiveLevel}) " +
+                "A roll of ${rollOutcome.emoji()} => ${rollOutcome.total} vs " +
+                "${message(modifiedAttribute)} " +
                 "was a ${isCriticalString}${isSuccessString} " +
                 "with a margin of ${isSuccessString} of ${margin}\n"
 }
@@ -23,7 +35,11 @@ fun message(character: Character) = with (character) {
     "*Character Name: ${characterName}*\n" +
             "_*Attributes:*_\n" +
             attributes.values
-                    .map { "    " + it.message }
+                    .map { "    " + it.toString() }
+                    .joinToString("\n", postfix = "\n") +
+            "_*Skills:*_\n" +
+            skills.values
+                    .map { "    " + it.toString() }
                     .joinToString("\n", postfix = "\n") +
             "_*Attacks*_:\n" +
             attacks.values
@@ -55,7 +71,7 @@ fun message(characterAttackRollOutcome: CharacterAttackRollOutcome) = with (char
 }
 
 fun message(characterAttributeRollOutcome: CharacterAttributeRollOutcome) = with (characterAttributeRollOutcome) {
-    "${characterName} rolled vs. ${attributeRollOutcome.attribute.name}:\n${attributeRollOutcome.toString()}"
+    "${characterName} rolled vs. ${attributeRollOutcome.modifiedAttribute.attribute.name}:\n${attributeRollOutcome.toString()}"
 }
 
 fun doRichMessage(s: String) = RichMessage(s)

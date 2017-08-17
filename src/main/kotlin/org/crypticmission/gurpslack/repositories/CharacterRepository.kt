@@ -1,6 +1,7 @@
 package org.crypticmission.gurpslack.repositories
 
 import org.crypticmission.gurpslack.model.Character
+import org.crypticmission.gurpslack.model.toKey
 import org.springframework.stereotype.Repository
 
 /**
@@ -13,11 +14,9 @@ class CharacterRepository() {
 
     private val charactersByAbbrev = HashMap<String, Character>()
 
-    fun key(abbrev: String) = abbrev.trim().toLowerCase()
-
     fun add(abbrev: String, characterName: String) : Boolean {
-        val key = key(abbrev)
-        return when (charactersByAbbrev.get(key)) {
+        val key = abbrev.toKey()
+        return when (charactersByAbbrev.get(key.toKey())) {
             null -> {
                 charactersByAbbrev[key] = Character(characterName, randomizer)
                 return true
@@ -26,7 +25,7 @@ class CharacterRepository() {
         }
     }
 
-    fun get(abbrev: String) = charactersByAbbrev[key(abbrev)]
-    fun remove(abbrev: String) = charactersByAbbrev.remove(key(abbrev))
+    fun get(abbrev: String) = charactersByAbbrev[abbrev.toKey()]
+    fun remove(abbrev: String) = charactersByAbbrev.remove(abbrev.toKey())
     fun list() = charactersByAbbrev.toList()
 }

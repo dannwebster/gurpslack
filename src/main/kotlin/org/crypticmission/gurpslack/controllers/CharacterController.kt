@@ -73,18 +73,27 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
+    @PostMapping(value = "/addskill")
+    fun addSkill(slashData: SlashData): RichMessage {
+        return doAdd("skill", slashData, { character, skill -> character.addSkill(skill) })
+    }
+
     @PostMapping(value = "/addattr")
     fun addAttr(slashData: SlashData): RichMessage {
+        return doAdd("attribute", slashData, { character, attribute -> character.addAttribute(attribute) })
+    }
+
+    fun doAdd(type: String, slashData: SlashData, addFunc: (character: Character, attribute: Attribute) -> Unit): RichMessage {
         val attributeData = parseAttribute(slashData.text) ?:
-                return RichMessage("Can't add attribute from data '${slashData.text}'")
+                return RichMessage("Can't add ${type} from data '${slashData.text}'")
         val key = attributeData.first
         val character = npcRepository.get(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}")
             else -> {
-                val attribute = Attribute(attributeData.second, attributeData.third)
-                character.addAttribute(attribute)
-                return RichMessage("Created Attribute ${attribute} for character ${character.characterName}")
+                val attribute = attributeData.second
+                addFunc(character, attribute)
+                return RichMessage("Created ${type} ${attribute.name} for character ${character.characterName}")
             }
         }.encodedMessage()
     }

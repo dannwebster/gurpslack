@@ -31,12 +31,12 @@ fun parseName(nameLine: String) : Pair<String, String>? {
     }
 }
 
-fun parseAttribute(attributeLine: String) : Triple<String, String, Int>? {
+fun parseAttribute(attributeLine: String) : Pair<String, Attribute>? {
     val parts = attributeLine.tokenize()
     return when (parts.size) {
-        2 -> Triple(parts[0], parts[1], 10)
-        3 -> Triple(parts[0], parts[1], parts[2].toInt())
-        else -> null
+        in 0..1 -> null
+        2 -> Pair(parts.first(), Attribute(parts.last(), 10))
+        else -> Pair(parts.first(), Attribute(parts.drop(1).dropLast(1).joinToString(" "), parts.last().toInt()))
     }
 }
 
@@ -61,7 +61,7 @@ fun parseRollSpec(rollSpec: String) : RollSpec? {
 fun parseDamage(damageLine: String) : DamageSpec? {
     val rollSpecString = firstValue(ROLL_SPEC_REGEX, damageLine) ?: return null
     val damageTypeString = firstValue(SHORT_DAMAGE_TYPE_REGEX, damageLine)
-    val damageType = parseDamageType(damageTypeString) ?: DamageType.cru
+    val damageType = parseDamageType(damageTypeString)
     return parseRollSpec(rollSpecString)?.toDamage(damageType)
 }
 

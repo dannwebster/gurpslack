@@ -10,48 +10,59 @@ data class CharacterAttackRollOutcome(val characterName: String, val attackRollO
     override fun toString() = message(this)
 }
 
-fun String.toKey() = this.toUpperCase()
-
 class Character(val characterName: String,
                 val randomizer: Randomizer = Randomizer.system(),
                 attributes: Map<String, Attribute> = emptyMap(),
+                skills: Map<String, Attribute> = emptyMap(),
                 attacks: Map<String, Attack> = emptyMap()) {
 
     val attributes = HashMap<String, Attribute>(attributes)
+    val skills = HashMap<String, Attribute>(skills)
     val attacks = HashMap<String, Attack>(attacks)
 
     companion object {
         val DEFAULT_ATTIRIBUTE_VALUE = 10
         val DEFAULT_DAMAGE_ROLL_SPEC = RollSpec(1, 6)
         val DEFAULT_DAMAGE_ROLL_TYPE = DamageType.cru
-        val REGEX: Regex = """(\w+)([\+-]\d+)?""".toRegex()
+        val DEFAULT_DAMAGE_SPEC = DamageSpec(DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE)
     }
 
     override fun toString() = message(this)
 
+    fun rollVsSkill(name: String, modifier: Int = 0): CharacterAttributeRollOutcome =
+            CharacterAttributeRollOutcome(
+                    this.characterName,
+                    skills.getOrPut(name.toKey())
+                    {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
+                            .modify(modifier)
+                            .rollWithModifier(modifier, randomizer)
+            )
     fun rollVsAttribute(name: String, modifier: Int = 0): CharacterAttributeRollOutcome =
             CharacterAttributeRollOutcome(
                     this.characterName,
-                    attributes.getOrPut(name)
+                    attributes.getOrPut(name.toKey())
                     {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
-                            .modify(modifier)
-                            .roll(randomizer)
+                            .rollWithModifier(modifier, randomizer)
             )
 
     fun rollAttackDamage(attackName: String, damageResistance: Int = 0): CharacterAttackRollOutcome =
             CharacterAttackRollOutcome(
                     this.characterName,
-                    attacks.getOrPut(attackName)
-                    {Attack(attackName, DamageSpec(DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE))}
+                    attacks.getOrPut(attackName.toKey())
+                    { Attack(attackName, DEFAULT_DAMAGE_SPEC) }
                             .rollVsDr(damageResistance, randomizer)
             )
 
     fun addAttack(newAttack: Attack)  = addAttacks(listOf(newAttack))
     fun addAttribute(newAttribute: Attribute) = addAttributes(listOf(newAttribute))
+    fun addSkill(newSkill: Attribute) = addSkill(listOf(newSkill))
 
     fun addAttacks(newAttacks: Iterable<Attack>) =
-        newAttacks.forEach { attack -> attacks[attack.attackName.toKey()] = attack }
+            newAttacks.forEach { attack -> attacks[attack.attackName.toKey()] = attack }
 
     fun addAttributes(newAttributes: Iterable<Attribute>) =
             newAttributes.forEach { attribute -> attributes[attribute.name.toKey()] = attribute }
+
+    fun addSkill(newSkills: Iterable<Attribute>) =
+            newSkills.forEach { skill -> skills[skill.name.toKey()] = skill }
 }

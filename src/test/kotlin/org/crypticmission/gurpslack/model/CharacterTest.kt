@@ -16,9 +16,12 @@ class CharacterTest {
         subject.addAttribute(Attribute("IQ", 12))
         subject.addAttribute(Attribute("HT", 13))
 
+        subject.addSkill(Attribute("Area Knowledge (USA)", 15))
+
         subject.addAttack(Attack("punch", RollSpec.DEFAULT.toDamage(DamageType.cru)))
         subject.addAttack(Attack("sword slash", RollSpec.DEFAULT.toDamage(DamageType.cut)))
         subject.addAttack(Attack("sword stab", RollSpec.DEFAULT.toDamage(DamageType.imp)))
+        subject.addAttack(Attack("sword stab", RollSpec(1,6).toDamage(DamageType.imp)))
 
         val expected =
 """*Character Name: Foo Bar*
@@ -27,10 +30,12 @@ _*Attributes:*_
     DX: 14
     IQ: 12
     HT: 13
+_*Skills:*_
+    Area Knowledge (USA): 15
 _*Attacks*_:
     punch: 3d6 cru
     sword slash: 3d6 cut
-    sword stab: 3d6 imp
+    sword stab: 1d6 imp
 """
 
         // when
@@ -79,7 +84,7 @@ _*Attacks*_:
                 "Dealt *6* crushing damage after DR:\n" +
                 "This attack causes 1d6 cru vs DR 0.\n" +
                 "Rolled 1d6 => :d6-6: => 6.\n" +
-                "`[(6 impact damage - DR 0) * 1.0 for crushing]`\n", attackOutcome.toString())
+                "`6 = [(6 impact damage - DR 0) * 1.0 for crushing]`\n", attackOutcome.toString())
 
     }
 }

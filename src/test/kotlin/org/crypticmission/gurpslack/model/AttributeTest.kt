@@ -28,34 +28,34 @@ class AttributeTest {
 
     @Test fun shouldFormatPositiveAttributeString() {
         // given
-        val subject = Attribute("HT", 10, +3)
+        val subject = Attribute("HT", 10).modify(+3)
 
         // when
-        val s = subject.toStringWithModifiers()
+        val s = subject.toString()
 
         // then
-        assertEquals(s, "HT+3: 13")
+        assertEquals(s, "HT+3 (13)")
 
     }
 
     @Test fun shouldFormatNegativeAttributeString() {
         // given
-        val subject = Attribute("HT", 10, -3)
+        val subject = Attribute("HT", 10).modify(-3)
 
         // when
-        val s = subject.toStringWithModifiers()
+        val s = subject.toString()
 
         // then
-        assertEquals(s, "HT-3: 7")
+        assertEquals(s, "HT-3 (7)")
 
     }
 
     @Test fun shouldSucccedWhenRollIsLower() {
         // given
-        val subject = Attribute("HT", 10, +3)
+        val subject = Attribute("HT", 10)
 
         // when
-        val outcome = subject.roll(ROLL_3)
+        val outcome = subject.rollWithModifier(+3, ROLL_3)
 
         // then
         assertEquals(true, outcome.isSuccess)
@@ -66,10 +66,10 @@ class AttributeTest {
 
     @Test fun shouldCriticallyFailWhenRollIs18() {
         // given
-        val subject = Attribute("HT", 10, +3)
+        val subject = Attribute("HT", 10)
 
         // when
-        val outcome = subject.roll(ROLL_6)
+        val outcome = subject.rollWithModifier(+3, ROLL_6)
 
         // then
         assertEquals(false, outcome.isSuccess)
@@ -80,10 +80,10 @@ class AttributeTest {
 
     @Test fun shouldCriticallySucceedWhenRollIs3() {
         // given
-        val subject = Attribute("HT", 10, +3)
+        val subject = Attribute("HT", 10)
 
         // when
-        val outcome = subject.roll(ROLL_1)
+        val outcome = subject.rollWithModifier(+3, ROLL_1)
 
         // then
         assertEquals(true, outcome.isSuccess)
@@ -94,10 +94,10 @@ class AttributeTest {
 
     @Test fun shouldFailWhenRollIsHigher() {
         // given
-        val subject = Attribute("HT", 10, +3)
+        val subject = Attribute("HT", 10)
 
         // when
-        val outcome = subject.roll(ROLL_5)
+        val outcome = subject.rollWithModifier(+3, ROLL_5)
 
         // then
         assertEquals(false, outcome.isSuccess)
