@@ -5,6 +5,7 @@ import org.crypticmission.gurpslack.model.Character
 import org.crypticmission.gurpslack.model.CharacterAttributeRollOutcome
 import org.crypticmission.gurpslack.model.richMessage
 import org.crypticmission.gurpslack.repositories.CharacterRepository
+import org.crypticmission.gurpslack.repositories.ComponentRandomizer
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -15,38 +16,37 @@ import org.springframework.web.bind.annotation.RestController
  */
 
 @RestController
-class CharacterRollController(val npcRepository: CharacterRepository) {
+class CharacterRollController(val randomizer: Randomizer, val npcRepository: CharacterRepository) {
     companion object {
         private val logger = LoggerFactory.getLogger(RollController::class.java)
     }
-
-    val randomizer: Randomizer = Randomizer.system()
 
     @Value("\${slashCommandToken}")
     lateinit var slackToken: String
 
     @PostMapping("/gm-skill", "/gm-rollskill")
-    fun gmRollSkill(slashData: SlashData, inChannel: Boolean = false) =
-            rollVs("skill", slashData, inChannel) { character, name, mod -> character.rollVsSkill(name, mod)}
+    fun gmRollSkill(slashData: SlashData) =
+            rollVs("skill", slashData, false) { character, name, mod -> character.rollVsSkill(name, mod)}
 
     @PostMapping("/skill", "/rollskill")
-    fun rollSkill(slashData: SlashData, inChannel: Boolean = true) =
-            rollVs("skill", slashData, inChannel) { character, name, mod -> character.rollVsSkill(name, mod)}
+    fun rollSkill(slashData: SlashData) =
+            rollVs("skill", slashData, true) { character, name, mod -> character.rollVsSkill(name, mod)}
 
     @PostMapping("/gm-attr", "/gm-rollattr")
     fun gmRollAttr(slashData: SlashData, inChannel: Boolean = false) =
             rollVs("attribute", slashData, inChannel) { character, name, mod -> character.rollVsAttribute(name, mod)}
 
     @PostMapping("/attr", "/rollattr")
-    fun rollAttr(slashData: SlashData, inChannel: Boolean = true) =
-            rollVs("attribute", slashData, inChannel) { character, name, mod -> character.rollVsAttribute(name, mod)}
+    fun rollAttr(slashData: SlashData) =
+            rollVs("attribute", slashData, true) { character, name, mod -> character.rollVsAttribute(name, mod)}
 
     @PostMapping("/gm-attack", "/gm-rollattack")
-    fun gmRollAttack(slashData: SlashData, inChannel: Boolean = false) : RichMessage =
-        rollAttack(slashData, inChannel)
+    fun gmRollAttack(slashData: SlashData) = doRollAttack(slashData, false)
 
     @PostMapping("/attack", "/rollattack")
-    fun rollAttack(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
+    fun rollAttack(slashData: SlashData) = doRollAttack(slashData, true)
+
+    fun doRollAttack(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
         val data = slashData.text.tokenize()
         val key = data[0]
         val attackName = data[1]

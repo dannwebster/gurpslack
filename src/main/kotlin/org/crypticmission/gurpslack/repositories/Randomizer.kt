@@ -1,11 +1,16 @@
 package org.crypticmission.gurpslack.repositories
 
+import org.springframework.stereotype.Component
 import java.security.SecureRandom
 import java.time.Clock
 import java.time.Instant
+import javax.swing.plaf.synth.SynthEditorPaneUI
 
 /**
  */
+
+@Component
+class ComponentRandomizer() : SystemRandomizer(Clock.systemUTC().instant())
 
 interface Randomizer {
     companion object {
@@ -27,7 +32,7 @@ class AlwaysMaxRandomizer(): Randomizer {
     override fun random(max: Int) = max
 }
 
-class SystemRandomizer(seed: Instant): Randomizer {
+open class SystemRandomizer(seed: Instant): Randomizer {
     val seedArray = arrayOf(
         (seed.toEpochMilli() and 0xFF000000).toByte(),
         (seed.toEpochMilli() and 0x00FF0000).toByte(),

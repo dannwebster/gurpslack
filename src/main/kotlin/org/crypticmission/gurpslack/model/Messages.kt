@@ -8,7 +8,7 @@ fun String.toKey() = this.toLowerCase().trim()
 
 fun Int.toSignedString(): String =
         if (this > 0) "+${this}"
-        else if (this < 0) "-${this}"
+        else if (this < 0) "${this}"
         else ""
 
 fun RollOutcome.emoji() = this.rollValues.map{ ":d6-${it}:"}.joinToString(" ") + this.adds.toSignedString()

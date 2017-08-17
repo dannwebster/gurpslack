@@ -104,7 +104,6 @@ fun parseVsData(vsDataLine: String): Triple<String, String, Int>? {
             val characterKey = data.first()
             val modString = firstValue(MODIFIER_REGEX, data.last()) ?: ""
             val mod = modString.toIntOrNull() ?: 0
-            println("${modString.length} : '${modString}'")
             val name = data.drop(1).joinToString(" ").dropLast(modString.length).trim()
             Triple(characterKey, name, mod)
         }
