@@ -10,6 +10,7 @@ val LONG_DAMAGE_TYPE_REGEX = DamageType.values()
         .joinToString("|")
         .toRegex()
 
+val MODIFIER_REGEX = """[+-]\d+$""".toRegex()
 val SHORT_DAMAGE_TYPE_REGEX = DamageType.values()
         .map { it.shortForm }
         .map { it.replace("""\+""".toRegex(), """\\+""") }
@@ -21,6 +22,14 @@ fun String.tokenize() = this.split("""\s+""".toRegex())
 fun MatchResult.d(index: Int, default: Int) =
                 if (this.groupValues[index] == "") default else this.groupValues[index].toInt()
 
+
+fun firstValue(regex: Regex, text: String) : String? {
+    val m = regex.find(text)
+    m ?: return null
+    val g = m.groups[0]
+    g ?: return null
+    return text.substring(g.range)
+}
 
 fun parseName(nameLine: String) : Pair<String, String>? {
     val parts = nameLine.tokenize()
@@ -92,11 +101,11 @@ fun parseVsData(vsDataLine: String): Triple<String, String, Int>? {
     return when (data.size) {
         in 0..1 -> null
         else -> {
-            val mod = data.last().toIntOrNull()
-            when (mod) {
-                null -> Triple(data.first(), data.drop(1).joinToString(" "), 0)
-                else -> Triple(data.first(), data.drop(1).dropLast(1).joinToString(" "), mod)
-            }
+            val characterKey = data.first()
+            val modString = firstValue(MODIFIER_REGEX, data.last()) ?: ""
+            val mod = modString.toIntOrNull() ?: 0
+            val name = data.drop(1).joinToString(" ").dropLast(modString.length)
+            Triple(characterKey, name, mod)
         }
     }
 }

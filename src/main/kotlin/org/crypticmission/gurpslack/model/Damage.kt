@@ -15,15 +15,6 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
 }
 
 
-
-fun firstValue(regex: Regex, text: String) : String? {
-    val m = regex.find(text)
-    m ?: return null
-    val g = m.groups[0]
-    g ?: return null
-    return text.substring(g.range)
-}
-
 data class Attack(val attackName: String, val damageSpec: DamageSpec) {
     fun rollVsDr(damageResistance: Int, rand: Randomizer) =
             AttackRollOutcome(attackName, damageSpec.rollVsDr(damageResistance, rand))
