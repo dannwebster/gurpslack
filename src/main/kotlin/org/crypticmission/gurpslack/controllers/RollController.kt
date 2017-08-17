@@ -15,7 +15,6 @@ fun RichMessage.inChannel(inChannel: Boolean) = when(inChannel) {
     false -> this
 }
 
-
 @RestController
 class RollController(val npcRepository: CharacterRepository) {
     companion object {
@@ -58,26 +57,34 @@ class RollController(val npcRepository: CharacterRepository) {
 
     }
 
-    @PostMapping("/rollvs", "/rollattr")
-    fun rollAttr(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
-        val data = slashData.text.split("""\s+""".toRegex())
-        val characterAbbrev = data[0]
-        val attributeName = data[1]
+    @PostMapping("/skill", "/rollskill")
+    fun rollSkill(slashData: SlashData, inChannel: Boolean = true) =
+        rollVs("skill", slashData, inChannel) { character, name, mod -> character.rollVsSkill(name, mod)}
 
-        val character = npcRepository.get(characterAbbrev)
-        val message = when (character) {
-            null -> RichMessage("No character with abbreviation ${characterAbbrev}")
+    @PostMapping("/rollvs", "/rollattr")
+    fun rollAttr(slashData: SlashData, inChannel: Boolean = true) =
+        rollVs("attribute", slashData, inChannel) { character, name, mod -> character.rollVsAttribute(name, mod)}
+
+    fun rollVs(type: String, slashData: SlashData, inChannel: Boolean,
+               doRoll: (character: Character, name: String, modifier: Int) -> CharacterAttributeRollOutcome) : RichMessage {
+        val vsData = parseVsData(slashData.text)
+        return when (vsData) {
+            null -> RichMessage("Could not roll vs a ${type} from data '${slashData.text}'")
             else -> {
-                val outcome = character.rollVsAttribute(attributeName)
-                richMessage(outcome)
+                val (characterKey, attributeName, modifier) = vsData
+                val character = npcRepository.get(characterKey)
+                when (character) {
+                    null -> RichMessage("No character with abbreviation ${characterKey}")
+                    else -> richMessage(doRoll(character, attributeName, modifier))
+                }
             }
         }
-        return message.inChannel(inChannel).encodedMessage()
     }
+
 
     @PostMapping("/rollattack", "/attack")
     fun rollAttack(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
-        val data = slashData.text.split("""\s+""".toRegex())
+        val data = slashData.text.tokenize()
         val key = data[0]
         val attackName = data[1]
         val dr = parseDr(slashData.text)

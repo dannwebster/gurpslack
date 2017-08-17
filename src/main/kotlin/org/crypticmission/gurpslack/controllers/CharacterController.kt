@@ -75,12 +75,12 @@ class CharacterController(val npcRepository: CharacterRepository) {
 
     @PostMapping(value = "/addskill")
     fun addSkill(slashData: SlashData): RichMessage {
-        return doAdd("skill", slashData, { character, skill -> character.addSkill(skill) })
+        return doAdd("skill", slashData) { character, skill -> character.addSkill(skill) }
     }
 
     @PostMapping(value = "/addattr")
     fun addAttr(slashData: SlashData): RichMessage {
-        return doAdd("attribute", slashData, { character, attribute -> character.addAttribute(attribute) })
+        return doAdd("attribute", slashData) { character, attribute -> character.addAttribute(attribute) }
     }
 
     fun doAdd(type: String, slashData: SlashData, addFunc: (character: Character, attribute: Attribute) -> Unit): RichMessage {

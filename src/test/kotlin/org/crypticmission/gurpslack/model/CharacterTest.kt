@@ -77,7 +77,7 @@ _*Attacks*_:
         val subject = Character("character-name", Randomizer.MAX)
 
         // when
-        val attackOutcome = subject.rollAttackDamage("attack-name")
+        val attackOutcome = subject.rollAttackDamage("attack-name", 0)
 
         // then
         assertEquals("character-name rolled damage for attack-name:\n" +

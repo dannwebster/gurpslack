@@ -86,4 +86,19 @@ fun parseAttack(attackLine: String) : Pair<String, Attack>? {
     }
 }
 
+
+fun parseVsData(vsDataLine: String): Triple<String, String, Int>? {
+    val data = vsDataLine.tokenize()
+    return when (data.size) {
+        in 0..1 -> null
+        else -> {
+            val mod = data.last().toIntOrNull()
+            when (mod) {
+                null -> Triple(data.first(), data.drop(1).joinToString(" "), 0)
+                else -> Triple(data.first(), data.drop(1).dropLast(1).joinToString(" "), mod)
+            }
+        }
+    }
+}
+
 fun parseDr(damageLine: String) = DR_REGEX.find(damageLine)?.groupValues?.get(1)?.toInt() ?: 0

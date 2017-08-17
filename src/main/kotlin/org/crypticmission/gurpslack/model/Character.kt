@@ -29,29 +29,19 @@ class Character(val characterName: String,
 
     override fun toString() = message(this)
 
-    fun rollVsSkill(name: String, modifier: Int = 0): CharacterAttributeRollOutcome =
-            CharacterAttributeRollOutcome(
-                    this.characterName,
-                    skills.getOrPut(name.toKey())
-                    {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
-                            .modify(modifier)
-                            .rollWithModifier(modifier, randomizer)
-            )
-    fun rollVsAttribute(name: String, modifier: Int = 0): CharacterAttributeRollOutcome =
-            CharacterAttributeRollOutcome(
-                    this.characterName,
-                    attributes.getOrPut(name.toKey())
-                    {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
-                            .rollWithModifier(modifier, randomizer)
-            )
+    fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome =
+            CharacterAttributeRollOutcome(characterName, getSkill(name).rollWithModifier(modifier, randomizer))
 
-    fun rollAttackDamage(attackName: String, damageResistance: Int = 0): CharacterAttackRollOutcome =
-            CharacterAttackRollOutcome(
-                    this.characterName,
-                    attacks.getOrPut(attackName.toKey())
-                    { Attack(attackName, DEFAULT_DAMAGE_SPEC) }
-                            .rollVsDr(damageResistance, randomizer)
-            )
+    fun rollVsAttribute(name: String, modifier: Int): CharacterAttributeRollOutcome =
+            CharacterAttributeRollOutcome(
+                    this.characterName, getAttribute(name).rollWithModifier(modifier, randomizer))
+
+    fun rollAttackDamage(attackName: String, damageResistance: Int): CharacterAttackRollOutcome =
+            CharacterAttackRollOutcome(characterName, getAttack(attackName).rollVsDr(damageResistance, randomizer))
+
+    fun getSkill(name: String) = skills.getOrPut(name.toKey()) {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
+    fun getAttribute(name: String) = attributes.getOrPut(name.toKey()) {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
+    fun getAttack(name: String) = attacks.getOrPut(name.toKey()) { Attack(name, DEFAULT_DAMAGE_SPEC) }
 
     fun addAttack(newAttack: Attack)  = addAttacks(listOf(newAttack))
     fun addAttribute(newAttribute: Attribute) = addAttributes(listOf(newAttribute))
