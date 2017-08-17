@@ -21,7 +21,7 @@ fun parseAttribute(attributeLine: String) : Triple<String, String, Int>? {
     val parts = attributeLine.split("""[\s:]+""".toRegex())
     return when (parts.size) {
         2 -> Triple(parts[0], parts[1], 10)
-        3 -> Triple(parts[0], parts[1], parts[3].toInt())
+        3 -> Triple(parts[0], parts[1], parts[2].toInt())
         else -> null
     }
 }
