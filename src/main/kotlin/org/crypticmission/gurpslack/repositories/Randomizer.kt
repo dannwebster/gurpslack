@@ -30,9 +30,9 @@ class AlwaysMaxRandomizer(): Randomizer {
 class SystemRandomizer(seed: Instant): Randomizer {
     val seedArray = arrayOf(
         (seed.toEpochMilli() and 0xFF000000).toByte(),
-        (seed.toEpochMilli() and 0xFF000000).toByte(),
-        (seed.toEpochMilli() and 0xFF000000).toByte(),
-        (seed.toEpochMilli() and 0xFF000000).toByte()
+        (seed.toEpochMilli() and 0x00FF0000).toByte(),
+        (seed.toEpochMilli() and 0x0000FF00).toByte(),
+        (seed.toEpochMilli() and 0x000000FF).toByte()
     ).toByteArray()
 
     val rand = SecureRandom(seedArray)

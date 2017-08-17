@@ -17,7 +17,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
     @Value("\${slashCommandToken}")
     lateinit var slackToken: String
 
-    @PostMapping(value = "/delnpc")
+    @PostMapping(value = "/del-npc")
     fun delNpc(slashData: SlashData): RichMessage {
         val characterAbbrev = slashData.text
 
@@ -28,7 +28,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping("/npc", "/getnpc")
+    @PostMapping("/npc", "/get-npc")
     fun getNpc(slashData: SlashData): RichMessage {
         val abbrev = slashData.text.trim()
         val npc = npcRepository.get(abbrev)
@@ -46,7 +46,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
                 .encodedMessage()
     }
 
-    @PostMapping(value = "/addnpc")
+    @PostMapping(value = "/add-npc")
     fun addNpc(slashData: SlashData): RichMessage {
         val (characterAbbrev, characterName) = parseName(slashData.text) ?:
             return RichMessage("Can't add character from data '${slashData.text}'")
@@ -57,7 +57,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping(value = "/addattack")
+    @PostMapping(value = "/add-attack")
     fun addDmg(slashData: SlashData): RichMessage {
         val attackData = parseAttack(slashData.text) ?:
                 return RichMessage("Can't add an attack from data '${slashData.text}'")
@@ -73,12 +73,12 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping(value = "/addskill")
+    @PostMapping(value = "/add-skill")
     fun addSkill(slashData: SlashData): RichMessage {
         return doAdd("skill", slashData) { character, skill -> character.addSkill(skill) }
     }
 
-    @PostMapping(value = "/addattr")
+    @PostMapping(value = "/add-attr")
     fun addAttr(slashData: SlashData): RichMessage {
         return doAdd("attribute", slashData) { character, attribute -> character.addAttribute(attribute) }
     }
