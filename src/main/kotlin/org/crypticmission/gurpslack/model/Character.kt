@@ -1,20 +1,24 @@
 package org.crypticmission.gurpslack.model
 
-import org.crypticmission.gurpslack.model.RollSpec.Companion.d
 import org.crypticmission.gurpslack.repositories.Randomizer
+
+data class CharacterAttributeRollOutcome(val characterName: String, val attributeRollOutcome: AttributeRollOutcome) {
+    override fun toString() = message(this)
+}
+
+data class CharacterAttackRollOutcome(val characterName: String, val attackRollOutcome: AttackRollOutcome) {
+    override fun toString() = message(this)
+}
+
+fun String.toKey() = this.toUpperCase()
 
 class Character(val characterName: String,
                 val randomizer: Randomizer = Randomizer.system(),
                 attributes: Map<String, Attribute> = emptyMap(),
-                damages: Map<String, DamageSpec> = emptyMap()) {
+                attacks: Map<String, Attack> = emptyMap()) {
 
     val attributes = HashMap<String, Attribute>(attributes)
-    val damages = HashMap<String, DamageSpec>(damages)
-    fun message() = "Character Name: ${characterName}\n" +
-            "Attributes:\n" +
-            attributes.values.map { "    " + it.message }.joinToString("\n", postfix = "\n") +
-            "Damage Rolls:\n" +
-            damages.map { (name, dmg) -> "    ${name}: ${dmg.canonical}"  }.sorted().joinToString("\n", postfix = "\n")
+    val attacks = HashMap<String, Attack>(attacks)
 
     companion object {
         val DEFAULT_ATTIRIBUTE_VALUE = 10
@@ -23,34 +27,31 @@ class Character(val characterName: String,
         val REGEX: Regex = """(\w+)([\+-]\d+)?""".toRegex()
     }
 
-    fun rollVsModifiedAttribute(attributeSpec: String, modifier: Int = 0): AttributeRollOutcome {
-        val matchResult = REGEX.matchEntire(attributeSpec.trim())
-        matchResult ?: throw IllegalArgumentException("'${attributeSpec}' is not a valid attribute specification")
+    override fun toString() = message(this)
 
-        val name = matchResult.groupValues[1]
-        val specModifier = matchResult.d(2, 0)
-        return rollVsAttribute(name, modifier+specModifier)
-    }
+    fun rollVsAttribute(name: String, modifier: Int = 0): CharacterAttributeRollOutcome =
+            CharacterAttributeRollOutcome(
+                    this.characterName,
+                    attributes.getOrPut(name)
+                    {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
+                            .modify(modifier)
+                            .roll(randomizer)
+            )
 
-    override fun toString(): String = message()
+    fun rollAttackDamage(attackName: String, damageResistance: Int = 0): CharacterAttackRollOutcome =
+            CharacterAttackRollOutcome(
+                    this.characterName,
+                    attacks.getOrPut(attackName)
+                    {Attack(attackName, DamageSpec(DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE))}
+                            .rollVsDr(damageResistance, randomizer)
+            )
 
-    fun rollVsAttribute(name: String, modifier: Int = 0): AttributeRollOutcome =
-        attributes.getOrPut(name)
-            {Attribute(name, DEFAULT_ATTIRIBUTE_VALUE)}
-                .modify(modifier)
-                .roll(randomizer)
+    fun addAttack(newAttack: Attack)  = addAttacks(listOf(newAttack))
+    fun addAttribute(newAttribute: Attribute) = addAttributes(listOf(newAttribute))
 
-    fun rollDamage(attackName: String, dr: Int = 0): DamageRollOutcome =
-            damages.getOrPut(attackName)
-            {DamageSpec(DEFAULT_DAMAGE_ROLL_SPEC, DEFAULT_DAMAGE_ROLL_TYPE)}
-                    .vsDr(dr)
-                    .roll(randomizer, attackName)
+    fun addAttacks(newAttacks: Iterable<Attack>) =
+        newAttacks.forEach { attack -> attacks[attack.attackName.toKey()] = attack }
 
-    fun addDamage(name: String, newDamage: DamageSpec) { damages[name] = newDamage }
-    fun addAttribute(newAttribute: Attribute) = addAttributes(arrayOf(newAttribute)) //replace with varArg
-
-    fun addDamages(newDamages: Map<String, DamageSpec>) = damages.putAll(newDamages)
-
-    fun addAttributes(newAttributes: Array<Attribute>) =
-            newAttributes.forEach { attribute -> attributes[attribute.name] = attribute }
+    fun addAttributes(newAttributes: Iterable<Attribute>) =
+            newAttributes.forEach { attribute -> attributes[attribute.name.toKey()] = attribute }
 }

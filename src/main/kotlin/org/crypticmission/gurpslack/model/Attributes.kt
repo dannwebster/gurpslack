@@ -14,7 +14,8 @@ data class Attribute(val name: String, val level: Int, val modifier: Int=0, val 
     val messageWithModifiers = "${effectiveName}: ${effectiveLevel}"
 
     fun modify(modifier: Int) = Attribute(this.name, this.level, this.modifier + modifier, this.rollSpec)
-    fun roll(randomizer: Randomizer)  = AttributeRollOutcome(this, this.rollSpec.roll(randomizer))
+    fun roll(randomizer: Randomizer) =
+            AttributeRollOutcome(this, this.rollSpec.roll(randomizer))
     override fun toString(): String = message
     fun toStringWithModifiers(): String = messageWithModifiers
 
@@ -34,12 +35,6 @@ data class AttributeRollOutcome(val attribute: Attribute, val rollOutcome: RollO
     val isCriticalString = if (isCritical) "critical " else ""
     val isSuccessString = if (isSuccess) "success" else "failure"
 
-    val message = "${(isCriticalString+isSuccessString).toUpperCase()}: " +
-            "A roll of ${rollOutcome.total} vs ${attribute.effectiveName} (${attribute.effectiveLevel}) " +
-            "was a ${isCriticalString}${isSuccessString} " +
-            "with a margin of ${isSuccessString} of ${margin}"
+    override fun toString() = message(this)
 
-    val messageWithEmoji = "${rollOutcome.emoji()} => ${message} "
-
-    override fun toString() = message
 }

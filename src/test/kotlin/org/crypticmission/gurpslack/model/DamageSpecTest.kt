@@ -1,5 +1,7 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.controllers.parseDamage
+import org.crypticmission.gurpslack.controllers.parseDr
 import org.junit.Test
 
 import org.junit.Assert.*
@@ -13,7 +15,7 @@ class DamageSpecTest {
         val spec = "foo"
 
         // when
-        val subject = DamageSpec.fromString(spec)
+        val subject = parseDamage(spec)
 
         // then
         assertNull(subject)
@@ -25,13 +27,12 @@ class DamageSpecTest {
         val spec = "2d6+1"
 
         // when
-        val subject = DamageSpec.fromString(spec)
+        val subject = parseDamage(spec)
 
         // then
         assertNotNull(subject)
         assertEquals(RollSpec(2, 6, 1), subject?.rollSpec)
         assertEquals(DamageType.cru, subject?.damageType)
-        assertEquals(0, subject?.damageResistance)
         assertEquals("2d6+1 cru", subject?.canonical)
     }
 
@@ -41,13 +42,12 @@ class DamageSpecTest {
         val spec = "2d6+1 pi++"
 
         // when
-        val subject = DamageSpec.fromString(spec)
+        val subject = parseDamage(spec)
 
         // then
         assertNotNull(subject)
         assertEquals(RollSpec(2, 6, 1), subject?.rollSpec)
         assertEquals(DamageType.pi_plus_plus, subject?.damageType)
-        assertEquals(0, subject?.damageResistance)
         assertEquals("2d6+1 pi++", subject?.canonical)
     }
 
@@ -57,13 +57,14 @@ class DamageSpecTest {
         val spec = "2d6+1 pi++ vs DR 2"
 
         // when
-        val subject = DamageSpec.fromString(spec)
+        val subject = parseDamage(spec)
+        val dr = parseDr(spec)
 
         // then
         assertNotNull(subject)
         assertEquals(RollSpec(2, 6, 1), subject?.rollSpec)
         assertEquals(DamageType.pi_plus_plus, subject?.damageType)
-        assertEquals(2, subject?.damageResistance)
+        assertEquals(2, dr)
         assertEquals("2d6+1 pi++", subject?.canonical)
     }
 

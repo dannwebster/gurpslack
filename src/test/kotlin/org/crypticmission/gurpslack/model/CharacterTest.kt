@@ -16,25 +16,25 @@ class CharacterTest {
         subject.addAttribute(Attribute("IQ", 12))
         subject.addAttribute(Attribute("HT", 13))
 
-        subject.addDamage("punch", RollSpec.DEFAULT.toDamage(DamageType.cru))
-        subject.addDamage("sword slash", RollSpec.DEFAULT.toDamage(DamageType.cut))
-        subject.addDamage("sword stab", RollSpec.DEFAULT.toDamage(DamageType.imp))
+        subject.addAttack(Attack("punch", RollSpec.DEFAULT.toDamage(DamageType.cru)))
+        subject.addAttack(Attack("sword slash", RollSpec.DEFAULT.toDamage(DamageType.cut)))
+        subject.addAttack(Attack("sword stab", RollSpec.DEFAULT.toDamage(DamageType.imp)))
 
         val expected =
-"""Character Name: Foo Bar
-Attributes:
+"""*Character Name: Foo Bar*
+_*Attributes:*_
     ST: 10
     DX: 14
     IQ: 12
     HT: 13
-Damage Rolls:
+_*Attacks*_:
     punch: 3d6 cru
     sword slash: 3d6 cut
     sword stab: 3d6 imp
 """
 
         // when
-        val message = subject.message()
+        val message = subject.toString()
 
         // then
         assertEquals(expected, message)
@@ -49,7 +49,8 @@ Damage Rolls:
         val outcome = subject.rollVsAttribute("FOO", -3)
 
         // then
-        assertEquals("CRITICAL FAILURE: A roll of 18 vs FOO-3 (7) was a critical failure with a margin of failure of 11", outcome.message)
+        assertEquals("character-name rolled vs. FOO:\n" +
+                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs FOO-3 (7) was a critical failure with a margin of failure of 11", outcome.toString())
 
     }
 
@@ -62,7 +63,8 @@ Damage Rolls:
         val outcome = subject.rollVsAttribute("BAR", -3)
 
         // then
-        assertEquals("CRITICAL FAILURE: A roll of 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6", outcome.message)
+        assertEquals("character-name rolled vs. BAR:\n" +
+                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6", outcome.toString())
     }
 
     @Test fun shouldRollVsDefaultWhenRollingMissingDamage() {
@@ -70,10 +72,14 @@ Damage Rolls:
         val subject = Character("character-name", Randomizer.MAX)
 
         // when
-        val damageOutcome = subject.rollDamage("damageSpec-name")
+        val attackOutcome = subject.rollAttackDamage("attack-name")
 
         // then
-        assertEquals("Dealt *6* crushing damage after DR: damageSpec-name causes 1d6 cru vs DR 0. Rolled 1d6 = 6. [(6 impact damage - DR 0) * 1.0 for crushing]", damageOutcome.message)
+        assertEquals("character-name rolled damage for attack-name:\n" +
+                "Dealt *6* crushing damage after DR:\n" +
+                "This attack causes 1d6 cru vs DR 0.\n" +
+                "Rolled 1d6 => :d6-6: => 6.\n" +
+                "`[(6 impact damage - DR 0) * 1.0 for crushing]`", attackOutcome.toString())
 
     }
 }

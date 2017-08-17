@@ -1,5 +1,7 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.repositories.Randomizer
+
 /**
  */
 enum class DamageType(val longForm: String, val shortForm: String, val multiplier: Double) {
@@ -26,17 +28,33 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
     }
 }
 
-data class DamageRollOutcome(val damageSpec: DamageSpec, val rollOutcome: RollOutcome, val attackName: String = "attack") {
-    val impactDamage =  Math.max(rollOutcome.total - damageSpec.damageResistance, 0)
+fun String.dmgType() = DamageType.fromLongForm(this) ?: DamageType.fromShortForm(this) ?: DamageType.cru
+
+fun firstValue(regex: Regex, text: String) : String? {
+    val m = regex.find(text)
+    m ?: return null
+    val g = m.groups[0]
+    g ?: return null
+    return text.substring(g.range)
+}
+
+data class Attack(val attackName: String, val damageSpec: DamageSpec) {
+    fun rollVsDr(damageResistance: Int, rand: Randomizer) =
+            AttackRollOutcome(attackName, damageSpec.rollVsDr(damageResistance, rand))
+}
+
+data class DamageSpec(val rollSpec: RollSpec, val damageType: DamageType = DamageType.cru) {
+    val canonical = "${rollSpec.canonical} ${damageType.shortForm}"
+    fun rollVsDr(damageResistance: Int, rand: Randomizer): DamageRollOutcome =
+            DamageRollOutcome(this, rollSpec.roll(rand), damageResistance)
+
+}
+data class AttackRollOutcome(val attackName: String, val damageRollOutcome: DamageRollOutcome)
+
+data class DamageRollOutcome(val damageSpec: DamageSpec,
+                             val rollOutcome: RollOutcome, val damageResistance: Int) {
+    val impactDamage =  Math.max(rollOutcome.total - damageResistance, 0)
     val totalDamage = Math.floor(impactDamage * damageSpec.damageType.multiplier).toInt()
 
-    val message =
-            "Dealt *${totalDamage}* ${damageSpec.damageType.longForm} damage after DR: ${attackName} causes " +
-            "${damageSpec.rollSpec.canonical} ${damageSpec.damageType.shortForm} vs DR ${damageSpec.damageResistance}. " +
-            "Rolled ${damageSpec.rollSpec.canonical} = ${rollOutcome.total}. " +
-            "[(${rollOutcome.total} impact damage - DR ${damageSpec.damageResistance}) * ${damageSpec.damageType.multiplier} " +
-                    "for ${damageSpec.damageType.longForm}]"
-
-    val messageWithEmoji = "${rollOutcome.emoji()} => ${message}"
-    override fun toString() = message
+    override fun toString() = message(this)
 }
