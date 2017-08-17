@@ -28,5 +28,5 @@ class CharacterRepository() {
 
     fun get(abbrev: String) = charactersByAbbrev[key(abbrev)]
     fun remove(abbrev: String) = charactersByAbbrev.remove(key(abbrev))
-    fun list() = charactersByAbbrev.values
+    fun list() = charactersByAbbrev.toList()
 }

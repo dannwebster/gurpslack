@@ -8,16 +8,22 @@ import org.springframework.beans.factory.annotation.Value
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
-//val NPC_REGEX = """\s*((\w+)\s+)(\w+)\s*""".toRegex()
-fun parseName(nameLine: String) : Pair<String, String> {
+fun parseName(nameLine: String) : Pair<String, String>? {
     val parts = nameLine.split("""\s+""".toRegex())
-    val abbrev = parts.first()
-    val nameParts = parts.drop(1)
-    val name = when (nameParts.isEmpty()) {
-        true -> abbrev
-        false -> nameParts.joinToString(" ")
+    return when (parts.size) {
+        0 -> null
+        1 -> Pair(parts[0], parts[0])
+        else -> Pair(parts[0], parts.drop(1).joinToString (" "))
     }
-    return Pair(abbrev, name)
+}
+
+fun parseAttribute(attributeLine: String) : Triple<String, String, Int>? {
+    val parts = attributeLine.split("""[\s:]+""".toRegex())
+    return when (parts.size) {
+        2 -> Triple(parts[0], parts[1], 10)
+        3 -> Triple(parts[0], parts[1], parts[3].toInt())
+        else -> null
+    }
 }
 
 @RestController
@@ -55,15 +61,16 @@ class CharacterController(val npcRepository: CharacterRepository) {
 
     @PostMapping("/npcs", "/listnpcs")
     fun listNpcs(slashData: SlashData): RichMessage {
-        val message = RichMessage(npcRepository.list().joinToString("\n") { it.characterName })
+        val message = RichMessage(npcRepository
+                .list()
+                .joinToString("\n") { (key, character) -> "${key} => ${character.characterName}" })
         return message.encodedMessage()
     }
 
     @PostMapping(value = "/addnpc")
     fun addNpc(slashData: SlashData): RichMessage {
-
-        val (characterAbbrev, characterName) = parseName(slashData.text)
-
+        val (characterAbbrev, characterName) = parseName(slashData.text) ?:
+            return RichMessage("Can't add character from data '${slashData.text}'")
         val message =  when (npcRepository.add(characterAbbrev, characterName)) {
             true -> RichMessage("Created Character ${characterName} with abbreviation ${characterAbbrev}")
             false -> RichMessage("Character with abbreviation ${characterAbbrev} already exists")
@@ -73,17 +80,17 @@ class CharacterController(val npcRepository: CharacterRepository) {
 
     @PostMapping(value = "/addattr")
     fun attr(slashData: SlashData): RichMessage {
-        val data = slashData.text.split("""\s+""")
-        val characterAbbrev = data[0]
-        val attributeName = data[1]
-        val value = data[2].toInt()
-        val character = npcRepository.get(characterAbbrev)
-        if (character != null) {
-            val attribute = Attribute(attributeName, value)
-            character.addAttribute(attribute)
-            return RichMessage("Created Attribute ${attribute} for character ${character.characterName}")
-        } else {
-            return RichMessage("No character with abbreviation ${characterAbbrev}")
+        val attributeData = parseAttribute(slashData.text) ?:
+                return RichMessage("Can't add attribute from data '${slashData.text}'")
+        val key = attributeData.first
+        val character = npcRepository.get(key)
+        return when (character) {
+            null -> RichMessage("No character with abbreviation ${key}")
+            else -> {
+                val attribute = Attribute(attributeData.second, attributeData.third)
+                character.addAttribute(attribute)
+                return RichMessage("Created Attribute ${attribute} for character ${character.characterName}")
+            }
         }
     }
 }
