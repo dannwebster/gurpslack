@@ -11,11 +11,12 @@ class EventData() {
  */
 class EventsController {
     @PostMapping("/events")
-    fun gmRollSkill(eventData: EventData)  {
+    fun gmRollSkill(eventData: EventData) : EventData {
         with (eventData) {
             println("token: ${token} ")
             println("challenge: ${challenge} ")
             println("type: ${type} ")
         }
+        return eventData
     }
 }
