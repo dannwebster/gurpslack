@@ -14,9 +14,9 @@
     
     
 ## Characters
-* Make adding a character work
-* Make character rolls work
-* Add regex to handle multi-word character names
+* Make adding a characterRoller work
+* Make characterRoller rolls work
+* Add regex to handle multi-word characterRoller names
 * Parse GCS sheet on upload
     
 ## -Ilities

@@ -1,11 +1,10 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.model.Character
+import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.model.CharacterAttributeRollOutcome
 import org.crypticmission.gurpslack.model.richMessage
 import org.crypticmission.gurpslack.repositories.CharacterRepository
-import org.crypticmission.gurpslack.repositories.ComponentRandomizer
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -24,7 +23,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
     @Value("\${slashCommandToken}")
     lateinit var slackToken: String
 
-    @PostMapping("/gm-skill", "/gm-rollskill")
+    @PostMapping("/gmskill", "/gmrollskill")
     fun gmRollSkill(slashData: SlashData) =
             rollVs("skill", slashData, false) { character, name, mod -> character.rollVsSkill(name, mod)}
 
@@ -32,7 +31,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
     fun rollSkill(slashData: SlashData) =
             rollVs("skill", slashData, true) { character, name, mod -> character.rollVsSkill(name, mod)}
 
-    @PostMapping("/gm-attr", "/gm-rollattr")
+    @PostMapping("/gmattr", "/gmrollattr")
     fun gmRollAttr(slashData: SlashData, inChannel: Boolean = false) =
             rollVs("attribute", slashData, inChannel) { character, name, mod -> character.rollVsAttribute(name, mod)}
 
@@ -40,7 +39,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
     fun rollAttr(slashData: SlashData) =
             rollVs("attribute", slashData, true) { character, name, mod -> character.rollVsAttribute(name, mod)}
 
-    @PostMapping("/gm-attack", "/gm-rollattack")
+    @PostMapping("/gmattack", "/gmrollattack")
     fun gmRollAttack(slashData: SlashData) = doRollAttack(slashData, false)
 
     @PostMapping("/attack", "/rollattack")
@@ -55,12 +54,18 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
         val character = npcRepository.get(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}").inChannel(false).encodedMessage()
-            else -> richMessage(character.rollAttackDamage(attackName, dr)).inChannel(inChannel).encodedMessage()
+            else -> {
+                val outcome = character.rollAttackDamage(attackName, dr)
+                when (outcome) {
+                    null -> RichMessage("Cannot find attack ${attackName} for '${character.characterName}'")
+                    else -> richMessage(outcome).inChannel(inChannel).encodedMessage()
+                }
+            }
         }
     }
 
     fun rollVs(type: String, slashData: SlashData, inChannel: Boolean,
-               doRoll: (character: Character, name: String, modifier: Int) -> CharacterAttributeRollOutcome) : RichMessage {
+               doRoll: (characterRoller: CharacterRoller, name: String, modifier: Int) -> CharacterAttributeRollOutcome?) : RichMessage {
         val vsData = parseVsData(slashData.text)
         return when (vsData) {
             null -> RichMessage("Could not roll vs a ${type} from data '${slashData.text}'").inChannel(false).encodedMessage()
@@ -69,7 +74,13 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
                 val character = npcRepository.get(characterKey)
                 when (character) {
                     null -> RichMessage("No character with abbreviation ${characterKey}")
-                    else -> richMessage(doRoll(character, attributeName, modifier))
+                    else -> {
+                        val outcome = doRoll(character, attributeName, modifier)
+                        when (outcome) {
+                            null -> RichMessage("Cannot find attack ${attributeName} for '${character.characterName}'")
+                            else -> richMessage(outcome)
+                        }
+                    }
                 }.inChannel(inChannel).encodedMessage()
             }
         }

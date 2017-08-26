@@ -24,29 +24,14 @@ fun message(modifiedAttribute: ModifiedAttribute) = with (modifiedAttribute) {
 }
 
 fun message(attributeRollOutcome: AttributeRollOutcome) = with (attributeRollOutcome)  {
-        "${(isCriticalString+isSuccessString).toUpperCase()}: " +
-                "A roll of ${rollOutcome.emoji()} => ${rollOutcome.total} vs " +
-                "${message(modifiedAttribute)} " +
-                "was a ${isCriticalString}${isSuccessString} " +
-                "with a margin of ${isSuccessString} of ${margin}\n"
+    "${(isCriticalString+isSuccessString).toUpperCase()}: " +
+            "A roll of ${rollOutcome.emoji()} => ${rollOutcome.total} vs " +
+            "${message(modifiedAttribute)} " +
+            "was a ${isCriticalString}${isSuccessString} " +
+            "with a margin of ${isSuccessString} of ${margin}\n"
 }
 
-fun message(character: Character) = with (character) {
-    "*Character Name: ${characterName}*\n" +
-            "_*Attributes:*_\n" +
-            attributes.values
-                    .map { "    " + it.toString() }
-                    .joinToString("\n", postfix = "\n") +
-            "_*Skills:*_\n" +
-            skills.values
-                    .map { "    " + it.toString() }
-                    .joinToString("\n", postfix = "\n") +
-            "_*Attacks*_:\n" +
-            attacks.values
-                    .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}"  }
-                    .sorted()
-                    .joinToString("\n", postfix = "\n")
-}
+
 
 fun message(attackRollOutcome: AttackRollOutcome) = with (attackRollOutcome) {
    "'*${attackName}*' ${message(damageRollOutcome)}"
@@ -76,7 +61,6 @@ fun message(characterAttributeRollOutcome: CharacterAttributeRollOutcome) = with
 
 fun doRichMessage(s: String) = RichMessage(s)
 
-fun richMessage(character: Character) = doRichMessage(message(character))
 fun richMessage(outcome: RollOutcome) = doRichMessage(message(outcome))
 fun richMessage(outcome: DamageRollOutcome) = doRichMessage(message(outcome))
 fun richMessage(outcome: AttackRollOutcome) = doRichMessage(message(outcome))

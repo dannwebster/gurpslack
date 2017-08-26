@@ -34,8 +34,7 @@ fun firstValue(regex: Regex, text: String) : String? {
 fun parseName(nameLine: String) : Pair<String, String>? {
     val parts = nameLine.tokenize()
     return when (parts.size) {
-        0 -> null
-        1 -> Pair(parts[0], parts[0])
+        in 0..1 -> null
         else -> Pair(parts[0], parts.drop(1).joinToString (" "))
     }
 }
@@ -43,8 +42,7 @@ fun parseName(nameLine: String) : Pair<String, String>? {
 fun parseAttribute(attributeLine: String) : Pair<String, Attribute>? {
     val parts = attributeLine.tokenize()
     return when (parts.size) {
-        in 0..1 -> null
-        2 -> Pair(parts.first(), Attribute(parts.last(), 10))
+        in 0..2 -> null
         else -> Pair(parts.first(), Attribute(parts.drop(1).dropLast(1).joinToString(" "), parts.last().toInt()))
     }
 }

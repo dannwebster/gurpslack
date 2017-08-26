@@ -24,13 +24,13 @@ class RollController(val randomizer: Randomizer) {
     @Value("\${slashCommandToken}")
     lateinit var slackToken: String
 
-    @PostMapping("/gm-roll", "/gm")
+    @PostMapping("/gmroll", "/gm")
     fun gmRoll(slashData: SlashData) = doRoll(slashData, false)
 
     @PostMapping(value = "/roll")
     fun roll(slashData: SlashData)  = doRoll(slashData, true)
 
-    @PostMapping("/gm-dmg", "/gm-damage")
+    @PostMapping("/gmdmg", "/gmdamage")
     fun gmRollDmg(slashData: SlashData) = doRollDmg(slashData, false)
 
     @PostMapping("/dmg", "/damage")

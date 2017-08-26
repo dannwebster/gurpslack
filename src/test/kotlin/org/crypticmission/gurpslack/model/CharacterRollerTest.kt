@@ -6,10 +6,10 @@ import org.junit.Test
 
 /**
  */
-class CharacterTest {
+class CharacterRollerTest {
     @Test fun shouldCreatProperMessageWhenMessageCalled() {
         // given
-        val subject = Character("Foo Bar", Randomizer.MAX)
+        val subject = CharacterRoller(Randomizer.MAX, "Foo Bar")
 
         subject.addAttribute(Attribute("ST", 10))
         subject.addAttribute(Attribute("DX", 14))
@@ -39,29 +39,28 @@ _*Attacks*_:
 """
 
         // when
-        val message = subject.toString()
+        val message = richMessage(subject).text
 
         // then
         assertEquals(expected, message)
 
     }
 
-    @Test fun shouldRollDefaultWhenRollingMissingAttribute() {
+    @Test fun shouldReturnNullWhenRollingMissingAttribute() {
         // given
-        val subject = Character("character-name", Randomizer.MAX)
+        val subject = CharacterRoller(Randomizer.MAX, "character-name")
 
         // when
         val outcome = subject.rollVsAttribute("FOO", -3)
 
         // then
-        assertEquals("character-name rolled vs. FOO:\n" +
-                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs FOO-3 (7) was a critical failure with a margin of failure of 11\n", outcome.toString())
+        assertNull(outcome)
 
     }
 
     @Test fun shouldRollVsAttributeWhenAttributeIsAvailable() {
         // given
-        val subject = Character("character-name", Randomizer.MAX)
+        val subject = CharacterRoller(Randomizer.MAX, "character-name")
         subject.addAttribute(Attribute("BAR", 15))
 
         // when
@@ -72,19 +71,15 @@ _*Attacks*_:
                 "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6\n", outcome.toString())
     }
 
-    @Test fun shouldRollVsDefaultWhenRollingMissingDamage() {
+    @Test fun shouldReturnNullWhenRollingMissingDamage() {
         // given
-        val subject = Character("character-name", Randomizer.MAX)
+        val subject = CharacterRoller(Randomizer.MAX, "character-name")
 
         // when
         val attackOutcome = subject.rollAttackDamage("attack-name", 0)
 
         // then
-        assertEquals("character-name rolled damage for attack-name:\n" +
-                "Dealt *6* crushing damage after DR:\n" +
-                "This attack causes 1d6 cru vs DR 0.\n" +
-                "Rolled 1d6 => :d6-6: => 6.\n" +
-                "`6 = [(6 impact damage - DR 0) * 1.0 for crushing]`\n", attackOutcome.toString())
+        assertNull(attackOutcome)
 
     }
 }

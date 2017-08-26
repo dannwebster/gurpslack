@@ -6,8 +6,8 @@ import org.junit.Assert.*
 
 /**
  */
-class CharacterControllerTest {
-    @Test fun shouldGivePairWhenTextIsOneWord() {
+class CharacterRollerControllerTest {
+    @Test fun shouldGiveNullWhenTextIsOneWord() {
         // given
         val text = "ab"
 
@@ -15,7 +15,7 @@ class CharacterControllerTest {
         val pair = parseName(text)
 
         // then
-        assertEquals(Pair("ab", "ab"), pair)
+        assertNull(pair)
     }
 
     @Test fun shouldCreateNameAndAbbveWhenTextIsTwoWords() {
