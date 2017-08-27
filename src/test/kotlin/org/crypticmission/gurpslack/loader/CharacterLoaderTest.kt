@@ -6,7 +6,21 @@ import org.junit.Test
 /**
  */
 class CharacterLoaderTest {
-    @Test fun shouldParseCharacterWhenLoadedFromFile() {
+    @Test fun shouldParseNoraWhenLoadedFromFile() {
+        // given
+        val reader = this::class.java.getResourceAsStream("/NoraBlackburn.gcs").bufferedReader()
+        val subject = CharacterLoader()
+
+        // when
+        val character = subject.load(reader) ?: throw IllegalArgumentException()
+
+        // then
+        assertNotNull(character)
+        assertEquals("Nora Blackburn", character.name)
+        assertEquals("Tinsley Webster", character.playerName)
+    }
+
+    @Test fun shouldParseRcWhenLoadedFromFile() {
         // given
         val reader = this::class.java.getResourceAsStream("/rc-cleveland.gcs").bufferedReader()
         val subject = CharacterLoader()

@@ -11,7 +11,7 @@ data class Action(val name: String, val text: String, val type: String, val valu
 class ActionAttachment(val actions: List<Action>) : Attachment()
 
 
-fun richMessage(characterRoller: CharacterRoller): RichMessage {
+fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
     with (characterRoller){
         val msg = "*Character Name: ${characterName}*\n" +
                 "_*Attributes:*_\n" +
@@ -28,9 +28,9 @@ fun richMessage(characterRoller: CharacterRoller): RichMessage {
                         .sorted()
                         .joinToString("\n", postfix = "\n")
 
-        val attributeAttachment = attributeAttachment(characterRoller.attributes.values)
+        val attributeAttachment = attributeAttachment(key, characterRoller.attributes.values)
 
-        val skillAttachment = skillAttachment(characterRoller.skills.values)
+        val skillAttachment = skillAttachment(key, characterRoller.skills.values)
 
         val richMessage = RichMessage(msg)
         richMessage.attachments = arrayOf(
@@ -41,15 +41,15 @@ fun richMessage(characterRoller: CharacterRoller): RichMessage {
     }
 }
 
-private fun skillAttachment(skills: Collection<Attribute>): ActionAttachment {
-    val skillButtons = skills.map { Action("skill", "${it.name}: ${it.level}", "button", "${it.name}") }
+private fun skillAttachment(key: String, skills: Collection<Attribute>): ActionAttachment {
+    val skillButtons = skills.map { Action("skill", "${it.name}: ${it.level}", "button", "${key}@${it.name}") }
     val skillAttachment = ActionAttachment(skillButtons)
     skillAttachment.text = "_*Skills:*_"
     return skillAttachment
 }
 
-private fun attributeAttachment(attributes: Collection<Attribute>): ActionAttachment {
-    val attributeButtons = attributes.map { Action("attribute", "${it.name}: ${it.level}", "button", "${it.name}") }
+private fun attributeAttachment(key: String, attributes: Collection<Attribute>): ActionAttachment {
+    val attributeButtons = attributes.map { Action("attribute", "${it.name}: ${it.level}", "button", "${key}@${it.name}") }
     val attributeAttachment = ActionAttachment(attributeButtons)
     attributeAttachment.text = "_*Attributes:*_"
     return attributeAttachment

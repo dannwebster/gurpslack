@@ -75,7 +75,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
                     else -> {
                         val outcome = doRoll(character, attributeName, modifier)
                         when (outcome) {
-                            null -> RichMessage("Cannot find attack ${attributeName} for '${character.characterName}'")
+                            null -> RichMessage("Cannot find ${type} ${attributeName} for '${character.characterName}'")
                             else -> richMessage(outcome)
                         }
                     }
