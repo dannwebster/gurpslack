@@ -16,7 +16,7 @@ class Action() {
 class ButtonData() {
     lateinit var actions: List<Action>
     lateinit var callback_id: String
-
+    lateinit var response_url: String
 }
 /**
  * {
@@ -48,6 +48,11 @@ class ButtonData() {
 "response_url": "https://hooks.slack.com/actions/T47563693/6204672533/x7ZLaiVMoECAW50Gw1ZYAXEM"
 }
  */
+class CallbackMessage(text: String, val calllback_id: String) : RichMessage(text) {
+}
+
+fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, calllback_id)
+
 @RestController
 class ButtonController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(ButtonController::class.java)
@@ -65,7 +70,10 @@ class ButtonController(val characterRepository: CharacterRepository) {
             else -> null
         } ?: RichMessage("unable to find action when " + message)
         logger.info("outcome ${richMessage}")
-        return richMessage.inChannel(true).encodedMessage()
+        return richMessage
+                .withCallback(buttonData.callback_id)
+                .inChannel(true)
+                .encodedMessage()
     }
 
     fun skill(key: String, name: String) = characterRepository.get(key)?.rollVsSkill(name, 0)?.let { richMessage(it)}

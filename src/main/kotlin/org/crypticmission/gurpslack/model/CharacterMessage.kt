@@ -8,7 +8,7 @@ import me.ramswaroop.jbot.core.slack.models.RichMessage
 
 data class Action(val name: String, val text: String, val type: String, val value: String)
 
-class ActionAttachment(val actions: List<Action>) : Attachment()
+class ActionAttachment(val actions: List<Action>, val mrkdwn_in: List<String> = listOf("text", "pretext")) : Attachment()
 
 
 fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
