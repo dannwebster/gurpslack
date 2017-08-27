@@ -61,8 +61,8 @@ class ButtonController(val characterRepository: CharacterRepository) {
     fun handleButtons(buttonData: ButtonData) : RichMessage{
         val action = buttonData.actions.first()
         val message = "Pressed button ${action.name} and got value ${action.value} "
+        logger.error(message)
         val (key, name) = action.value.split("@")
-        logger.info(message)
         val richMessage : RichMessage = when (action.name) {
             "skill" -> skill(key, name)
             "attack" -> attack(key, name)
