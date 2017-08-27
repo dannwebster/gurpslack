@@ -8,7 +8,7 @@ import me.ramswaroop.jbot.core.slack.models.RichMessage
 
 data class Action(val name: String, val text: String, val type: String, val value: String)
 
-class ActionAttachment(val actions: List<Action>, val mrkdwn_in: List<String> = listOf("text", "pretext")) : Attachment()
+class ActionAttachment(val actions: List<Action>, val callback_id: String, val mrkdwn_in: List<String> = listOf("text", "pretext")) : Attachment()
 
 
 fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
@@ -43,14 +43,14 @@ fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
 
 private fun skillAttachment(key: String, skills: Collection<Attribute>): ActionAttachment {
     val skillButtons = skills.map { Action("skill", "${it.name}: ${it.level}", "button", "${key}@${it.name}") }
-    val skillAttachment = ActionAttachment(skillButtons)
+    val skillAttachment = ActionAttachment(skillButtons, "${key}-skills")
     skillAttachment.text = "_*Skills:*_"
     return skillAttachment
 }
 
 private fun attributeAttachment(key: String, attributes: Collection<Attribute>): ActionAttachment {
     val attributeButtons = attributes.map { Action("attribute", "${it.name}: ${it.level}", "button", "${key}@${it.name}") }
-    val attributeAttachment = ActionAttachment(attributeButtons)
+    val attributeAttachment = ActionAttachment(attributeButtons, "${key}-attributes")
     attributeAttachment.text = "_*Attributes:*_"
     return attributeAttachment
 }
