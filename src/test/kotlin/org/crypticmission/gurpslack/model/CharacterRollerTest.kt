@@ -39,7 +39,7 @@ _*Attacks*_:
 """
 
         // when
-        val message = richMessage(subject).text
+        val message = richMessage("key", subject).text
 
         // then
         assertEquals(expected, message)
