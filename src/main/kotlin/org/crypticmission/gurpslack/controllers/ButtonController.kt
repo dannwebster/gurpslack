@@ -1,6 +1,8 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.crypticmission.gurpslack.model.RollOutcome
+import org.crypticmission.gurpslack.model.richMessage
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
@@ -53,15 +55,20 @@ class ButtonController(val characterRepository: CharacterRepository) {
     @PostMapping("/buttons")
     fun handleButtons(buttonData: ButtonData) : RichMessage{
         val action = buttonData.actions.first()
-        val message = "Pressed button ${action.name} and got value ${action.value} " +
-        when (action.name) {
-            "skill" -> "Skill"
-            "attack" -> "Attack"
-            "attribute" -> "Attribute"
-            else -> "Unknown"
-        }
+        val message = "Pressed button ${action.name} and got value ${action.value} "
+        val (key, name) = action.value.split("@")
         logger.info(message)
-        return RichMessage(message).inChannel(true).encodedMessage()
-
+        val richMessage : RichMessage = when (action.name) {
+            "skill" -> skill(key, name)
+            "attack" -> attack(key, name)
+            "attribute" -> attribute(key, name)
+            else -> null
+        } ?: RichMessage("unable to find action when " + message)
+        logger.info("outcome ${richMessage}")
+        return richMessage.inChannel(true).encodedMessage()
     }
+
+    fun skill(key: String, name: String) = characterRepository.get(key)?.rollVsSkill(name, 0)?.let { richMessage(it)}
+    fun attack(key: String, name: String) = characterRepository.get(key)?.rollAttackDamage(name, 0)?.let { richMessage(it)}
+    fun attribute(key: String, name: String) = characterRepository.get(key)?.rollVsAttribute(name, 0)?.let { richMessage(it)}
 }
