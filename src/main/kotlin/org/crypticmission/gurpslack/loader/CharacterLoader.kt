@@ -9,6 +9,7 @@ import org.jonnyzzz.kotlin.xml.bind.XSub
 import org.jonnyzzz.kotlin.xml.bind.XText
 import org.jonnyzzz.kotlin.xml.bind.jdom.JDOM
 import org.jonnyzzz.kotlin.xml.bind.jdom.JXML
+import org.springframework.stereotype.Component
 import java.io.Reader
 
 /**
@@ -111,12 +112,16 @@ class CharacterData {
                 ?.toMap()
                 ?: throw IllegalStateException("trouble mapping skills")
     }
+
+
+    fun toRoller(randomizer: Randomizer) = toRoller(randomizer, this)
 }
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
         CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills)
-    }
+}
 
+@Component
 class CharacterLoader {
     fun load(reader: Reader) : CharacterData? {
         val doc = SAXBuilder().build(reader)

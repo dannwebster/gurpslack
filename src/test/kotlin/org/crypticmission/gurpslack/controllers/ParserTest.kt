@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.controllers
 
+import org.crypticmission.gurpslack.model.parseVsData
 import org.junit.Test
 import org.junit.Assert.*
 

@@ -1,6 +1,4 @@
-package org.crypticmission.gurpslack.controllers
-
-import org.crypticmission.gurpslack.model.*
+package org.crypticmission.gurpslack.model
 
 /**
  */

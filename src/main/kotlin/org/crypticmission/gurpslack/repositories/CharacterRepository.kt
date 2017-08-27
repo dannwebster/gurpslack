@@ -25,6 +25,11 @@ class CharacterRepository() {
         }
     }
 
+    fun put(abbrev: String, character: CharacterRoller) {
+        val key = abbrev.toKey()
+        charactersByAbbrev[key] = character
+    }
+
     fun get(abbrev: String) = charactersByAbbrev[abbrev.toKey()]
     fun remove(abbrev: String) = charactersByAbbrev.remove(abbrev.toKey())
     fun list() = charactersByAbbrev.toList()

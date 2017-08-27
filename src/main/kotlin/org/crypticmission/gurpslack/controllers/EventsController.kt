@@ -1,6 +1,7 @@
 package org.crypticmission.gurpslack.controllers
 
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RestController
 
 class EventData() {
     lateinit var token: String
@@ -9,6 +10,7 @@ class EventData() {
 }
 /**
  */
+@RestController
 class EventsController {
     @PostMapping("/events")
     fun gmRollSkill(eventData: EventData) : EventData {

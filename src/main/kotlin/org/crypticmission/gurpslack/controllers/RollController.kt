@@ -2,7 +2,6 @@ package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.model.*
-import org.crypticmission.gurpslack.repositories.ComponentRandomizer
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value

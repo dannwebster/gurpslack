@@ -1,6 +1,5 @@
 package org.crypticmission.gurpslack.model
 
-import org.crypticmission.gurpslack.controllers.parseRollSpec
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Test
 import org.junit.Assert.*

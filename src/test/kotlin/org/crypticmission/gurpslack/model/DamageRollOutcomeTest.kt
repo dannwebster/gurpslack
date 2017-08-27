@@ -1,7 +1,5 @@
 package org.crypticmission.gurpslack.model
 
-import org.crypticmission.gurpslack.controllers.parseDamage
-import org.crypticmission.gurpslack.controllers.parseDr
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Test
 import org.junit.Assert.*
