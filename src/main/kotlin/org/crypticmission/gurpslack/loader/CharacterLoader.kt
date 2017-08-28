@@ -5,6 +5,7 @@ import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.jdom2.input.SAXBuilder
 import org.jonnyzzz.kotlin.xml.bind.XAnyElements
+import org.jonnyzzz.kotlin.xml.bind.XElements
 import org.jonnyzzz.kotlin.xml.bind.XSub
 import org.jonnyzzz.kotlin.xml.bind.XText
 import org.jonnyzzz.kotlin.xml.bind.jdom.JDOM
@@ -78,7 +79,7 @@ class SkillData {
 class CharacterData {
     val name by JXML / "profile" / "name" / XText
     val playerName by JXML / "profile" / "player_name" / XText
-    val skillData by JXML / "skill_list" / XAnyElements / XSub(SkillData::class.java)
+    val skillData by JXML / "skill_list" / XElements("skill") / XSub(SkillData::class.java)
 
     val stS by JXML / "ST" / XText
     val dxS by JXML / "DX" / XText
