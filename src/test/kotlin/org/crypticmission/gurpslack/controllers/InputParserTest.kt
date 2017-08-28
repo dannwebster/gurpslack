@@ -7,7 +7,7 @@ import org.junit.Assert.*
 
 /**
  */
-class CharacterRollerControllerTest {
+class InputParserTest {
     @Test fun shouldGiveNullWhenTextIsOneWord() {
         // given
         val text = "ab"
@@ -40,6 +40,16 @@ class CharacterRollerControllerTest {
 
         // then
         assertEquals(Pair("ww", "Warren E. Worthington, III"), pair)
+
+    }
+
+    @Test
+    fun shouldAddCharacterWhenPosted() {
+        // given
+        
+        // when
+
+        // then
 
     }
 

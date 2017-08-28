@@ -16,9 +16,9 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       skills: Map<String, Attribute> = emptyMap(),
                       attacks: Map<String, Attack> = emptyMap()) {
 
-    val attributes = HashMap<String, Attribute>(attributes)
-    val skills = HashMap<String, Attribute>(skills)
-    val attacks = HashMap<String, Attack>(attacks)
+    val attributes = HashMap<String, Attribute>(attributes.mapKeys { (k, _) -> k.toKey() })
+    val skills = HashMap<String, Attribute>(skills.mapKeys { (k, _) -> k.toKey() })
+    val attacks = HashMap<String, Attack>(attacks.mapKeys { (k, _) -> k.toKey() })
 
     fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome? {
         val skill = getSkill(name)

@@ -1,11 +1,11 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.model.RollOutcome
-import org.crypticmission.gurpslack.model.richMessage
+import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.web.bind.annotation.PostMapping
+import org.springframework.web.bind.annotation.RequestBody
 import org.springframework.web.bind.annotation.RestController
 
 class Action() {
@@ -13,10 +13,12 @@ class Action() {
     lateinit var value: String
     lateinit var type: String
 }
+
 class ButtonData() {
-    lateinit var actions: List<Action>
-    lateinit var callback_id: String
-    lateinit var response_url: String
+    lateinit var token: String
+    lateinit var actions: Array<Action>
+    lateinit var callbackId: String
+    lateinit var responseUrl: String
 }
 /**
  * {
@@ -57,26 +59,55 @@ fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, 
 class ButtonController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(ButtonController::class.java)
 
-    @PostMapping("/buttons")
-    fun handleButtons(buttonData: ButtonData) : RichMessage{
+    @PostMapping(path = arrayOf("/buttons"), consumes = arrayOf("application/json"))
+    fun handleButtons(@RequestBody buttonData: ButtonData) : RichMessage{
         val action = buttonData.actions.first()
         val message = "Pressed button ${action.name} and got value ${action.value} "
-        logger.error(message)
-        val (key, name) = action.value.split("@")
+        logger.info(message)
+        val (characterKey, traitName, modifierString) = action.value.split("@")
+        val modifier = modifierString.toIntOrNull() ?: 0
+        logger.info("looking up ${action.name} ${traitName}${modifier.toSignedString()} for character ${characterKey}")
         val richMessage : RichMessage = when (action.name) {
-            "skill" -> skill(key, name)
-            "attack" -> attack(key, name)
-            "attribute" -> attribute(key, name)
+            "skill" -> skill(characterKey.toKey(), traitName.toKey(), modifier)
+            "attack" -> attack(characterKey.toKey(), traitName.toKey(), modifier)
+            "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifier)
             else -> null
-        } ?: RichMessage("unable to find action when " + message)
-        logger.info("outcome ${richMessage}")
+        } ?: RichMessage("unable to find action when ${message}")
+
+        logger.info("outcome ${richMessage.text}")
         return richMessage
-                .withCallback(buttonData.callback_id)
+                .withCallback(buttonData.callbackId)
                 .inChannel(true)
                 .encodedMessage()
     }
 
-    fun skill(key: String, name: String) = characterRepository.get(key)?.rollVsSkill(name, 0)?.let { richMessage(it)}
-    fun attack(key: String, name: String) = characterRepository.get(key)?.rollAttackDamage(name, 0)?.let { richMessage(it)}
-    fun attribute(key: String, name: String) = characterRepository.get(key)?.rollVsAttribute(name, 0)?.let { richMessage(it)}
+    fun skill(key: String, traitName: String, modifier: Int) = roll(
+            "skill",
+            { cr:CharacterRoller -> cr.rollVsSkill(traitName, modifier)?.let{ richMessage(it) }},
+            key,
+            traitName)
+
+    fun attribute(key: String, traitName: String, modifier: Int) = roll(
+            "attribute",
+            { cr:CharacterRoller -> cr.rollVsAttribute(traitName, modifier)?.let{ richMessage(it) }},
+            key,
+            traitName)
+
+    fun attack(key: String, traitName: String, damageResistance: Int) = roll(
+            "attack",
+            { cr:CharacterRoller -> cr.rollAttackDamage(traitName, damageResistance )?.let{ richMessage(it) }},
+            key,
+            traitName)
+
+
+    fun roll(type: String,
+             rollFunction: (CharacterRoller) -> RichMessage?,
+             characterKey: String,
+             traitName: String) = characterRepository
+             .get(characterKey)
+             ?.let { characterRoller ->
+                 rollFunction(characterRoller) ?: RichMessage("unable to find ${type} '${traitName}' for character key '${characterKey}'")
+            }
+            ?: RichMessage("unable to find character '${characterKey}'")
+
 }

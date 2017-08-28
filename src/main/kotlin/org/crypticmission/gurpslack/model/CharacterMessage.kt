@@ -41,15 +41,20 @@ fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
     }
 }
 
+private fun buttonValue(characterKey: String, traitName: String, modifier: Int) =
+        "${characterKey.toKey()}@${traitName.toKey()}@${modifier}"
+
 private fun skillAttachment(key: String, skills: Collection<Attribute>): ActionAttachment {
-    val skillButtons = skills.map { Action("skill", "${it.name}: ${it.level}", "button", "${key}@${it.name}") }
+    val skillButtons = skills
+            .map { Action("skill", "${it.name}: ${it.level}", "button", buttonValue(key, it.name, 0)) }
     val skillAttachment = ActionAttachment(skillButtons, "${key}-skills")
     skillAttachment.text = "_*Skills:*_"
     return skillAttachment
 }
 
 private fun attributeAttachment(key: String, attributes: Collection<Attribute>): ActionAttachment {
-    val attributeButtons = attributes.map { Action("attribute", "${it.name}: ${it.level}", "button", "${key}@${it.name}") }
+    val attributeButtons = attributes
+            .map { Action("attribute", "${it.name}: ${it.level}", "button", buttonValue(key, it.name, 0)) }
     val attributeAttachment = ActionAttachment(attributeButtons, "${key}-attributes")
     attributeAttachment.text = "_*Attributes:*_"
     return attributeAttachment

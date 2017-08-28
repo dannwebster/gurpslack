@@ -49,6 +49,8 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 	compile("me.ramswaroop.jbot:jbot:${jbotVersion}")
+	compile("com.fasterxml.jackson.module:jackson-module-kotlin")
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('io.projectreactor:reactor-test')
 }
