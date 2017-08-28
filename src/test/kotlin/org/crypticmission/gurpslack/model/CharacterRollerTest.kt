@@ -25,11 +25,13 @@ class CharacterRollerTest {
 
         val expected =
 """*Character Name: Foo Bar*
-_*Attributes:*_
+_*Primary Attributes:*_
     ST: 10
     DX: 14
     IQ: 12
     HT: 13
+_*Derived Attributes:*_
+
 _*Skills:*_
     Area Knowledge (USA): 15
 _*Attacks*_:

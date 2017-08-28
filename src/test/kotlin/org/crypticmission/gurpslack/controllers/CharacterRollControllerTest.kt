@@ -23,4 +23,13 @@ class CharacterRollControllerTest {
     @Autowired
     lateinit var mockMvc: MockMvc
 
+    @Test
+    fun shouldWhen() {
+        // given
+        
+        // when
+
+        // then
+
+    }
 }

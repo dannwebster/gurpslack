@@ -54,8 +54,8 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
 
     fun String.isPrimary() = (this == "ht" || this == "st" || this == "iq" || this == "dx")
 
-    fun primaryAttributes() = attributes.filterKeys { it.isPrimary() }
-    fun derivedAttributes() = attributes.filterKeys { !it.isPrimary() }
+    fun primaryAttributes() = attributes.filterKeys { it.isPrimary() }.values
+    fun derivedAttributes() = attributes.filterKeys { !it.isPrimary() }.values
 
     fun addAttacks(newAttacks: Iterable<Attack>) =
             newAttacks.forEach { attack -> attacks[attack.attackName.toKey()] = attack }

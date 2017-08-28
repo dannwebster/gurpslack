@@ -32,8 +32,8 @@ fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
                         .sorted()
                         .joinToString("\n", postfix = "\n")
 
-        val primaryAttributesAttachment = attributesAttachment(key, "Primary", characterRoller.primaryAttributes().values)
-        val derivedAttributesAttachment = attributesAttachment(key, "Derived", characterRoller.derivedAttributes().values)
+        val primaryAttributesAttachment = attributesAttachment(key, "Primary", characterRoller.primaryAttributes())
+        val derivedAttributesAttachment = attributesAttachment(key, "Derived", characterRoller.derivedAttributes())
 
         val skillAttachment = skillAttachment(key, characterRoller.skills.values)
 
