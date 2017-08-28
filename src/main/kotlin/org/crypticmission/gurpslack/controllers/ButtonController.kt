@@ -1,11 +1,18 @@
 package org.crypticmission.gurpslack.controllers
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.annotation.JsonNaming
 import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
+import org.springframework.http.MediaType
+import org.springframework.http.MediaType.*
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestBody
+import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
 
 class Action() {
@@ -14,6 +21,8 @@ class Action() {
     lateinit var type: String
 }
 
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 class ButtonData() {
     lateinit var token: String
     lateinit var actions: Array<Action>
@@ -59,14 +68,21 @@ fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, 
 class ButtonController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(ButtonController::class.java)
 
-    @PostMapping(path = arrayOf("/buttons"), consumes = arrayOf("application/json"))
-    fun handleButtons(@RequestBody buttonData: ButtonData) : RichMessage{
+    val objectMapper = ObjectMapper()
+
+    @PostMapping(path = arrayOf("/buttons"), consumes = arrayOf(APPLICATION_FORM_URLENCODED_VALUE))
+    fun handleButtons(@RequestParam("payload") buttonJson: String) : RichMessage{
+        val buttonData = objectMapper.readValue(buttonJson, ButtonData::class.java)
+
         val action = buttonData.actions.first()
+
         val message = "Pressed button ${action.name} and got value ${action.value} "
         logger.info(message)
+
         val (characterKey, traitName, modifierString) = action.value.split("@")
         val modifier = modifierString.toIntOrNull() ?: 0
         logger.info("looking up ${action.name} ${traitName}${modifier.toSignedString()} for character ${characterKey}")
+
         val richMessage : RichMessage = when (action.name) {
             "skill" -> skill(characterKey.toKey(), traitName.toKey(), modifier)
             "attack" -> attack(characterKey.toKey(), traitName.toKey(), modifier)

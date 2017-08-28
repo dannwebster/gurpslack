@@ -11,6 +11,7 @@ import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
+import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
@@ -63,13 +64,13 @@ class ButtonControllerTest {
         // given
 
         // when
-        val result = mockMvc.perform(post("/buttons")
-                .content(body.toByteArray())
-                .contentType("application/json")
-        )
-
-        // then
-        result.andExpect { status().isOk }
+        mockMvc
+                .perform(post("/buttons")
+                        .param("payload", body)
+                        .contentType(MediaType.APPLICATION_FORM_URLENCODED)
+                )
+                .andDo { print(it) }
+                .andExpect { status().isOk }
                 .andExpect { content().contentType("text/html") }
                 .andExpect { content().encoding("UTF-8") }
     }
