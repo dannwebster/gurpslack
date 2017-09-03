@@ -172,7 +172,7 @@ class CharacterData {
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
     characterData.rangedAttacks.forEach { println(it) }
-    CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills)
+    CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks)
 }
 
 @Component
@@ -180,12 +180,6 @@ class CharacterLoader {
     fun load(reader: Reader) : CharacterData? {
         val doc = SAXBuilder().build(reader)
         val characterData = JDOM.load(doc.rootElement, CharacterData::class.java)
-        println("printing equipment")
-        characterData.equipment?.forEach { println("${it.description} hasMelee: ${it.meleeAttackData != null} hasRanged: ${it.rangedAttackData != null}") }
-        println("printing melee attacks")
-        characterData.meleeAttacks.forEach { println(it) }
-        println("printing ranged attacks")
-        characterData.rangedAttacks.forEach { println(it) }
         return characterData
     }
 }

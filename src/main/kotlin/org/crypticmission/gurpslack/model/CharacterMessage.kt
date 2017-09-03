@@ -2,9 +2,12 @@ package org.crypticmission.gurpslack.model
 
 import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.slf4j.LoggerFactory
 
 /**
  */
+
+private val logger = LoggerFactory.getLogger("CharacterMessage")
 
 data class Action(val name: String, val text: String, val type: String, val value: String)
 
@@ -55,13 +58,14 @@ fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
         val rangedAttackAttachments = attackAttachment(key, "ranged", characterRoller.rangedAttacks.values)
 
         val richMessage = RichMessage(msg)
-        richMessage.attachments = arrayOf(
+        richMessage.attachments =
+                arrayOf(
                 primaryAttributesAttachment,
                 derivedAttributesAttachment) +
                 skillAttachments +
                 meleeAttackAttachments +
                 rangedAttackAttachments
-        
+
         return richMessage
     }
 }
@@ -89,13 +93,14 @@ private fun attackAttachment(key: String, type: String, attacks: Collection<Atta
                         0 -> "_*${type.capitalize()} Attacks:*_"
                         else -> null
 
-                    }, list, "${key}-skills-${index}") }
+                    }, list, "${key}-${type}-attacks-${index}") }
+
 fun skillToButton(key: String, attribute: Attribute) =
         Action("skill", "${attribute.name}: ${attribute.level}", "button",
                 buttonValue(key, attribute.name, 0))
 
 fun attackToButton(key: String, type: String, attack: Attack) =
-        Action("${type}Attack", "${attack.attackName}: ${attack.damageSpec}", "button",
+        Action("${type}Attack", "${attack.attackName}: ${attack.damageSpec.canonical}", "button",
                 buttonValue(key, attack.attackName, 0))
 
 fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
