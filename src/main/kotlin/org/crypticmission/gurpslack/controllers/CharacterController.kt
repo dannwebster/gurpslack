@@ -17,7 +17,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
     @Value("\${slashCommandToken}")
     lateinit var slackToken: String
 
-    @PostMapping(value = "/delnpc")
+    @PostMapping("/delnpc")
     fun delNpc(slashData: SlashData): RichMessage {
         val characterAbbrev = slashData.text
 
@@ -28,17 +28,25 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping("/npc", "/getnpc")
-    fun getNpc(slashData: SlashData): RichMessage {
+    @PostMapping("/npc")
+    fun getNpcAttributes(slashData: SlashData) = doGetNpc(slashData, arrayOf("primary", "derived"))
+
+    @PostMapping("/npcs")
+    fun getNpcSkills(slashData: SlashData) = doGetNpc(slashData, arrayOf("primary", "derived", "skills"))
+
+    @PostMapping("/npcd")
+    fun getNpcDamage(slashData: SlashData) = doGetNpc(slashData, arrayOf("primary", "derived", "melee", "ranged"))
+
+    fun doGetNpc(slashData: SlashData, sections: Array<String>): RichMessage {
         val key = slashData.text.trim()
         val npc = npcRepository.get(key)
         return when (npc) {
             null -> RichMessage("CharacterRoller with abbreviation ${key} does not exist")
-            else -> richMessage(key, npc)
+            else -> richMessage(key, npc, sections)
         }.encodedMessage()
     }
 
-    @PostMapping("/npcs", "/listnpcs")
+    @PostMapping("/npcs")
     fun listNpcs(slashData: SlashData): RichMessage {
         return RichMessage(npcRepository
                 .list()
@@ -46,7 +54,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
                 .encodedMessage()
     }
 
-    @PostMapping(value = "/addnpc")
+    @PostMapping("/addnpc")
     fun addNpc(slashData: SlashData): RichMessage {
         val (characterAbbrev, characterName) = parseName(slashData.text) ?:
             return RichMessage("Can't add character from data '${slashData.text}'")
@@ -57,7 +65,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping(value = "/addmelee")
+    @PostMapping("/addmelee")
     fun addMeleeAttack(slashData: SlashData): RichMessage {
         val attackData = parseAttack(slashData.text) ?:
                 return RichMessage("Can't add an ranged attack from data '${slashData.text}'")

@@ -46,24 +46,24 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
+val DEFAULT_SECTIONS = arrayOf("primary", "derived", "skills", "melee", "ranged")
+fun richMessage(key: String, characterRoller: CharacterRoller,
+                sections : Array<String> = DEFAULT_SECTIONS): RichMessage {
     with (characterRoller){
         val msg = "*Character Name: ${characterName}*\n"
 
-        val primaryAttributesAttachment = attributesAttachment(key, "Primary", characterRoller.primaryAttributes())
-        val derivedAttributesAttachment = attributesAttachment(key, "Derived", characterRoller.derivedAttributes())
-
-        val skillAttachments = skillAttachment(key, characterRoller.skills.values)
-        val meleeAttackAttachments = attackAttachment(key, "melee", characterRoller.meleeAttacks.values)
-        val rangedAttackAttachments = attackAttachment(key, "ranged", characterRoller.rangedAttacks.values)
+        val attachments = sections.map { section -> when(section) {
+            "primary" -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
+            "derived" -> attributesAttachments(key, "Derived", characterRoller.primaryAttributes())
+            "skill" -> skillAttachment(key, characterRoller.skills.values)
+            "melee" -> attackAttachment(key, "melee", characterRoller.meleeAttacks.values)
+            "ranged" -> attackAttachment(key, "ranged", characterRoller.rangedAttacks.values)
+            else -> throw IllegalArgumentException("attachment section ${section} is not " +
+                    "one of the accepted section names (${DEFAULT_SECTIONS})")
+        } }.flatten().toTypedArray()
 
         val richMessage = RichMessage(msg)
-        richMessage.attachments =
-                arrayOf(primaryAttributesAttachment) +
-//                arrayOf(derivedAttributesAttachment)
-//                skillAttachments +
-//                meleeAttackAttachments +
-                rangedAttackAttachments
+        richMessage.attachments = attachments
 
         return richMessage
     }
@@ -106,6 +106,9 @@ fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
         this.withIndex()
                 .groupBy { it.index / groupSize }.values
                 .map { it.map { it.value }}
+
+private fun attributesAttachments(key: String, type: String, attributes: Collection<Attribute>): List<ActionAttachment> =
+        listOf(attributesAttachment(key, type, attributes))
 
 private fun attributesAttachment(key: String, type: String, attributes: Collection<Attribute>): ActionAttachment {
     val attributeButtons = attributes
