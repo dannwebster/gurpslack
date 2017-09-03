@@ -37,13 +37,19 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
     fun rollAttr(slashData: SlashData) =
             rollVs("attribute", slashData, true) { character, name, mod -> character.rollVsAttribute(name, mod)}
 
-    @PostMapping("/gmattack", "/gmrollattack")
-    fun gmRollAttack(slashData: SlashData) = doRollAttack(slashData, false)
+    @PostMapping("/gmmeleeattack")
+    fun gmRollMeleeAttack(slashData: SlashData) = doRollAttack(slashData, false, false)
 
-    @PostMapping("/attack", "/rollattack")
-    fun rollAttack(slashData: SlashData) = doRollAttack(slashData, true)
+    @PostMapping("/gmrangedattack")
+    fun gmRollRangedAttack(slashData: SlashData) = doRollAttack(slashData, true,false)
 
-    fun doRollAttack(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
+    @PostMapping("/meleeattack")
+    fun rollMeleeAttack(slashData: SlashData) = doRollAttack(slashData, false,true)
+
+    @PostMapping("/ramgedeattack")
+    fun rollRangedAttack(slashData: SlashData) = doRollAttack(slashData, true,true)
+
+    fun doRollAttack(slashData: SlashData, isRanged: Boolean, inChannel: Boolean = true) : RichMessage {
         val data = slashData.text.tokenize()
         val key = data[0]
         val attackName = data[1]
@@ -53,7 +59,10 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}").inChannel(false).encodedMessage()
             else -> {
-                val outcome = character.rollAttackDamage(attackName, dr)
+                val outcome = if (isRanged)
+                    character.rollRangedAttackDamage(attackName, dr)
+                else
+                    character.rollMeleeAttackDamage(attackName, dr)
                 when (outcome) {
                     null -> RichMessage("Cannot find attack ${attackName} for '${character.characterName}'")
                     else -> richMessage(outcome).inChannel(inChannel).encodedMessage()

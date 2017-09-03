@@ -57,18 +57,34 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping(value = "/addattack")
-    fun addDmg(slashData: SlashData): RichMessage {
+    @PostMapping(value = "/addmelee")
+    fun addMeleeAttack(slashData: SlashData): RichMessage {
         val attackData = parseAttack(slashData.text) ?:
-                return RichMessage("Can't add an attack from data '${slashData.text}'")
+                return RichMessage("Can't add an ranged attack from data '${slashData.text}'")
         val key = attackData.first
         val character = npcRepository.get(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}")
             else -> {
                 val attack = attackData.second
-                character.addAttack(attack)
-                return RichMessage("Created Attack ${attack.attackName} for character ${character.characterName}")
+                character.addMeleeAttack(attack)
+                return RichMessage("Created Melee Attack ${attack.attackName} for character ${character.characterName}")
+            }
+        }.encodedMessage()
+    }
+
+    @PostMapping(value = "/addranged")
+    fun addRangedAttack(slashData: SlashData): RichMessage {
+        val attackData = parseAttack(slashData.text) ?:
+                return RichMessage("Can't add an melee attack from data '${slashData.text}'")
+        val key = attackData.first
+        val character = npcRepository.get(key)
+        return when (character) {
+            null -> RichMessage("No character with abbreviation ${key}")
+            else -> {
+                val attack = attackData.second
+                character.addRangedAttack(attack)
+                return RichMessage("Created Ranged Attack ${attack.attackName} for character ${character.characterName}")
             }
         }.encodedMessage()
     }

@@ -14,11 +14,13 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       val characterName: String,
                       attributes: Map<String, Attribute> = emptyMap(),
                       skills: Map<String, Attribute> = emptyMap(),
-                      attacks: Map<String, Attack> = emptyMap()) {
+                      meleeAttacks: Map<String, Attack> = emptyMap(),
+                      rangedAttacks: Map<String, Attack> = emptyMap()) {
 
     val attributes = HashMap<String, Attribute>(attributes.mapKeys { (k, _) -> k.toKey() })
     val skills = HashMap<String, Attribute>(skills.mapKeys { (k, _) -> k.toKey() })
-    val attacks = HashMap<String, Attack>(attacks.mapKeys { (k, _) -> k.toKey() })
+    val meleeAttacks = HashMap<String, Attack>(meleeAttacks.mapKeys { (k, _) -> k.toKey() })
+    val rangedAttacks = HashMap<String, Attack>(rangedAttacks.mapKeys { (k, _) -> k.toKey() })
 
     fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome? {
         val skill = getSkill(name)
@@ -36,8 +38,16 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
         }
     }
 
-    fun rollAttackDamage(attackName: String, damageResistance: Int): CharacterAttackRollOutcome? {
-        val attack = getAttack(attackName)
+    fun rollMeleeAttackDamage(attackName: String, damageResistance: Int): CharacterAttackRollOutcome? {
+        val attack = getMeleeAttack(attackName)
+        return when (attack) {
+            null -> null
+            else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer))
+        }
+    }
+
+    fun rollRangedAttackDamage(attackName: String, damageResistance: Int): CharacterAttackRollOutcome? {
+        val attack = getRangedAttack(attackName)
         return when (attack) {
             null -> null
             else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer))
@@ -46,9 +56,11 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
 
     fun getSkill(name: String) = skills[name.toKey()]
     fun getAttribute(name: String) = attributes[name.toKey()]
-    fun getAttack(name: String) = attacks[name.toKey()]
+    fun getMeleeAttack(name: String) = meleeAttacks[name.toKey()]
+    fun getRangedAttack(name: String) = rangedAttacks[name.toKey()]
 
-    fun addAttack(newAttack: Attack)  = addAttacks(listOf(newAttack))
+    fun addMeleeAttack(newAttack: Attack)  = addMeleeAttacks(listOf(newAttack))
+    fun addRangedAttack(newAttack: Attack)  = addRangedAttacks(listOf(newAttack))
     fun addAttribute(newAttribute: Attribute) = addAttributes(listOf(newAttribute))
     fun addSkill(newSkill: Attribute) = addSkill(listOf(newSkill))
 
@@ -57,8 +69,11 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     fun primaryAttributes() = attributes.filterKeys { it.isPrimary() }.values
     fun derivedAttributes() = attributes.filterKeys { !it.isPrimary() }.values
 
-    fun addAttacks(newAttacks: Iterable<Attack>) =
-            newAttacks.forEach { attack -> attacks[attack.attackName.toKey()] = attack }
+    fun addMeleeAttacks(newAttacks: Iterable<Attack>) =
+            newAttacks.forEach { attack -> meleeAttacks[attack.attackName.toKey()] = attack }
+
+    fun addRangedAttacks(newAttacks: Iterable<Attack>) =
+            newAttacks.forEach { attack -> rangedAttacks[attack.attackName.toKey()] = attack }
 
     fun addAttributes(newAttributes: Iterable<Attribute>) =
             newAttributes.forEach { attribute -> attributes[attribute.name.toKey()] = attribute }

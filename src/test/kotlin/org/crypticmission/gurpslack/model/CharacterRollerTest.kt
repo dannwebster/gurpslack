@@ -18,10 +18,11 @@ class CharacterRollerTest {
 
         subject.addSkill(Attribute("Area Knowledge (USA)", 15))
 
-        subject.addAttack(Attack("punch", RollSpec.DEFAULT.toDamage(DamageType.cru)))
-        subject.addAttack(Attack("sword slash", RollSpec.DEFAULT.toDamage(DamageType.cut)))
-        subject.addAttack(Attack("sword stab", RollSpec.DEFAULT.toDamage(DamageType.imp)))
-        subject.addAttack(Attack("sword stab", RollSpec(1,6).toDamage(DamageType.imp)))
+        subject.addMeleeAttack(Attack("punch", RollSpec.DEFAULT.toDamage(DamageType.cru)))
+        subject.addMeleeAttack(Attack("sword slash", RollSpec.DEFAULT.toDamage(DamageType.cut)))
+
+        subject.addRangedAttack(Attack("rifle", RollSpec.DEFAULT.toDamage(DamageType.pi)))
+        subject.addRangedAttack(Attack("pistol", RollSpec(1,6).toDamage(DamageType.pi_plus)))
 
         val expected =
 """*Character Name: Foo Bar*
@@ -34,14 +35,16 @@ _*Derived Attributes:*_
 
 _*Skills:*_
     Area Knowledge (USA): 15
-_*Attacks*_:
+_*Melee Attacks*_:
     punch: 3d6 cru
     sword slash: 3d6 cut
-    sword stab: 1d6 imp
+_*Ranged Attacks*_:
+    pistol: 1d6 pi+
+    rifle: 3d6 pi
 """
 
         // when
-        val message = richMessage("key", subject).text
+        val message = message(subject)
 
         // then
         assertEquals(expected, message)
@@ -78,7 +81,7 @@ _*Attacks*_:
         val subject = CharacterRoller(Randomizer.MAX, "character-name")
 
         // when
-        val attackOutcome = subject.rollAttackDamage("attack-name", 0)
+        val attackOutcome = subject.rollMeleeAttackDamage("attack-name", 0)
 
         // then
         assertNull(attackOutcome)

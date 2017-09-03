@@ -31,8 +31,13 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
             skills.values
                     .map { "    " + it.toString() }
                     .joinToString("\n", postfix = "\n") +
-            "_*Attacks*_:\n" +
-            attacks.values
+            "_*Melee Attacks*_:\n" +
+            meleeAttacks.values
+                    .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}" }
+                    .sorted()
+                    .joinToString("\n", postfix = "\n") +
+            "_*Ranged Attacks*_:\n" +
+            rangedAttacks.values
                     .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}" }
                     .sorted()
                     .joinToString("\n", postfix = "\n")
@@ -46,9 +51,17 @@ fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
         val derivedAttributesAttachment = attributesAttachment(key, "Derived", characterRoller.derivedAttributes())
 
         val skillAttachments = skillAttachment(key, characterRoller.skills.values)
+        val meleeAttackAttachments = attackAttachment(key, "melee", characterRoller.meleeAttacks.values)
+        val rangedAttackAttachments = attackAttachment(key, "ranged", characterRoller.rangedAttacks.values)
 
         val richMessage = RichMessage(msg)
-        richMessage.attachments = arrayOf(primaryAttributesAttachment, derivedAttributesAttachment) + skillAttachments
+        richMessage.attachments = arrayOf(
+                primaryAttributesAttachment,
+                derivedAttributesAttachment) +
+                skillAttachments +
+                meleeAttackAttachments +
+                rangedAttackAttachments
+        
         return richMessage
     }
 }
@@ -67,8 +80,23 @@ private fun skillAttachment(key: String, skills: Collection<Attribute>): List<Ac
 
                     }, list, "${key}-skills-${index}") }
 
+private fun attackAttachment(key: String, type: String, attacks: Collection<Attack>): List<ActionAttachment> =
+        attacks
+                .map { attack -> attackToButton(key, type, attack) }
+                .groupBy(3)
+                .mapIndexed { index, list ->
+                    ActionAttachment( when(index)  {
+                        0 -> "_*${type.capitalize()} Attacks:*_"
+                        else -> null
+
+                    }, list, "${key}-skills-${index}") }
 fun skillToButton(key: String, attribute: Attribute) =
-        Action("skill", "${attribute.name}: ${attribute.level}", "button", buttonValue(key, attribute.name, 0))
+        Action("skill", "${attribute.name}: ${attribute.level}", "button",
+                buttonValue(key, attribute.name, 0))
+
+fun attackToButton(key: String, type: String, attack: Attack) =
+        Action("${type}Attack", "${attack.attackName}: ${attack.damageSpec}", "button",
+                buttonValue(key, attack.attackName, 0))
 
 fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
         this.withIndex()

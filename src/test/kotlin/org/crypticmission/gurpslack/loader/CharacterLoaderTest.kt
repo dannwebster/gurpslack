@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.loader
 
+import org.crypticmission.gurpslack.model.parseDamage
 import org.junit.Assert.*
 import org.junit.Test
 
@@ -26,7 +27,7 @@ class CharacterLoaderTest {
         val subject = CharacterLoader()
 
         // when
-        val character = subject.load(reader) ?: throw IllegalArgumentException()
+        val character = subject.load(reader) ?: throw AssertionError("failed to read character")
 
         // then
         assertNotNull(character)
@@ -45,16 +46,15 @@ class CharacterLoaderTest {
         assertEquals(12, character.per)
 
         assertEquals(39, character.skillData?.size)
-        val skillData = character.skillData?.get(0) ?: throw IllegalArgumentException()
+        val skillData = character.skillData?.get(0) ?: throw AssertionError("no skillData")
         assertEquals("Acting", skillData.name)
         assertEquals("IQ", skillData.baseAttribute)
         assertEquals("A", skillData.difficulty)
         assertEquals(1, skillData.points)
 
         val skills = character.skills
-        skills.forEach { t, u -> println(t) }
         assertEquals(39, skills.size)
-        val skill = character.skills.get("Acting") ?: throw IllegalArgumentException()
+        val skill = character.skills.get("Acting") ?: throw AssertionError("no Acting Skill")
         assertEquals("Acting", skill.name)
         assertEquals(13, skill.level)
 
@@ -64,5 +64,25 @@ class CharacterLoaderTest {
         val guns = character.skills.get("Guns/TL5^ (Pistol)")
         assertEquals(14, guns?.level)
 
+        val swungKnife = character.meleeAttacks.get("Large Knife (Swung)") ?: throw AssertionError("no Large Knife (Swung)")
+        character.meleeAttacks.forEach { t, _ -> println(t) }
+        assertEquals("Large Knife (Swung)", swungKnife.attackName)
+        assertEquals(parseDamage("1d6-2 cut"), swungKnife.damageSpec)
+
+        val thrustKnife = character.meleeAttacks.get("Large Knife (Thrust)") ?: throw AssertionError("no Large Knife (Thrust)")
+        assertEquals("Large Knife (Thrust)", thrustKnife.attackName)
+        assertEquals(parseDamage("1d6-2 imp"), thrustKnife.damageSpec)
+
+        val rifle = character.rangedAttacks.get("Lever-Action Carbine, .30") ?: throw AssertionError("no rifleDamage")
+        println("Rifle: ${rifle}")
+        assertEquals("Lever-Action Carbine, .30", rifle.attackName)
+        assertEquals(parseDamage("5d pi"), rifle.damageSpec)
+//j
+//        <damage>sw-2 cut</damage>
+//        <strength>6</strength>
+//        <usage>Swung</usage>
+//        <reach>C,1</reach>
+//        <parry>-1</parry>
+//        <block>No</block>
     }
 }

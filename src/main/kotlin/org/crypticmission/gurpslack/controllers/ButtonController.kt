@@ -85,7 +85,8 @@ class ButtonController(val characterRepository: CharacterRepository) {
 
         val richMessage : RichMessage = when (action.name) {
             "skill" -> skill(characterKey.toKey(), traitName.toKey(), modifier)
-            "attack" -> attack(characterKey.toKey(), traitName.toKey(), modifier)
+            "meleeAttack" -> meleeAttack(characterKey.toKey(), traitName.toKey(), modifier)
+            "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), modifier)
             "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifier)
             else -> null
         } ?: RichMessage("unable to find action when ${message}")
@@ -109,9 +110,15 @@ class ButtonController(val characterRepository: CharacterRepository) {
             key,
             traitName)
 
-    fun attack(key: String, traitName: String, damageResistance: Int) = roll(
+    fun meleeAttack(key: String, traitName: String, damageResistance: Int) = roll(
             "attack",
-            { cr:CharacterRoller -> cr.rollAttackDamage(traitName, damageResistance )?.let{ richMessage(it) }},
+            { cr:CharacterRoller -> cr.rollMeleeAttackDamage(traitName, damageResistance )?.let{ richMessage(it) }},
+            key,
+            traitName)
+
+    fun rangedAttack(key: String, traitName: String, damageResistance: Int) = roll(
+            "attack",
+            { cr:CharacterRoller -> cr.rollRangedAttackDamage(traitName, damageResistance )?.let{ richMessage(it) }},
             key,
             traitName)
 

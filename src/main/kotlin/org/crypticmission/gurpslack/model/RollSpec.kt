@@ -19,6 +19,7 @@ data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
     val addString = if (adds == 0) "" else if (adds > 0) "+${adds}" else adds.toString()
     val canonical = "${dice}d${sides}${addString}"
 
+    fun modify(mods: Int) = this.copy(adds = this.adds + mods)
     fun toDamage(type: DamageType) = DamageSpec(this, type)
     override fun toString() = canonical
 
