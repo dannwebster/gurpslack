@@ -46,7 +46,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
         }.encodedMessage()
     }
 
-    @PostMapping("/npcs")
+    @PostMapping("/npclist")
     fun listNpcs(slashData: SlashData): RichMessage {
         return RichMessage(npcRepository
                 .list()

@@ -55,7 +55,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
         val attachments = sections.map { section -> when(section) {
             "primary" -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
             "derived" -> attributesAttachments(key, "Derived", characterRoller.primaryAttributes())
-            "skill" -> skillAttachment(key, characterRoller.skills.values)
+            "skills" -> skillAttachment(key, characterRoller.skills.values)
             "melee" -> attackAttachment(key, "melee", characterRoller.meleeAttacks.values)
             "ranged" -> attackAttachment(key, "ranged", characterRoller.rangedAttacks.values)
             else -> throw IllegalArgumentException("attachment section ${section} is not " +
