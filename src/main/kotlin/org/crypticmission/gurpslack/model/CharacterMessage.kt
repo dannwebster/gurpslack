@@ -59,11 +59,10 @@ fun richMessage(key: String, characterRoller: CharacterRoller): RichMessage {
 
         val richMessage = RichMessage(msg)
         richMessage.attachments =
-                arrayOf(
-                primaryAttributesAttachment,
-                derivedAttributesAttachment) +
-                skillAttachments +
-                meleeAttackAttachments +
+                arrayOf(primaryAttributesAttachment) +
+//                arrayOf(derivedAttributesAttachment)
+//                skillAttachments +
+//                meleeAttackAttachments +
                 rangedAttackAttachments
 
         return richMessage
