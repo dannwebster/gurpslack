@@ -50,6 +50,7 @@ dependencies {
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
 	compile("me.ramswaroop.jbot:jbot:${jbotVersion}")
 	compile("com.fasterxml.jackson.module:jackson-module-kotlin")
+	compile("org.eclipse.persistence:org.eclipse.persistence.moxy:2.5.0")
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('io.projectreactor:reactor-test')

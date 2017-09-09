@@ -2,6 +2,7 @@ package org.crypticmission.gurpslack.loader
 
 import org.crypticmission.gurpslack.model.parseDamage
 import org.junit.Assert.*
+import org.junit.Ignore
 import org.junit.Test
 
 /**
@@ -21,6 +22,26 @@ class CharacterLoaderTest {
         assertEquals("Tinsley Webster", character.playerName)
     }
 
+    @Ignore
+    @Test fun shouldLoadEquipmentFromContainer() {
+        // given
+        val reader = this::class.java.getResourceAsStream("/Everett O'Connell.gcs").bufferedReader()
+        val subject = CharacterLoader()
+
+        // when
+        val character = subject.load(reader) ?: throw AssertionError("failed to read character")
+
+        // then
+        assertNotNull(character)
+        assertEquals("Everett O'Connel", character.name)
+        assertEquals("Stewart", character.playerName)
+
+        val pistol = character.rangedAttacks.get("FN-Browning High Power, 9x19mm") ?:
+                throw AssertionError("no pistol Damage")
+        assertEquals("FN-Browning High Power, 9x19mm", pistol.attackName)
+        assertEquals(parseDamage("2d+2 pi"), pistol.damageSpec)
+
+    }
     @Test fun shouldParseRcWhenLoadedFromFile() {
         // given
         val reader = this::class.java.getResourceAsStream("/rc-cleveland.gcs").bufferedReader()
@@ -65,7 +86,6 @@ class CharacterLoaderTest {
         assertEquals(14, guns?.level)
 
         val swungKnife = character.meleeAttacks.get("Large Knife (Swung)") ?: throw AssertionError("no Large Knife (Swung)")
-        character.meleeAttacks.forEach { t, _ -> println(t) }
         assertEquals("Large Knife (Swung)", swungKnife.attackName)
         assertEquals(parseDamage("1d6-2 cut"), swungKnife.damageSpec)
 
@@ -74,7 +94,6 @@ class CharacterLoaderTest {
         assertEquals(parseDamage("1d6-2 imp"), thrustKnife.damageSpec)
 
         val rifle = character.rangedAttacks.get("Lever-Action Carbine, .30") ?: throw AssertionError("no rifleDamage")
-        println("Rifle: ${rifle}")
         assertEquals("Lever-Action Carbine, .30", rifle.attackName)
         assertEquals(parseDamage("5d pi"), rifle.damageSpec)
 //j

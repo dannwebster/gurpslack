@@ -2,6 +2,7 @@ package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.model.*
+import org.crypticmission.gurpslack.model.CharacterSections.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -29,15 +30,18 @@ class CharacterController(val npcRepository: CharacterRepository) {
     }
 
     @PostMapping("/npc")
-    fun getNpcAttributes(slashData: SlashData) = doGetNpc(slashData, arrayOf("primary", "derived"))
+    fun getNpcAttributes(slashData: SlashData) =
+            doGetNpc(slashData, arrayOf(PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES))
 
     @PostMapping("/npcs")
-    fun getNpcSkills(slashData: SlashData) = doGetNpc(slashData, arrayOf("primary", "derived", "skills"))
+    fun getNpcSkills(slashData: SlashData) =
+            doGetNpc(slashData, arrayOf(PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES, SKILLS))
 
     @PostMapping("/npcd")
-    fun getNpcDamage(slashData: SlashData) = doGetNpc(slashData, arrayOf("primary", "derived", "melee", "ranged"))
+    fun getNpcDamage(slashData: SlashData) =
+            doGetNpc(slashData, arrayOf(PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES, MELEE_ATTACKS, RANGED_ATTACKS))
 
-    fun doGetNpc(slashData: SlashData, sections: Array<String>): RichMessage {
+    fun doGetNpc(slashData: SlashData, sections: Array<CharacterSections>): RichMessage {
         val key = slashData.text.trim()
         val npc = npcRepository.get(key)
         return when (npc) {

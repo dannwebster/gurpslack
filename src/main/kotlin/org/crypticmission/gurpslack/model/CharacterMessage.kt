@@ -2,6 +2,7 @@ package org.crypticmission.gurpslack.model
 
 import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.crypticmission.gurpslack.model.CharacterSections.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -46,20 +47,20 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-val DEFAULT_SECTIONS = arrayOf("primary", "derived", "skills", "melee", "ranged")
+enum class CharacterSections {
+    PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES, SKILLS, MELEE_ATTACKS, RANGED_ATTACKS
+}
 fun richMessage(key: String, characterRoller: CharacterRoller,
-                sections : Array<String> = DEFAULT_SECTIONS): RichMessage {
+                sections : Array<CharacterSections> = values()): RichMessage {
     with (characterRoller){
         val msg = "*Character Name: ${characterName}*\n"
 
         val attachments = sections.map { section -> when(section) {
-            "primary" -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
-            "derived" -> attributesAttachments(key, "Derived", characterRoller.primaryAttributes())
-            "skills" -> skillAttachment(key, characterRoller.skills.values)
-            "melee" -> attackAttachment(key, "melee", characterRoller.meleeAttacks.values)
-            "ranged" -> attackAttachment(key, "ranged", characterRoller.rangedAttacks.values)
-            else -> throw IllegalArgumentException("attachment section ${section} is not " +
-                    "one of the accepted section names (${DEFAULT_SECTIONS})")
+            PRIMARY_ATTRIBUTES -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
+            DERIVED_ATTRIBUTES -> attributesAttachments(key, "Derived", characterRoller.derivedAttributes())
+            SKILLS -> skillAttachments(key, characterRoller.skills.values)
+            MELEE_ATTACKS -> attackAttachments(key, "melee", characterRoller.meleeAttacks.values)
+            RANGED_ATTACKS -> attackAttachments(key, "ranged", characterRoller.rangedAttacks.values)
         } }.flatten().toTypedArray()
 
         val richMessage = RichMessage(msg)
@@ -72,7 +73,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
 private fun buttonValue(characterKey: String, traitName: String, modifier: Int) =
         "${characterKey.toKey()}@${traitName.toKey()}@${modifier}"
 
-private fun skillAttachment(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
+private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
         skills
                 .map { attribute -> skillToButton(key, attribute) }
                 .groupBy(3)
@@ -83,7 +84,7 @@ private fun skillAttachment(key: String, skills: Collection<Attribute>): List<Ac
 
                     }, list, "${key}-skills-${index}") }
 
-private fun attackAttachment(key: String, type: String, attacks: Collection<Attack>): List<ActionAttachment> =
+private fun attackAttachments(key: String, type: String, attacks: Collection<Attack>): List<ActionAttachment> =
         attacks
                 .map { attack -> attackToButton(key, type, attack) }
                 .groupBy(3)

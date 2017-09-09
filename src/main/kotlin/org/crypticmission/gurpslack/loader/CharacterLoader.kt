@@ -3,10 +3,7 @@ package org.crypticmission.gurpslack.loader
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.jdom2.input.SAXBuilder
-import org.jonnyzzz.kotlin.xml.bind.XAnyElements
-import org.jonnyzzz.kotlin.xml.bind.XElements
-import org.jonnyzzz.kotlin.xml.bind.XSub
-import org.jonnyzzz.kotlin.xml.bind.XText
+import org.jonnyzzz.kotlin.xml.bind.*
 import org.jonnyzzz.kotlin.xml.bind.jdom.JDOM
 import org.jonnyzzz.kotlin.xml.bind.jdom.JXML
 import org.springframework.stereotype.Component
@@ -108,6 +105,9 @@ class CharacterData {
     val playerName by JXML / "profile" / "player_name" / XText
     val skillData by JXML / "skill_list" / XElements("skill") / XSub(SkillData::class.java)
     val equipment by JXML / "equipment_list" / XElements("equipment") / XSub(Equipment::class.java)
+    val containedEquipment by JXML / "equipment_list" / "equipment_container" / XElements("equipment") / XSub(Equipment::class.java)
+//    val containedEquipment by JXML / "equipment_list" / "equipment_container" / XElements("equipment") / XSub(Equipment::class.java)
+//    val equipment : List<Equipment> by lazy { (uncontainedEquipment ?: emptyList()) + (containedEquipment ?: emptyList()) }
 
     val stS by JXML / "ST" / XText
     val dxS by JXML / "DX" / XText
@@ -171,7 +171,10 @@ class CharacterData {
 }
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
-    characterData.rangedAttacks.forEach { println(it) }
+    println("melee")
+    println(meleeAttacks)
+    println("ranged")
+    println(rangedAttacks)
     CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks)
 }
 
@@ -180,6 +183,17 @@ class CharacterLoader {
     fun load(reader: Reader) : CharacterData? {
         val doc = SAXBuilder().build(reader)
         val characterData = JDOM.load(doc.rootElement, CharacterData::class.java)
+        with(characterData) {
+            println("loaded equipment Data ${equipment?.size}")
+            println("contained loaded equipment Data ${containedEquipment?.size}")
+            println(equipment)
+            println("loaded equipment Data")
+            println(equipment)
+            println("loaded melee")
+            println(meleeAttacks)
+            println("loaded ranged")
+            println(rangedAttacks)
+        }
         return characterData
     }
 }
