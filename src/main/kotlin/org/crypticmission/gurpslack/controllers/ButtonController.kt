@@ -91,7 +91,7 @@ class ButtonController(val characterRepository: CharacterRepository) {
             "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), modifier)
             "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifier)
             else -> null
-        } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", buttonData.callbackId, true)
+        } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", buttonData.callbackId, false)
 
         logger.info("outcome ${richMessage.text}")
         return richMessage
