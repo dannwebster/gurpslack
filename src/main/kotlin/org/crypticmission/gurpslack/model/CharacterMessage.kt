@@ -10,7 +10,23 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("CharacterMessage")
 
-data class Action(val name: String, val text: String, val type: String, val value: String)
+data class Option(val text: String, val value: String)
+
+interface Action {
+    val name: String
+    val text: String
+    val type: String
+}
+
+data class Button(override val name: String,
+                  override val text: String,
+                  override val type: String,
+                  val value: String) : Action
+
+data class Menu(override val name: String,
+                override val text: String,
+                override val type: String,
+                val options: List<Option>? = emptyList()) : Action
 
 class ActionAttachment(text: String?, val actions: List<Action>,
                        val callback_id: String,
@@ -55,13 +71,14 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
     with (characterRoller){
         val msg = "*Character Name: ${characterName}*\n"
 
-        val attachments = sections.map { section -> when(section) {
+        val attachments = (optionsAttachment(key) + sections.map { section -> when(section) {
             PRIMARY_ATTRIBUTES -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
             DERIVED_ATTRIBUTES -> attributesAttachments(key, "Derived", characterRoller.derivedAttributes())
             SKILLS -> skillAttachments(key, characterRoller.skills.values)
             MELEE_ATTACKS -> attackAttachments(key, "melee", characterRoller.meleeAttacks.values)
             RANGED_ATTACKS -> attackAttachments(key, "ranged", characterRoller.rangedAttacks.values)
-        } }.flatten().toTypedArray()
+        } }.flatten()).toTypedArray()
+
 
         val richMessage = RichMessage(msg)
         richMessage.attachments = attachments
@@ -72,6 +89,18 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
 
 private fun buttonValue(characterKey: String, traitName: String, modifier: Int) =
         "${characterKey.toKey()}@${traitName.toKey()}@${modifier}"
+
+private fun optionsAttachment(key: String): List<ActionAttachment> = listOf(
+        ActionAttachment(key, listOf(
+            Menu("modifiers", "Modifier", "select", options = modifiers())
+        ), "${key}-modifier"),
+        ActionAttachment(key, listOf(
+            Menu("visibility", "Visibility", "select", options = visibility())
+        ), "${key}-visibility")
+)
+
+private fun modifiers() = (-10 .. 10).map { Option(it.toSignedString(), it.toString()) }
+private fun visibility() = listOf(Option("Me Only", "me"), Option("Open to the Channel", "channel"))
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
         skills
@@ -96,11 +125,11 @@ private fun attackAttachments(key: String, type: String, attacks: Collection<Att
                     }, list, "${key}-${type}-attacks-${index}") }
 
 fun skillToButton(key: String, attribute: Attribute) =
-        Action("skill", "${attribute.name}: ${attribute.level}", "button",
+        Button("skill", "${attribute.name}: ${attribute.level}", "button",
                 buttonValue(key, attribute.name, 0))
 
 fun attackToButton(key: String, type: String, attack: Attack) =
-        Action("${type}Attack", "${attack.attackName}: ${attack.damageSpec.canonical}", "button",
+        Button("${type}Attack", "${attack.attackName}: ${attack.damageSpec.canonical}", "button",
                 buttonValue(key, attack.attackName, 0))
 
 fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
@@ -113,7 +142,7 @@ private fun attributesAttachments(key: String, type: String, attributes: Collect
 
 private fun attributesAttachment(key: String, type: String, attributes: Collection<Attribute>): ActionAttachment {
     val attributeButtons = attributes
-            .map { Action("attribute", "${it.name}: ${it.level}", "button", buttonValue(key, it.name, 0)) }
+            .map { Button("attribute", "${it.name}: ${it.level}", "button", buttonValue(key, it.name, 0)) }
     val attributeAttachment = ActionAttachment("_*${type} Attributes:*_", attributeButtons, "${key}-attributes")
     return attributeAttachment
 }

@@ -60,10 +60,11 @@ class ButtonData() {
 "response_url": "https://hooks.slack.com/actions/T47563693/6204672533/x7ZLaiVMoECAW50Gw1ZYAXEM"
 }
  */
-class CallbackMessage(text: String, val calllback_id: String) : RichMessage(text) {
-}
+open class CallbackMessage(text: String, val calllback_id: String) : RichMessage(text)
 
 fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, calllback_id)
+
+class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_original: Boolean) : CallbackMessage(text, callback_id)
 
 @RestController
 class ButtonController(val characterRepository: CharacterRepository) {
@@ -90,11 +91,10 @@ class ButtonController(val characterRepository: CharacterRepository) {
             "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), modifier)
             "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifier)
             else -> null
-        } ?: RichMessage("unable to find action when ${message}")
+        } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", buttonData.callbackId, true)
 
         logger.info("outcome ${richMessage.text}")
         return richMessage
-                .withCallback(buttonData.callbackId)
                 .inChannel(true)
                 .encodedMessage()
     }
