@@ -91,10 +91,8 @@ private fun buttonValue(characterKey: String, traitName: String, modifier: Int) 
         "${characterKey.toKey()}@${traitName.toKey()}@${modifier}"
 
 private fun optionsAttachment(key: String): List<ActionAttachment> = listOf(
-        ActionAttachment(key, listOf(
-            Menu("modifiers", "Modifier", "select", options = modifiers())
-        ), "${key}-modifier"),
-        ActionAttachment(key, listOf(
+        ActionAttachment("*Options*", listOf(
+            Menu("modifiers", "Modifier", "select", options = modifiers()),
             Menu("visibility", "Visibility", "select", options = visibility())
         ), "${key}-visibility")
 )
