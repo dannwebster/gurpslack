@@ -22,7 +22,6 @@ class CharacterLoaderTest {
         assertEquals("Tinsley Webster", character.playerName)
     }
 
-    @Ignore
     @Test fun shouldLoadEquipmentFromContainer() {
         // given
         val reader = this::class.java.getResourceAsStream("/Everett O'Connell.gcs").bufferedReader()
@@ -40,6 +39,8 @@ class CharacterLoaderTest {
                 throw AssertionError("no pistol Damage")
         assertEquals("FN-Browning High Power, 9x19mm", pistol.attackName)
         assertEquals(parseDamage("2d+2 pi"), pistol.damageSpec)
+        assertEquals(6, character.rangedAttacks.size)
+        assertEquals(2, character.meleeAttacks.size)
 
     }
     @Test fun shouldParseRcWhenLoadedFromFile() {

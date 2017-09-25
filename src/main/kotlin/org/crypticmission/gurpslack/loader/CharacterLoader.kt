@@ -99,15 +99,18 @@ class Equipment {
     val rangedAttackData by JXML / XElements("ranged_weapon") / XSub(RangedAttackData::class.java)
     val meleeAttackData by JXML / XElements("melee_weapon") / XSub(MeleeAttackData::class.java)
 }
+class EquipmentContainer {
+    val description by JXML / "description" / XText
+    val equipment by JXML / XElements("equipment") / XSub(Equipment::class.java)
+    val equipmentContainers by JXML / XElements("equipment_container") / XSub(EquipmentContainer::class.java)
+}
 
 class CharacterData {
     val name by JXML / "profile" / "name" / XText
     val playerName by JXML / "profile" / "player_name" / XText
     val skillData by JXML / "skill_list" / XElements("skill") / XSub(SkillData::class.java)
-    val equipment by JXML / "equipment_list" / XElements("equipment") / XSub(Equipment::class.java)
-    val containedEquipment by JXML / "equipment_list" / "equipment_container" / XElements("equipment") / XSub(Equipment::class.java)
-//    val containedEquipment by JXML / "equipment_list" / "equipment_container" / XElements("equipment") / XSub(Equipment::class.java)
-//    val equipment : List<Equipment> by lazy { (uncontainedEquipment ?: emptyList()) + (containedEquipment ?: emptyList()) }
+    val uncontainedEquipment by JXML / "equipment_list" / XElements("equipment") / XSub(Equipment::class.java)
+    val equipmentContainers by JXML / "equipment_list" / XElements("equipment_container") / XSub(EquipmentContainer::class.java)
 
     val stS by JXML / "ST" / XText
     val dxS by JXML / "DX" / XText
@@ -122,6 +125,20 @@ class CharacterData {
     val ht: Int by lazy { htS?.toInt() ?: throw IllegalStateException("no value for HT")  }
     val will: Int by lazy { (willS?.toInt() ?: 0) + 10 }
     val per: Int by lazy { (perS?.toInt() ?: 0) + 10 }
+    val equipment: List<Equipment> by lazy {
+        (uncontainedEquipment ?: listOf<Equipment>()) + extractContainedEquipment(equipmentContainers, mutableListOf())
+    }
+
+    private fun extractContainedEquipment(equipmentContainers: List<EquipmentContainer>?,
+                                          equipmentList: MutableList<Equipment>) : List<Equipment> {
+        if (equipmentContainers == null) return equipmentList
+        equipmentContainers.forEach { equipmentContainer ->
+            equipmentContainer.equipment?.forEach { equipment -> equipmentList.add(equipment) }
+            extractContainedEquipment(equipmentContainer.equipmentContainers, equipmentList)
+        }
+        return equipmentList
+
+    }
 
     val attributes: Map<String, Attribute> by lazy {
         listOf(
@@ -146,35 +163,25 @@ class CharacterData {
     val swing: RollSpec by lazy { swing(st) }
 
     val meleeAttacks : Map<String, Attack> by lazy {
-        equipment?.let {
-            it.map { data -> data.description?.let { name -> data.meleeAttackData?.let {attacks -> Pair(name, attacks)}}}
-                    .filterNotNull()
-                    .flatMap { (name, attacks) -> attacks.map { it.toAttack(name, thrust, swing)} }
-                    .map { attack -> Pair(attack.attackName, attack)}
-                    .toMap()
-
-        } ?: throw IllegalStateException("trouble mapping melee attacks")
+        equipment.map { data -> data.description?.let { name -> data.meleeAttackData?.let {attacks -> Pair(name, attacks)}}}
+                .filterNotNull()
+                .flatMap { (name, attacks) -> attacks.map { it.toAttack(name, thrust, swing)} }
+                .map { attack -> Pair(attack.attackName, attack)}
+                .toMap()
     }
 
     val rangedAttacks : Map<String, Attack> by lazy {
-        equipment?.let {
-            it.map { data -> data.description?.let { name -> data.rangedAttackData?.let {attacks -> Pair(name, attacks)}}}
-                    .filterNotNull()
-                    .flatMap { (name, attacks) -> attacks.map { it.toAttack(name, thrust, swing)} }
-                    .map { attack -> Pair(attack.attackName, attack)}
-                    .toMap()
-
-        } ?: throw IllegalStateException("trouble mapping melee attacks")
+        equipment.map { data -> data.description?.let { name -> data.rangedAttackData?.let {attacks -> Pair(name, attacks)}}}
+                .filterNotNull()
+                .flatMap { (name, attacks) -> attacks.map { it.toAttack(name, thrust, swing)} }
+                .map { attack -> Pair(attack.attackName, attack)}
+                .toMap()
     }
 
     fun toRoller(randomizer: Randomizer) = toRoller(randomizer, this)
 }
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
-    println("melee")
-    println(meleeAttacks)
-    println("ranged")
-    println(rangedAttacks)
     CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks)
 }
 
@@ -183,17 +190,6 @@ class CharacterLoader {
     fun load(reader: Reader) : CharacterData? {
         val doc = SAXBuilder().build(reader)
         val characterData = JDOM.load(doc.rootElement, CharacterData::class.java)
-        with(characterData) {
-            println("loaded equipment Data ${equipment?.size}")
-            println("contained loaded equipment Data ${containedEquipment?.size}")
-            println(equipment)
-            println("loaded equipment Data")
-            println(equipment)
-            println("loaded melee")
-            println(meleeAttacks)
-            println("loaded ranged")
-            println(rangedAttacks)
-        }
         return characterData
     }
 }
