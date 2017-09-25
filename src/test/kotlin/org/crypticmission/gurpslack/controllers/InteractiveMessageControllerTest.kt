@@ -87,7 +87,7 @@ class InteractiveMessageControllerTest {
         val message = subject.skill("character-key", "skill-name", 0)
 
         // then
-        assertEquals("character name rolled vs. skill-name:\n" +
+        assertEquals("character name rolled vs. skill-name (10):\n" +
                 "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs skill-name (10) was a critical failure with a margin of failure of 8\n", message.text)
 
     }

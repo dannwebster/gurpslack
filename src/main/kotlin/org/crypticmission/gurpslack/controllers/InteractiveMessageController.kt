@@ -96,7 +96,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         val inChannel = visibilityCache.getValue(messageData)
         return richMessage
                 .withCallback(messageData.callbackId)
-                .replaceOriginal(!inChannel)
+                .replaceOriginal(false)
                 .inChannel(inChannel)
                 .encodedMessage()
     }

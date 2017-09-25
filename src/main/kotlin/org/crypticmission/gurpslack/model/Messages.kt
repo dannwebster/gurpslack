@@ -22,8 +22,7 @@ fun message(attribute: Attribute) = with (attribute) {
 }
 
 fun message(modifiedAttribute: ModifiedAttribute) = with (modifiedAttribute) {
-    val modString = if (modifier == 0) "" else if (modifier < 0) "-${-1*modifier}" else "+${modifier}"
-    val effectiveName = "${attribute.name}${modString}"
+    val effectiveName = "${attribute.name}${modifier.toSignedString()}"
     "${effectiveName} (${effectiveLevel})"
 }
 
@@ -60,7 +59,8 @@ fun message(characterAttackRollOutcome: CharacterAttackRollOutcome) = with (char
 }
 
 fun message(characterAttributeRollOutcome: CharacterAttributeRollOutcome) = with (characterAttributeRollOutcome) {
-    "${characterName} rolled vs. ${attributeRollOutcome.modifiedAttribute.attribute.name}:\n${attributeRollOutcome.toString()}"
+    "${characterName} rolled vs. ${message(attributeRollOutcome.modifiedAttribute)}:\n" +
+            "${attributeRollOutcome.toString()}"
 }
 
 fun doRichMessage(s: String) = RichMessage(s)

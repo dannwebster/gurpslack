@@ -72,7 +72,7 @@ _*Ranged Attacks*_:
         val outcome = subject.rollVsAttribute("BAR", -3)
 
         // then
-        assertEquals("character-name rolled vs. BAR:\n" +
+        assertEquals("character-name rolled vs. BAR-3 (12):\n" +
                 "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6\n", outcome.toString())
     }
 
