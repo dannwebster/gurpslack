@@ -46,7 +46,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
     @PostMapping("/meleeattack")
     fun rollMeleeAttack(slashData: SlashData) = doRollAttack(slashData, false,true)
 
-    @PostMapping("/ramgedeattack")
+    @PostMapping("/rangedeattack")
     fun rollRangedAttack(slashData: SlashData) = doRollAttack(slashData, true,true)
 
     fun doRollAttack(slashData: SlashData, isRanged: Boolean, inChannel: Boolean = true) : RichMessage {

@@ -74,6 +74,7 @@ class ButtonController(val characterRepository: CharacterRepository) {
 
     @PostMapping(path = arrayOf("/buttons"), consumes = arrayOf(APPLICATION_FORM_URLENCODED_VALUE))
     fun handleButtons(@RequestParam("payload") buttonJson: String) : RichMessage{
+        logger.info(buttonJson)
         val buttonData = objectMapper.readValue(buttonJson, ButtonData::class.java)
 
         val action = buttonData.actions.first()
