@@ -47,16 +47,29 @@ class MessageData() {
 
 open class CallbackMessage(text: String, val calllback_id: String) : RichMessage(text)
 
-//fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, calllback_id)
+fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, calllback_id)
+fun CallbackMessage.replaceOriginal(replaceOriginal: Boolean) = ReplaceOriginalRichMessage(this.text, this.calllback_id, replaceOriginal)
 
 class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_original: Boolean) : CallbackMessage(text, callback_id)
 
+class ValueCache<T>(val defaultValue: T) {
+    private val cache : MutableMap<String, T> = mutableMapOf()
+
+    fun putValue(messageData: MessageData, value: T) { cache[messageData.user.name] = value }
+    fun getValue(messageData: MessageData) = cache.getOrDefault(messageData.user.name, defaultValue)
+    fun getAndClearValue(messageData: MessageData) : T {
+        val v = cache.getOrDefault(messageData.user.name, defaultValue)
+        cache.remove(messageData.user.name)
+        return v;
+    }
+
+}
 @RestController
 class InteractiveMessageController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(InteractiveMessageController::class.java)
 
-    val modifierCache : MutableMap<String, Int> = mutableMapOf()
-    val visibilityCache : MutableMap<String, Boolean> = mutableMapOf()
+    val modifierCache = ValueCache<Int>(0)
+    val visibilityCache = ValueCache<Boolean>(true)
 
     val objectMapper = ObjectMapper()
 
@@ -73,37 +86,37 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         val richMessage = when (action.type) {
             "button" -> doButtonMessage(action, message, messageData, modifierCache)
             "select" -> when(action.name) {
-                "modifier" -> doModifier(action, message, messageData)
-                "visibility" -> doVisibility(action, message, messageData)
+                "modifier" -> doModifier(action, message, messageData, modifierCache)
+                "visibility" -> doVisibility(action, message, messageData, visibilityCache)
                 else -> throw IllegalArgumentException("select action name must be 'modifier' or 'visibility', but is '${action.type}'")
             }
             else -> throw IllegalArgumentException("action type must be 'button' or 'select', but is '${action.type}'")
         }
 
-        val inChannel = visibilityCache.getOrDefault(messageData.user.name, true)
+        val inChannel = visibilityCache.getValue(messageData)
         return richMessage
+                .withCallback(messageData.callbackId)
+                .replaceOriginal(!inChannel)
                 .inChannel(inChannel)
                 .encodedMessage()
     }
 
-    private fun doModifier(action: Action, message: String, messageData: MessageData): RichMessage {
+    private fun doModifier(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
         val modifier = action.selectedValue()?.toInt() ?: 0
-        val name = messageData.user.name
-        modifierCache[name] = modifier
+        modifierCache.putValue(messageData, modifier)
         return RichMessage("modifying next roll by ${modifier.toSignedStringWithZero()}")
     }
 
 
-    private fun doVisibility(action: Action, message: String, messageData: MessageData): RichMessage  {
+    private fun doVisibility(action: Action, message: String, messageData: MessageData, visibilityCache: ValueCache<Boolean>): RichMessage  {
         val visibility = VisibilityOption.fromValue(action.selectedValue())
-        val name = messageData.user.name
-        visibilityCache[name] = visibility.isInChannel
+        visibilityCache.putValue(messageData, visibility.isInChannel)
         return RichMessage("next roll will be visible to ${visibility.option.text}")
     }
 
-    private fun doButtonMessage(action: Action, message: String, messageData: MessageData, modifierCache: Map<String, Int>): RichMessage {
+    private fun doButtonMessage(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
         val (characterKey, traitName) = action.value?.split("@") ?: throw IllegalArgumentException("value must be set")
-        val modifier = modifierCache.get(messageData.user.name) ?: 0
+        val modifier = modifierCache.getAndClearValue(messageData)
         logger.info("looking up ${action.name} ${traitName}${modifier.toSignedString()} for character ${characterKey}")
 
         val richMessage: RichMessage = when (action.name) {
