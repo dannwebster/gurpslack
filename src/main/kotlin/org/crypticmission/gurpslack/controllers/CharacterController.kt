@@ -39,7 +39,7 @@ class CharacterController(val npcRepository: CharacterRepository) {
 
     @PostMapping("/npcd")
     fun getNpcDamage(slashData: SlashData) =
-            doGetNpc(slashData, arrayOf(PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES, MELEE_ATTACKS, RANGED_ATTACKS))
+            doGetNpc(slashData, arrayOf(MELEE_ATTACKS, RANGED_ATTACKS))
 
     fun doGetNpc(slashData: SlashData, sections: Array<CharacterSections>): RichMessage {
         val key = slashData.text.trim()
