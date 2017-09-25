@@ -126,7 +126,9 @@ class CharacterData {
     val will: Int by lazy { (willS?.toInt() ?: 0) + 10 }
     val per: Int by lazy { (perS?.toInt() ?: 0) + 10 }
     val equipment: List<Equipment> by lazy {
-        (uncontainedEquipment ?: listOf<Equipment>()) + extractContainedEquipment(equipmentContainers, mutableListOf())
+        ((uncontainedEquipment ?: listOf<Equipment>()) +
+                extractContainedEquipment(equipmentContainers, mutableListOf()))
+                .sortedBy { equipment -> equipment.description }
     }
 
     private fun extractContainedEquipment(equipmentContainers: List<EquipmentContainer>?,
@@ -153,6 +155,7 @@ class CharacterData {
 
     val skills : Map<String, Attribute> by lazy {
         skillData
+                ?.sortedBy { skill -> skill.fullName }
                 ?.map { it.toAttribute(this) }
                 ?.map { Pair(it.name, it) }
                 ?.toMap()
