@@ -125,14 +125,15 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
 
     private fun doButtonMessage(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
         val (characterKey, traitName) = action.value?.split("@") ?: throw IllegalArgumentException("value must be set")
-        val modifier = modifierCache.getAndClearValue(messageData)
-        logger.info("looking up ${action.name} ${traitName}${modifier.toSignedString()} for character ${characterKey}")
 
         val richMessage: RichMessage = when (action.name) {
-            "skill" -> skill(characterKey.toKey(), traitName.toKey(), modifier)
-            "meleeAttack" -> meleeAttack(characterKey.toKey(), traitName.toKey(), modifier)
-            "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), modifier)
-            "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifier)
+
+            "skill" -> skill(characterKey.toKey(), traitName.toKey(), modifierCache.getAndClearValue(messageData))
+            "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifierCache.getAndClearValue(messageData))
+
+            "meleeAttack" -> meleeAttack(characterKey.toKey(), traitName.toKey(), damageResistanceCache.getAndClearValue(messageData))
+            "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), damageResistanceCache.getAndClearValue(messageData))
+
             else -> null
         } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", messageData.callbackId, false)
 
