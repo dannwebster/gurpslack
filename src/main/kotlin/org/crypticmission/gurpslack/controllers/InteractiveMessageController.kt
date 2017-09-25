@@ -5,10 +5,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.model.CharacterRoller
-import org.crypticmission.gurpslack.model.richMessage
-import org.crypticmission.gurpslack.model.toKey
-import org.crypticmission.gurpslack.model.toSignedString
+import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE
@@ -28,12 +25,20 @@ class Action() {
     var value: String? = null
     var selectedOptions: List<Option>? = null
 
-    fun selectedValueOr(defaultValue: String): String = this.selectedOptions?.first()?.value ?: defaultValue
+    fun selectedValue(): String? = this.selectedOptions?.first()?.value
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
-class ButtonData() {
+class User() {
+    lateinit var id: String
+    lateinit var name: String
+}
+
+@JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+class MessageData() {
+    lateinit var user: User
     lateinit var token: String
     lateinit var actions: Array<Action>
     lateinit var callbackId: String
@@ -50,42 +55,55 @@ class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_
 class InteractiveMessageController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(InteractiveMessageController::class.java)
 
+    val modifierCache : MutableMap<String, Int> = mutableMapOf()
+    val visibilityCache : MutableMap<String, Boolean> = mutableMapOf()
+
     val objectMapper = ObjectMapper()
 
     @PostMapping(path = arrayOf("/buttons"), consumes = arrayOf(APPLICATION_FORM_URLENCODED_VALUE))
     fun handleButtons(@RequestParam("payload") buttonJson: String): RichMessage {
         logger.info(buttonJson)
-        val buttonData = objectMapper.readValue(buttonJson, ButtonData::class.java)
+        val messageData = objectMapper.readValue(buttonJson, MessageData::class.java)
 
-        val action = buttonData.actions.first()
+        val action = messageData.actions.first()
 
         val message = "Pressed button ${action.name} and got value ${action.value} "
         logger.info(message)
 
         val richMessage = when (action.type) {
-            "button" -> doButtonMessage(action, message, buttonData)
+            "button" -> doButtonMessage(action, message, messageData, modifierCache)
             "select" -> when(action.name) {
-                "modifier" -> doModifier(action, message, buttonData)
-                "visibility" -> doVisibility(action, message, buttonData)
+                "modifier" -> doModifier(action, message, messageData)
+                "visibility" -> doVisibility(action, message, messageData)
                 else -> throw IllegalArgumentException("select action name must be 'modifier' or 'visibility', but is '${action.type}'")
             }
             else -> throw IllegalArgumentException("action type must be 'button' or 'select', but is '${action.type}'")
         }
 
+        val inChannel = visibilityCache.getOrDefault(messageData.user.name, true)
         return richMessage
-                .inChannel(true)
+                .inChannel(inChannel)
                 .encodedMessage()
     }
 
-    private fun doModifier(action: Action, message: String, buttonData: ButtonData): RichMessage =
-        RichMessage("modifying next roll by ${action.selectedValueOr("+0")}")
+    private fun doModifier(action: Action, message: String, messageData: MessageData): RichMessage {
+        val modifier = action.selectedValue()?.toInt() ?: 0
+        val name = messageData.user.name
+        modifierCache[name] = modifier
+        return RichMessage("modifying next roll by ${modifier.toSignedStringWithZero()}")
+    }
 
-    private fun doVisibility(action: Action, message: String, buttonData: ButtonData): RichMessage =
-        RichMessage("next roll will be visible to ${action.selectedValueOr("me only")}")
 
-    private fun doButtonMessage(action: Action, message: String, buttonData: ButtonData): RichMessage {
-        val (characterKey, traitName, modifierString) = action.value?.split("@") ?: throw IllegalArgumentException("value must be set")
-        val modifier = modifierString.toIntOrNull() ?: 0
+    private fun doVisibility(action: Action, message: String, messageData: MessageData): RichMessage  {
+        val visibility = VisibilityOption.fromValue(action.selectedValue())
+        val name = messageData.user.name
+        visibilityCache[name] = visibility.isInChannel
+        return RichMessage("next roll will be visible to ${visibility.option.text}")
+    }
+
+    private fun doButtonMessage(action: Action, message: String, messageData: MessageData, modifierCache: Map<String, Int>): RichMessage {
+        val (characterKey, traitName) = action.value?.split("@") ?: throw IllegalArgumentException("value must be set")
+        val modifier = modifierCache.get(messageData.user.name) ?: 0
         logger.info("looking up ${action.name} ${traitName}${modifier.toSignedString()} for character ${characterKey}")
 
         val richMessage: RichMessage = when (action.name) {
@@ -94,7 +112,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
             "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), modifier)
             "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifier)
             else -> null
-        } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", buttonData.callbackId, false)
+        } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", messageData.callbackId, false)
 
         logger.info("outcome ${richMessage.text}")
 

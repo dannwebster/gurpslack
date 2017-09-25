@@ -12,6 +12,19 @@ private val logger = LoggerFactory.getLogger("CharacterMessage")
 
 data class Option(val text: String, val value: String)
 
+enum class VisibilityOption(val option: Option, val isInChannel: Boolean) {
+    OPEN(Option("The Channel", "open"), true),
+    PRIVATE(Option("Me Only", "private"), false);
+
+    companion object {
+        fun fromValue(value: String?) = when(value) {
+            "open" -> OPEN
+            "private" -> PRIVATE
+            else -> OPEN
+        }
+    }
+}
+
 interface Action {
     val name: String
     val text: String
@@ -90,8 +103,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
     }
 }
 
-private fun buttonValue(characterKey: String, traitName: String, modifier: Int) =
-        "${characterKey.toKey()}@${traitName.toKey()}@${modifier}"
+private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"
 
 private fun optionsAttachment(key: String): ActionAttachment = ActionAttachment("*Options*", listOf(
             Menu("modifier", "Modifier", "select", options = modifiers()),
@@ -99,7 +111,7 @@ private fun optionsAttachment(key: String): ActionAttachment = ActionAttachment(
         ), "${key}-visibility")
 
 private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
-private fun visibility() = listOf(Option("Me Only", "me"), Option("Open to the Channel", "channel"))
+private fun visibility() = VisibilityOption.values().map { it.option }
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
         skills
@@ -125,11 +137,11 @@ private fun attackAttachments(key: String, type: String, attacks: Collection<Att
 
 fun skillToButton(key: String, attribute: Attribute) =
         Button("skill", "${attribute.name}: ${attribute.level}", "button",
-                buttonValue(key, attribute.name, 0))
+                buttonValue(key, attribute.name))
 
 fun attackToButton(key: String, type: String, attack: Attack) =
         Button("${type}Attack", "${attack.attackName}: ${attack.damageSpec.canonical}", "button",
-                buttonValue(key, attack.attackName, 0))
+                buttonValue(key, attack.attackName))
 
 fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
         this.withIndex()
@@ -141,7 +153,7 @@ private fun attributesAttachments(key: String, type: String, attributes: Collect
 
 private fun attributesAttachment(key: String, type: String, attributes: Collection<Attribute>): ActionAttachment {
     val attributeButtons = attributes
-            .map { Button("attribute", "${it.name}: ${it.level}", "button", buttonValue(key, it.name, 0)) }
+            .map { Button("attribute", "${it.name}: ${it.level}", "button", buttonValue(key, it.name)) }
     val attributeAttachment = ActionAttachment("_*${type} Attributes:*_", attributeButtons, "${key}-attributes")
     return attributeAttachment
 }
