@@ -76,9 +76,15 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-enum class CharacterSections {
-    PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES, SKILLS, MELEE_ATTACKS, RANGED_ATTACKS
+enum class MenuType() { DR, MOD }
+enum class CharacterSections(val menuType: MenuType) {
+    PRIMARY_ATTRIBUTES(MenuType.MOD),
+    DERIVED_ATTRIBUTES(MenuType.MOD),
+    SKILLS(MenuType.MOD),
+    MELEE_ATTACKS(MenuType.DR),
+    RANGED_ATTACKS(MenuType.DR),
 }
+
 fun richMessage(key: String, characterRoller: CharacterRoller,
                 sections : Array<CharacterSections> = values()): RichMessage {
     with (characterRoller){
@@ -92,7 +98,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
             RANGED_ATTACKS -> attackAttachments(key, "ranged", characterRoller.rangedAttacks.values)
         } }
                 .flatten()
-                + optionsAttachment(key))
+                + optionsAttachment(key, sections))
                 .toTypedArray()
 
 
@@ -103,14 +109,27 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
     }
 }
 
+private fun optionsAttachment(key: String, sections : Array<CharacterSections>): ActionAttachment = ActionAttachment(
+        "*Options*",
+        menuOptions(sections),
+        "${key}-visibility")
+
 private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"
 
-private fun optionsAttachment(key: String): ActionAttachment = ActionAttachment("*Options*", listOf(
-            Menu("modifier", "Modifier", "select", options = modifiers()),
-            Menu("visibility", "Visibility", "select", options = visibility())
-        ), "${key}-visibility")
+val DR_MENU = Menu("dr", "Damage Resistance", "select", options = dr())
+val MODIFIER_MENU = Menu("modifier", "Modifier", "select", options = modifiers())
+val VISIBILITY_MENU = Menu("visibility", "Visibility", "select", options = visibility())
+
+private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
+    val set = sections.map { it.menuType }.toSet()
+    val options = mutableListOf(VISIBILITY_MENU)
+    if (set.contains(MenuType.MOD)) options += MODIFIER_MENU
+    if (set.contains(MenuType.DR)) options += DR_MENU
+    return options
+}
 
 private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
+private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = VisibilityOption.values().map { it.option }
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
