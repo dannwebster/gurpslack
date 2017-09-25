@@ -5,7 +5,6 @@ import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Assert.*
-import org.junit.Ignore
 import org.junit.Test
 import org.junit.runner.RunWith
 import org.springframework.beans.factory.annotation.Autowired
@@ -15,7 +14,6 @@ import org.springframework.http.MediaType
 import org.springframework.test.context.junit4.SpringRunner
 import org.springframework.test.web.servlet.MockMvc
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post
-import org.springframework.test.web.servlet.result.MockMvcResultMatchers
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 
 /**
@@ -23,7 +21,7 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 @RunWith(SpringRunner::class)
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
-class ButtonControllerTest {
+class InteractiveMessageControllerTest {
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -83,7 +81,7 @@ class ButtonControllerTest {
         val repo = CharacterRepository()
         repo.put("character-key", cr)
 
-        val subject = ButtonController(repo)
+        val subject = InteractiveMessageController(repo)
 
         // when
         val message = subject.skill("character-key", "skill-name", 0)
@@ -99,7 +97,7 @@ class ButtonControllerTest {
         // given
         val repo = CharacterRepository()
 
-        val subject = ButtonController(repo)
+        val subject = InteractiveMessageController(repo)
 
         // when
         val message = subject.skill("character-key", "skill-name", 0)
@@ -116,7 +114,7 @@ class ButtonControllerTest {
         val repo = CharacterRepository()
         repo.put("character-key", cr)
 
-        val subject = ButtonController(repo)
+        val subject = InteractiveMessageController(repo)
 
         // when
         val message = subject.skill("character-key", "skill-name", 0)

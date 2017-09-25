@@ -71,13 +71,16 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
     with (characterRoller){
         val msg = "*Character Name: ${characterName}*\n"
 
-        val attachments = (optionsAttachment(key) + sections.map { section -> when(section) {
+        val attachments = (sections.map { section -> when(section) {
             PRIMARY_ATTRIBUTES -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
             DERIVED_ATTRIBUTES -> attributesAttachments(key, "Derived", characterRoller.derivedAttributes())
             SKILLS -> skillAttachments(key, characterRoller.skills.values)
             MELEE_ATTACKS -> attackAttachments(key, "melee", characterRoller.meleeAttacks.values)
             RANGED_ATTACKS -> attackAttachments(key, "ranged", characterRoller.rangedAttacks.values)
-        } }.flatten()).toTypedArray()
+        } }
+                .flatten()
+                + optionsAttachment(key))
+                .toTypedArray()
 
 
         val richMessage = RichMessage(msg)
@@ -90,14 +93,12 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
 private fun buttonValue(characterKey: String, traitName: String, modifier: Int) =
         "${characterKey.toKey()}@${traitName.toKey()}@${modifier}"
 
-private fun optionsAttachment(key: String): List<ActionAttachment> = listOf(
-        ActionAttachment("*Options*", listOf(
-            Menu("modifiers", "Modifier", "select", options = modifiers()),
+private fun optionsAttachment(key: String): ActionAttachment = ActionAttachment("*Options*", listOf(
+            Menu("modifier", "Modifier", "select", options = modifiers()),
             Menu("visibility", "Visibility", "select", options = visibility())
         ), "${key}-visibility")
-)
 
-private fun modifiers() = (-10 .. 10).map { Option(it.toSignedString(), it.toString()) }
+private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = listOf(Option("Me Only", "me"), Option("Open to the Channel", "channel"))
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =

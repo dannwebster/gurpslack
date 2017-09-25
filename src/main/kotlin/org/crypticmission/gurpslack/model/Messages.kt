@@ -6,6 +6,10 @@ import me.ramswaroop.jbot.core.slack.models.RichMessage
  */
 fun String.toKey() = this.toLowerCase().trim()
 
+fun Int.toSignedStringWithZero(): String =
+        if (this == 0) "+0"
+        else this.toSignedString()
+
 fun Int.toSignedString(): String =
         if (this > 0) "+${this}"
         else if (this < 0) "${this}"
