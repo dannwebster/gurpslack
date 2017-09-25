@@ -44,7 +44,7 @@ open class CallbackMessage(text: String, val calllback_id: String) : RichMessage
 
 //fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, calllback_id)
 
-//class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_original: Boolean) : CallbackMessage(text, callback_id)
+class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_original: Boolean) : CallbackMessage(text, callback_id)
 
 @RestController
 class InteractiveMessageController(val characterRepository: CharacterRepository) {
