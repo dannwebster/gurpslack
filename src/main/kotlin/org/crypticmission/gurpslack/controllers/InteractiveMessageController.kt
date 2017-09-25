@@ -69,6 +69,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
     private val logger = LoggerFactory.getLogger(InteractiveMessageController::class.java)
 
     val modifierCache = ValueCache<Int>(0)
+    val damageResistanceCache = ValueCache<Int>(0)
     val visibilityCache = ValueCache<Boolean>(true)
 
     val objectMapper = ObjectMapper()
@@ -88,6 +89,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
             "select" -> when(action.name) {
                 "modifier" -> doModifier(action, message, messageData, modifierCache)
                 "visibility" -> doVisibility(action, message, messageData, visibilityCache)
+                "dr" -> doDamageResistance(action, message, messageData, damageResistanceCache)
                 else -> throw IllegalArgumentException("select action name must be 'modifier' or 'visibility', but is '${action.type}'")
             }
             else -> throw IllegalArgumentException("action type must be 'button' or 'select', but is '${action.type}'")
@@ -104,9 +106,16 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
     private fun doModifier(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
         val modifier = action.selectedValue()?.toInt() ?: 0
         modifierCache.putValue(messageData, modifier)
-        return RichMessage("modifying next roll by ${modifier.toSignedStringWithZero()}")
+        return RichMessage("modifying next roll by ${modifier.toSignedStringWithZero()} for next skill or attribute roll " +
+                "made by ${messageData.user.name} ")
     }
 
+    private fun doDamageResistance(action: Action, message: String, messageData: MessageData, damageResistanceCache: ValueCache<Int>): RichMessage {
+        val damageResistance = action.selectedValue()?.toInt() ?: 0
+        damageResistanceCache.putValue(messageData, damageResistance)
+        return RichMessage("applying DR ${damageResistance.toSignedStringWithZero()} to next damage roll " +
+                "made by ${messageData.user.name}")
+    }
 
     private fun doVisibility(action: Action, message: String, messageData: MessageData, visibilityCache: ValueCache<Boolean>): RichMessage  {
         val visibility = VisibilityOption.fromValue(action.selectedValue())
