@@ -1,13 +1,16 @@
 package org.crypticmission.gurpslack.loader
 
+import com.sun.xml.internal.messaging.saaj.util.ByteInputStream
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.Randomizer
+import org.jdom2.Document
 import org.jdom2.input.SAXBuilder
 import org.jonnyzzz.kotlin.xml.bind.*
 import org.jonnyzzz.kotlin.xml.bind.jdom.JDOM
 import org.jonnyzzz.kotlin.xml.bind.jdom.JXML
 import org.springframework.stereotype.Component
 import java.io.Reader
+import java.io.StringReader
 
 /**
 <HP>1</HP>
@@ -190,9 +193,12 @@ fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(charac
 
 @Component
 class CharacterLoader {
+    fun load(xml: String) : CharacterData? = load(StringReader(xml))
+
     fun load(reader: Reader) : CharacterData? {
         val doc = SAXBuilder().build(reader)
-        val characterData = JDOM.load(doc.rootElement, CharacterData::class.java)
-        return characterData
+        return fromDoc(doc)
     }
+
+    fun fromDoc(doc: Document) = JDOM.load(doc.rootElement, CharacterData::class.java)
 }

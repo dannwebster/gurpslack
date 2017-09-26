@@ -3,7 +3,9 @@ package org.crypticmission.gurpslack.controllers
 import ch.qos.logback.classic.Logger
 import org.crypticmission.gurpslack.loader.CharacterLoader
 import org.crypticmission.gurpslack.model.CharacterRoller
+import org.crypticmission.gurpslack.model.CharacterSheet
 import org.crypticmission.gurpslack.repositories.CharacterRepository
+import org.crypticmission.gurpslack.repositories.CharacterSheetRepository
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -22,6 +24,7 @@ import javax.servlet.http.HttpServletRequest
 @Controller
 class UploadController(val characterRepository : CharacterRepository,
                        val characterLoader: CharacterLoader,
+                       val characterSheetRepository: CharacterSheetRepository,
                        val randomizer: Randomizer) {
 
     var logger = LoggerFactory.getLogger(UploadController::class.java)
@@ -63,7 +66,12 @@ class UploadController(val characterRepository : CharacterRepository,
 
     fun addCharacter(key: String, file: MultipartFile): CharacterRoller =
             file.inputStream.bufferedReader().use { reader ->
-                val characterData = characterLoader.load(reader)
+
+                val xml = reader.readText()
+                val characterSheet = CharacterSheet(key, xml)
+                characterSheetRepository.save(characterSheet)
+
+                val characterData = characterLoader.load(xml)
                 characterData ?: throw IllegalArgumentException("Unable to parse file to create character")
                 val character = characterData.toRoller(randomizer)
                 characterRepository.put(key, character)
