@@ -1,4 +1,4 @@
-package org.crypticmission.gurpslack.model
+package org.crypticmission.gurpslack.entities
 
 import javax.persistence.Entity
 import javax.persistence.GeneratedValue

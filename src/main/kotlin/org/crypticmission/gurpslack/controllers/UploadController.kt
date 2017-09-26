@@ -1,11 +1,11 @@
 package org.crypticmission.gurpslack.controllers
 
-import ch.qos.logback.classic.Logger
 import org.crypticmission.gurpslack.loader.CharacterLoader
 import org.crypticmission.gurpslack.model.CharacterRoller
-import org.crypticmission.gurpslack.model.CharacterSheet
+import org.crypticmission.gurpslack.entities.CharacterSheet
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.repositories.CharacterSheetRepository
+import org.crypticmission.gurpslack.repositories.CharacterSheetService
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -24,7 +24,7 @@ import javax.servlet.http.HttpServletRequest
 @Controller
 class UploadController(val characterRepository : CharacterRepository,
                        val characterLoader: CharacterLoader,
-                       val characterSheetRepository: CharacterSheetRepository,
+                       val characterSheetService: CharacterSheetService,
                        val randomizer: Randomizer) {
 
     var logger = LoggerFactory.getLogger(UploadController::class.java)
@@ -69,13 +69,13 @@ class UploadController(val characterRepository : CharacterRepository,
 
                 val xml = reader.readText()
                 val characterSheet = CharacterSheet(key, xml)
-                characterSheetRepository.save(characterSheet)
+                characterSheetService.saveOrUpdate(characterSheet)
 
                 val characterData = characterLoader.load(xml)
                 characterData ?: throw IllegalArgumentException("Unable to parse file to create character")
                 val character = characterData.toRoller(randomizer)
                 characterRepository.put(key, character)
-                println("Successfully added ${key} to total ${characterRepository.list().size} characters")
+                logger.info("Successfully added ${key} to total ${characterRepository.list().size} characters")
                 character
             }
 }

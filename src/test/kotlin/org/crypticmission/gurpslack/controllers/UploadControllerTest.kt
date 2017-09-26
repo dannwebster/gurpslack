@@ -51,7 +51,6 @@ class UploadControllerTest {
         val result = mockMvc.perform(request)
 
         // then
-        println(result)
         result.andExpect { status().isOk }
                 .andExpect { content().contentType("text/html") }
                 .andExpect { content().encoding("UTF-8") }
