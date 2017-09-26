@@ -128,7 +128,7 @@ private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
     return options
 }
 
-private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
+private fun modifiers() = (10 .. -10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = VisibilityOption.values().map { it.option }
 
