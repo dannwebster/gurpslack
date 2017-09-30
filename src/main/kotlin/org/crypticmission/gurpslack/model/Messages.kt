@@ -62,12 +62,15 @@ fun message(attackRollOutcome: AttackRollOutcome) = with (attackRollOutcome) {
     message(damageRollOutcome, attackName)
 }
 
-fun message(damageRollOutcome: DamageRollOutcome, attack: String? = null, actor: String? = null) = with (damageRollOutcome) {
-        "Dealt *${totalDamage}* ${damageSpec.damageType.longForm} damage after DR:\n" +
-                "This attack causes ${damageSpec.rollSpec.canonical} ${damageSpec.damageType.shortForm} vs DR ${damageResistance}.\n" +
-                "Rolled ${damageSpec.rollSpec.canonical} => ${rollOutcome.emoji()} => ${rollOutcome.total}.\n" +
-                "`${totalDamage} = [(${rollOutcome.total} impact damage - DR ${damageResistance}) * ${damageSpec.damageType.multiplier} " +
-                "for ${damageSpec.damageType.longForm}]`\n"
+fun message(damageRollOutcome: DamageRollOutcome, attackName: String? = null, actor: String? = null) = with (damageRollOutcome) {
+"""
+*Damage Roll:* ${actor?.plus(" ") ?: ""}${attackName?.let{"Attacks with " + attackName} ?: "Attack" } vs DR ${damageResistance}
+> *- Outcome*: ${totalDamage} ${damageSpec.damageType.longForm} damage after DR
+> *- Roll*: ${rollOutcome.emoji()} = ${rollOutcome.total}
+> *- Damage:* ${damageSpec.canonical}
+> *- DR*: ${damageResistance}
+> *- Details:* `[(${rollOutcome.total} impact damage - DR ${damageResistance}) * ${damageSpec.damageType.multiplier} for ${damageSpec.damageType.longForm}] = ${totalDamage}`
+""".trimIndent()
 }
 
 fun message(rollOutcome: RollOutcome) = with (rollOutcome) {

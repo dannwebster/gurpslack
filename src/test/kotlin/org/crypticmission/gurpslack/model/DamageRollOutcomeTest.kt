@@ -7,24 +7,6 @@ import org.junit.Assert.*
  */
 
 class DamageRollOutcomeTest {
-    @Test fun shouldCorrectStringWhenNoDr() {
-        // given
-        val damageLine = "2d6+1 cut"
-        val spec = parseDamage(damageLine) ?: throw IllegalArgumentException()
-        val dr = parseDr(damageLine)
-        val rand = Randomizer.MAX
-
-        // when
-        val outcome = spec.rollVsDr(dr, rand)
-
-        // then
-        assertEquals("Dealt *19* cutting damage after DR:\n" +
-                "This attack causes 2d6+1 cut vs DR 0.\n" +
-                "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`19 = [(13 impact damage - DR 0) * 1.5 for cutting]`\n", outcome.toString())
-
-    }
-
     @Test fun shouldDealZeroDamageWhenDamageIsLessThanDR() {
         // given
         val damageLine = "2d6+1 cut vs dr 80"
@@ -36,11 +18,9 @@ class DamageRollOutcomeTest {
         val outcome = spec.rollVsDr(dr, rand)
 
         // then
-        assertEquals("Dealt *0* cutting damage after DR:\n" +
-                "This attack causes 2d6+1 cut vs DR 80.\n" +
-                "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`0 = [(13 impact damage - DR 80) * 1.5 for cutting]`\n", outcome.toString())
-
+        assertEquals(DamageType.cut, outcome.damageSpec.damageType)
+        assertEquals(0, outcome.totalDamage)
+        assertEquals(0, outcome.impactDamage)
     }
 
     @Test fun shouldCorrectStringWhenHasDr() {
@@ -54,11 +34,9 @@ class DamageRollOutcomeTest {
         val outcome = spec.rollVsDr(dr, rand)
 
         // then
-        assertEquals("Dealt *15* large piercing damage after DR:\n" +
-                "This attack causes 2d6+1 pi+ vs DR 3.\n" +
-                "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`15 = [(13 impact damage - DR 3) * 1.5 for large piercing]`\n", outcome.toString())
-
+        assertEquals(DamageType.pi_plus, outcome.damageSpec.damageType)
+        assertEquals(15, outcome.totalDamage)
+        assertEquals(10, outcome.impactDamage)
     }
 
     @Test fun shouldCorrectStringWhenHasDrAndName() {
@@ -72,10 +50,8 @@ class DamageRollOutcomeTest {
         val outcome = spec.rollVsDr(dr, rand)
 
         // then
-        assertEquals("Dealt *20* impaling damage after DR:\n" +
-                "This attack causes 2d6+1 imp vs DR 3.\n" +
-                "Rolled 2d6+1 => :d6-6: :d6-6:+1 => 13.\n" +
-                "`20 = [(13 impact damage - DR 3) * 2.0 for impaling]`\n", outcome.toString())
-
+        assertEquals(DamageType.imp, outcome.damageSpec.damageType)
+        assertEquals(20, outcome.totalDamage)
+        assertEquals(10 , outcome.impactDamage)
     }
 }
