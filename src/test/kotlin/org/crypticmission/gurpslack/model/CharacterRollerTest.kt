@@ -69,11 +69,13 @@ _*Ranged Attacks*_:
         subject.addAttribute(Attribute("BAR", 15))
 
         // when
-        val outcome = subject.rollVsAttribute("BAR", -3)
+        val outcome = subject.rollVsAttribute("BAR", -3) ?: throw AssertionError("no successful return")
 
         // then
-        assertEquals("character-name rolled vs. BAR-3 (12):\n" +
-                "CRITICAL FAILURE: A roll of :d6-6: :d6-6: :d6-6: => 18 vs BAR-3 (12) was a critical failure with a margin of failure of 6\n", outcome.toString())
+        assertEquals("character-name", outcome.characterName)
+        assertEquals(true, outcome.attributeRollOutcome.isCritical)
+        assertEquals(false, outcome.attributeRollOutcome.isSuccess)
+        assertEquals(6, outcome.attributeRollOutcome.margin)
     }
 
     @Test fun shouldReturnNullWhenRollingMissingDamage() {
