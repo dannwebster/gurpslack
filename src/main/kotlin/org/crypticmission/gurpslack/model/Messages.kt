@@ -43,13 +43,13 @@ fun message(modifiedAttribute: ModifiedAttribute) = with (modifiedAttribute) {
 
 fun message(attributeRollOutcome: AttributeRollOutcome, actor: String? = null) = with (attributeRollOutcome)  {
 """
-* *Attempt*: ${actor?.plus(" ") ?: ""}Rolled vs ${modifiedAttribute}
-* *Outcome*: ${(isCriticalString+isSuccessString).toTitleCase()}${if (!isCritical) " by " + Math.abs(margin) else ""}
-* *Roll*: ${rollOutcome.emoji()} = ${rollOutcome.total}
-* *Effective Level*: ${modifiedAttribute.effectiveLevel}
-* *Margin of ${isSuccessString.toTitleCase()}*: ${Math.abs(margin)}
-* *Attribute*: ${message(modifiedAttribute.attribute)}
-* *Modifier*: ${modifiedAttribute.modifier.toSignedStringWithZero()}
+*Roll:* ${actor?.plus(" ") ?: ""}Rolled vs ${modifiedAttribute}
+> *- Outcome:* ${(isCriticalString+isSuccessString).toTitleCase()}${if (!isCritical) " by " + Math.abs(margin) else ""}
+> *- Roll:* ${rollOutcome.emoji()} = ${rollOutcome.total}
+> *- Effective Level:* ${modifiedAttribute.effectiveLevel}
+> *- Margin of ${isSuccessString.toTitleCase()}:* ${Math.abs(margin)}
+> *- Attribute:* ${message(modifiedAttribute.attribute)}
+> *- Modifier:* ${modifiedAttribute.modifier.toSignedStringWithZero()}
 """.trimIndent()
 }
 

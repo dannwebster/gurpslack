@@ -51,13 +51,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Rolled vs HT (11)
-                * *Outcome*: Critical Success
-                * *Roll*: :d6-1: :d6-1: :d6-1: = 3
-                * *Effective Level*: 11
-                * *Margin of Success*: 8
-                * *Attribute*: HT: 11
-                * *Modifier*: +0
+                *Roll:* Rolled vs HT (11)
+                > *- Outcome:* Critical Success
+                > *- Roll:* :d6-1: :d6-1: :d6-1: = 3
+                > *- Effective Level:* 11
+                > *- Margin of Success:* 8
+                > *- Attribute:* HT: 11
+                > *- Modifier:* +0
                 """.trimIndent(), msg)
     }
     @Test
@@ -68,13 +68,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Rolled vs HT (11)
-                * *Outcome*: Success by 2
-                * *Roll*: :d6-3: :d6-3: :d6-3: = 9
-                * *Effective Level*: 11
-                * *Margin of Success*: 2
-                * *Attribute*: HT: 11
-                * *Modifier*: +0
+                *Roll:* Rolled vs HT (11)
+                > *- Outcome:* Success by 2
+                > *- Roll:* :d6-3: :d6-3: :d6-3: = 9
+                > *- Effective Level:* 11
+                > *- Margin of Success:* 2
+                > *- Attribute:* HT: 11
+                > *- Modifier:* +0
                 """.trimIndent(), msg)
     }
 
@@ -86,13 +86,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Rolled vs HT (11)
-                * *Outcome*: Failure by 4
-                * *Roll*: :d6-5: :d6-5: :d6-5: = 15
-                * *Effective Level*: 11
-                * *Margin of Failure*: 4
-                * *Attribute*: HT: 11
-                * *Modifier*: +0
+                *Roll:* Rolled vs HT (11)
+                > *- Outcome:* Failure by 4
+                > *- Roll:* :d6-5: :d6-5: :d6-5: = 15
+                > *- Effective Level:* 11
+                > *- Margin of Failure:* 4
+                > *- Attribute:* HT: 11
+                > *- Modifier:* +0
                 """.trimIndent(), msg)
     }
     @Test
@@ -103,13 +103,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Rolled vs HT (11)
-                * *Outcome*: Critical Failure
-                * *Roll*: :d6-6: :d6-6: :d6-6: = 18
-                * *Effective Level*: 11
-                * *Margin of Failure*: 7
-                * *Attribute*: HT: 11
-                * *Modifier*: +0
+                *Roll:* Rolled vs HT (11)
+                > *- Outcome:* Critical Failure
+                > *- Roll:* :d6-6: :d6-6: :d6-6: = 18
+                > *- Effective Level:* 11
+                > *- Margin of Failure:* 7
+                > *- Attribute:* HT: 11
+                > *- Modifier:* +0
                 """.trimIndent(), msg)
     }
 
@@ -121,13 +121,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Rolled vs HT+2 (13)
-                * *Outcome*: Critical Success
-                * *Roll*: :d6-1: :d6-1: :d6-1: = 3
-                * *Effective Level*: 13
-                * *Margin of Success*: 10
-                * *Attribute*: HT: 11
-                * *Modifier*: +2
+                *Roll:* Rolled vs HT+2 (13)
+                > *- Outcome:* Critical Success
+                > *- Roll:* :d6-1: :d6-1: :d6-1: = 3
+                > *- Effective Level:* 13
+                > *- Margin of Success:* 10
+                > *- Attribute:* HT: 11
+                > *- Modifier:* +2
                 """.trimIndent(), msg)
     }
 
@@ -139,13 +139,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Rolled vs HT-2 (9)
-                * *Outcome*: Critical Success
-                * *Roll*: :d6-1: :d6-1: :d6-1: = 3
-                * *Effective Level*: 9
-                * *Margin of Success*: 6
-                * *Attribute*: HT: 11
-                * *Modifier*: -2
+                *Roll:* Rolled vs HT-2 (9)
+                > *- Outcome:* Critical Success
+                > *- Roll:* :d6-1: :d6-1: :d6-1: = 3
+                > *- Effective Level:* 9
+                > *- Margin of Success:* 6
+                > *- Attribute:* HT: 11
+                > *- Modifier:* -2
                 """.trimIndent(), msg)
     }
 
@@ -157,13 +157,13 @@ class AttributeRollMessagesTest {
         // then
         assertEquals(
                 """
-                * *Attempt*: Foo Barbazon Rolled vs HT-2 (9)
-                * *Outcome*: Critical Success
-                * *Roll*: :d6-1: :d6-1: :d6-1: = 3
-                * *Effective Level*: 9
-                * *Margin of Success*: 6
-                * *Attribute*: HT: 11
-                * *Modifier*: -2
+                *Roll:* Foo Barbazon Rolled vs HT-2 (9)
+                > *- Outcome:* Critical Success
+                > *- Roll:* :d6-1: :d6-1: :d6-1: = 3
+                > *- Effective Level:* 9
+                > *- Margin of Success:* 6
+                > *- Attribute:* HT: 11
+                > *- Modifier:* -2
                 """.trimIndent(), msg)
     }
 }

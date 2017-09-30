@@ -88,13 +88,13 @@ class InteractiveMessageControllerTest {
 
         // then
         assertEquals("""
-                * *Attempt*: character name Rolled vs skill-name (10)
-                * *Outcome*: Critical Failure
-                * *Roll*: :d6-6: :d6-6: :d6-6: = 18
-                * *Effective Level*: 10
-                * *Margin of Failure*: 8
-                * *Attribute*: skill-name: 10
-                * *Modifier*: +0""".trimIndent(),
+                *Roll:* character name Rolled vs skill-name (10)
+                > *- Outcome:* Critical Failure
+                > *- Roll:* :d6-6: :d6-6: :d6-6: = 18
+                > *- Effective Level:* 10
+                > *- Margin of Failure:* 8
+                > *- Attribute:* skill-name: 10
+                > *- Modifier:* +0""".trimIndent(),
                 message.text)
 
     }
