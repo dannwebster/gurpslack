@@ -20,7 +20,8 @@ class DamageRollOutcomeTest {
         // then
         assertEquals(DamageType.cut, outcome.damageSpec.damageType)
         assertEquals(0, outcome.totalDamage)
-        assertEquals(0, outcome.impactDamage)
+        assertEquals(0, outcome.damageAfterDr)
+        assertEquals(13, outcome.impactDamage)
     }
 
     @Test fun shouldCorrectStringWhenHasDr() {
@@ -36,7 +37,8 @@ class DamageRollOutcomeTest {
         // then
         assertEquals(DamageType.pi_plus, outcome.damageSpec.damageType)
         assertEquals(15, outcome.totalDamage)
-        assertEquals(10, outcome.impactDamage)
+        assertEquals(13, outcome.impactDamage)
+        assertEquals(10, outcome.damageAfterDr)
     }
 
     @Test fun shouldCorrectStringWhenHasDrAndName() {
@@ -52,6 +54,7 @@ class DamageRollOutcomeTest {
         // then
         assertEquals(DamageType.imp, outcome.damageSpec.damageType)
         assertEquals(20, outcome.totalDamage)
-        assertEquals(10 , outcome.impactDamage)
+        assertEquals(10 , outcome.damageAfterDr)
+        assertEquals(13 , outcome.impactDamage)
     }
 }

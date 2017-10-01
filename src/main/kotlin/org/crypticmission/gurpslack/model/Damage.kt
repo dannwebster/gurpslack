@@ -30,8 +30,9 @@ data class AttackRollOutcome(val attackName: String, val damageRollOutcome: Dama
 
 data class DamageRollOutcome(val damageSpec: DamageSpec,
                              val rollOutcome: RollOutcome, val damageResistance: Int) {
-    val impactDamage =  Math.max(rollOutcome.total - damageResistance, 0)
-    val totalDamage = Math.floor(impactDamage * damageSpec.damageType.multiplier).toInt()
+    val impactDamage =  rollOutcome.total
+    val damageAfterDr =  Math.max(rollOutcome.total - damageResistance, 0)
+    val totalDamage = Math.floor(damageAfterDr * damageSpec.damageType.multiplier).toInt()
 
     override fun toString() = message(this)
 }

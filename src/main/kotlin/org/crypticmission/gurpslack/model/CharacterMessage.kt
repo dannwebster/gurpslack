@@ -62,15 +62,18 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n") +
             "_*Skills:*_\n" +
             skills.values
+                    .sortedBy { skill -> skill.name }
                     .map { "    " + it.toString() }
                     .joinToString("\n", postfix = "\n") +
             "_*Melee Attacks*_:\n" +
             meleeAttacks.values
+                    .sortedBy { attack -> attack.attackName }
                     .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}" }
                     .sorted()
                     .joinToString("\n", postfix = "\n") +
             "_*Ranged Attacks*_:\n" +
             rangedAttacks.values
+                    .sortedBy { attack -> attack.attackName }
                     .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}" }
                     .sorted()
                     .joinToString("\n", postfix = "\n")

@@ -5,7 +5,7 @@ import org.junit.Test
 
 /**
  */
-class DamageRollTest {
+class DamageRollMessageTest {
     val rollSpec = RollSpec(2, 6, 4)
     val damageSpec = DamageSpec(rollSpec, DamageType.pi_plus_plus)
     val rollOutcome = RollOutcome(rollSpec, listOf(2, 3), 4)
