@@ -4,7 +4,6 @@ import org.crypticmission.gurpslack.loader.CharacterLoader
 import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.entities.CharacterSheet
 import org.crypticmission.gurpslack.repositories.CharacterRepository
-import org.crypticmission.gurpslack.repositories.CharacterSheetRepository
 import org.crypticmission.gurpslack.repositories.CharacterSheetService
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.slf4j.LoggerFactory
@@ -33,7 +32,7 @@ class UploadController(val characterRepository : CharacterRepository,
     @GetMapping("/character")
     fun getCharacterPage(@RequestParam key: String?) : ModelAndView {
         val message = if (key != null) {
-            var character = characterRepository.get(key)
+            var character = characterRepository.getByKey(key)
             if (character != null)
                 "Added character '${character.characterName}' under key '${key}'"
             else
@@ -43,12 +42,16 @@ class UploadController(val characterRepository : CharacterRepository,
         }
         return ModelAndView("uploadForm", mapOf(
                 "message" to message,
-                "characterList" to characterRepository.list()))
+                "characterByKeyList" to characterRepository.listByKey(),
+                "characterByUsernameList" to characterRepository.listByUserName()
+        ))
     }
 
     @PostMapping("/character")
-    fun postCharacter(@RequestParam key: String, @RequestParam("file") file: MultipartFile) : String {
-        val character = addCharacter(key, file)
+    fun postCharacter(@RequestParam key: String,
+                      @RequestParam username: String,
+                      @RequestParam("file") file: MultipartFile) : String {
+        val character = addCharacter(key, username, file)
         return "redirect:/character?key=${key}"
     }
 
@@ -64,7 +67,7 @@ class UploadController(val characterRepository : CharacterRepository,
         return mav
     }
 
-    fun addCharacter(key: String, file: MultipartFile): CharacterRoller =
+    fun addCharacter(key: String, userName: String, file: MultipartFile): CharacterRoller =
             file.inputStream.bufferedReader().use { reader ->
 
                 val xml = reader.readText()
@@ -74,8 +77,8 @@ class UploadController(val characterRepository : CharacterRepository,
                 val characterData = characterLoader.load(xml)
                 characterData ?: throw IllegalArgumentException("Unable to parse file to create character")
                 val character = characterData.toRoller(randomizer)
-                characterRepository.put(key, character)
-                logger.info("Successfully added ${key} to total ${characterRepository.list().size} characters")
+                characterRepository.put(key, userName, character)
+                logger.info("Successfully added ${key} to total ${characterRepository.listByKey().size} characters")
                 character
             }
 }

@@ -79,7 +79,7 @@ class InteractiveMessageControllerTest {
         val cr = CharacterRoller(Randomizer.MAX, "character name")
         cr.addSkill(Attribute("skill-name", 10))
         val repo = CharacterRepository()
-        repo.put("character-key", cr)
+        repo.put("character-key", null, cr)
 
         val subject = InteractiveMessageController(repo)
 
@@ -119,7 +119,7 @@ class InteractiveMessageControllerTest {
         // given
         val cr = CharacterRoller(Randomizer.MAX, "character name")
         val repo = CharacterRepository()
-        repo.put("character-key", cr)
+        repo.put("character-key", null, cr)
 
         val subject = InteractiveMessageController(repo)
 

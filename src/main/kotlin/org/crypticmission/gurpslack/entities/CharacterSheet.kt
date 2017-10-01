@@ -10,6 +10,7 @@ import javax.persistence.Id
 class CharacterSheet(
     var characterKey: String = "",
     var characterXml: String = "",
+    var userName: String = "",
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 )

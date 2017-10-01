@@ -172,7 +172,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
              rollFunction: (CharacterRoller) -> RichMessage?,
              characterKey: String,
              traitName: String) = characterRepository
-             .get(characterKey)
+             .getByKey(characterKey)
              ?.let { characterRoller ->
                  rollFunction(characterRoller) ?: RichMessage("unable to find ${type} '${traitName}' for character key '${characterKey}'")
             }

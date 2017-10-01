@@ -55,7 +55,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
         val attackName = data[1]
         val dr = parseDr(slashData.text)
 
-        val character = npcRepository.get(key)
+        val character = npcRepository.getByKey(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}").inChannel(false).encodedMessage()
             else -> {
@@ -78,7 +78,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
             null -> RichMessage("Could not roll vs a ${type} from data '${slashData.text}'").inChannel(false).encodedMessage()
             else -> {
                 val (characterKey, attributeName, modifier) = vsData
-                val character = npcRepository.get(characterKey)
+                val character = npcRepository.getByKey(characterKey)
                 when (character) {
                     null -> RichMessage("No character with abbreviation ${characterKey}")
                     else -> {

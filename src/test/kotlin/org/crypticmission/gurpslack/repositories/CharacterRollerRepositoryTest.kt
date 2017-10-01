@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.repositories
 
+import org.crypticmission.gurpslack.model.CharacterRoller
 import org.junit.Test
 import org.junit.Assert.*
 
@@ -11,8 +12,8 @@ class CharacterRollerRepositoryTest {
         val subject = CharacterRepository()
 
         // when
-        val wasAdded = subject.add("foo", "Foo Bar")
-        val added = subject.get("foo") ?: throw IllegalArgumentException()
+        val wasAdded = subject.add("foo", null,"Foo Bar")
+        val added = subject.getByKey("foo") ?: throw IllegalArgumentException()
 
         // then
         assertEquals(true, wasAdded)
@@ -22,15 +23,47 @@ class CharacterRollerRepositoryTest {
     @Test fun shouldNotCreateCharacterWhenOneDoesExist() {
         // given
         val subject = CharacterRepository()
-        val wasAdded = subject.add("foo", "Foo Bar")
+        val wasAdded = subject.add("foo", null,"Foo Bar")
         assertEquals(true, wasAdded)
 
         // when
-        val wasAddedAgain = subject.add("foo", "Foo Bar")
-        val added = subject.get("foo") ?: throw IllegalArgumentException()
+        val wasAddedAgain = subject.add("foo", null,"Foo Bar")
+        val added = subject.getByKey("foo") ?: throw IllegalArgumentException()
 
         // then
         assertEquals(false, wasAddedAgain)
         assertEquals("Foo Bar", added.characterName)
+    }
+
+    @Test
+    fun shouldBeAccessibleByUserNameWhenAddedWithUsername() {
+        // given
+        val subject = CharacterRepository()
+        val wasAdded = subject.add("foo", "UserName","Foo Bar")
+        assertEquals(true, wasAdded)
+
+        // when
+        val wasAddedAgain = subject.add("foo", null,"Foo Bar")
+        val added = subject.getByUserName("username") ?: throw IllegalArgumentException()
+
+        // then
+        assertEquals("Foo Bar", added.characterName)
+        assertEquals(false, wasAddedAgain)
+    }
+
+    @Test
+    fun shouldBeAccessibleByUserNameWhenPutWithUsername() {
+        // given
+        val subject = CharacterRepository()
+        val roller = CharacterRoller(Randomizer.MAX, "characterName",
+                emptyMap(),
+                emptyMap())
+        subject.put("foo", "username", roller)
+
+        // when
+        val retrieved = subject.getByUserName("username") ?: throw IllegalArgumentException()
+
+        // then
+        assertEquals(roller, retrieved)
     }
 }

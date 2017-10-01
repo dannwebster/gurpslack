@@ -29,7 +29,7 @@ class Initializer(
             val characterData = characterLoader.load(characterSheet.characterXml) ?:
                     throw IllegalArgumentException("could not load character ${characterSheet.characterKey}")
             val characterRoller = characterData.toRoller(randomizer)
-            characterRepository.put(characterSheet.characterKey, characterRoller)
+            characterRepository.put(characterSheet.characterKey, characterSheet.userName, characterRoller)
         }
     }
 }

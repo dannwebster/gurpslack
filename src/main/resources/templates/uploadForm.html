@@ -9,14 +9,24 @@
 		<form method="POST" enctype="multipart/form-data" action="/character">
 			<table>
 				<tr><td>Character Key:</td><td><input type="text" name="key" /></td></tr>
+				<tr><td>Username:</td><td><input type="text" name="username" /></td></tr>
 				<tr><td>Character File to upload:</td><td><input type="file" name="file" /></td></tr>
 				<tr><td></td><td><input type="submit" value="Upload" /></td></tr>
 			</table>
 		</form>
 	</div>
 
+
 	<div>
-        <ul th:each="characterPair : ${characterList}">
+        <h1>Characters by Key</h1>
+        <ul th:each="characterPair : ${characterByKeyList}">
+            <li th:text="|${characterPair.first}: ${characterPair.second.characterName}|"></li>
+		</ul>
+	</div>
+
+	<div>
+        <h1>Characters by Username</h1>
+        <ul th:each="characterPair : ${characterByUsernameList}">
             <li th:text="|${characterPair.first}: ${characterPair.second.characterName}|"></li>
 		</ul>
 	</div>
