@@ -25,7 +25,7 @@
 	</div>
 
 	<div>
-        <h1>Characters by Username</h1>
+        <h1>Characters by User Name</h1>
         <ul th:each="characterPair : ${characterByUsernameList}">
             <li th:text="|${characterPair.second.first}: ${characterPair.second.second.characterName}|"></li>
 		</ul>
