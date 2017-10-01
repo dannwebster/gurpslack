@@ -65,6 +65,7 @@ class CharacterRollerRepositoryTest {
         val retrieved = subject.getByUserName("username") ?: throw IllegalArgumentException()
 
         // then
-        assertEquals(roller, retrieved)
+        assertEquals("foo", retrieved.first)
+        assertEquals(roller, retrieved.second)
     }
 }

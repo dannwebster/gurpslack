@@ -27,7 +27,7 @@
 	<div>
         <h1>Characters by Username</h1>
         <ul th:each="characterPair : ${characterByUsernameList}">
-            <li th:text="|${characterPair.first}: ${characterPair.second.characterName}|"></li>
+            <li th:text="|${characterPair.second.first}: ${characterPair.second.second.characterName}|"></li>
 		</ul>
 	</div>
 

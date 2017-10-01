@@ -71,7 +71,7 @@ class UploadController(val characterRepository : CharacterRepository,
             file.inputStream.bufferedReader().use { reader ->
 
                 val xml = reader.readText()
-                val characterSheet = CharacterSheet(key, xml)
+                val characterSheet = CharacterSheet(key, xml, userName)
                 characterSheetService.saveOrUpdate(characterSheet)
 
                 val characterData = characterLoader.load(xml)
