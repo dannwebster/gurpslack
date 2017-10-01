@@ -69,13 +69,11 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
             meleeAttacks.values
                     .sortedBy { attack -> attack.attackName }
                     .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}" }
-                    .sorted()
                     .joinToString("\n", postfix = "\n") +
             "_*Ranged Attacks*_:\n" +
             rangedAttacks.values
                     .sortedBy { attack -> attack.attackName }
                     .map { attack -> "    ${attack.attackName}: ${attack.damageSpec.canonical}" }
-                    .sorted()
                     .joinToString("\n", postfix = "\n")
 }
 
@@ -137,6 +135,7 @@ private fun visibility() = VisibilityOption.values().map { it.option }
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
         skills
+                .sortedBy { skill -> skill.name }
                 .map { attribute -> skillToButton(key, attribute) }
                 .groupBy(3)
                 .mapIndexed { index, list ->
@@ -148,6 +147,7 @@ private fun skillAttachments(key: String, skills: Collection<Attribute>): List<A
 
 private fun attackAttachments(key: String, type: String, attacks: Collection<Attack>): List<ActionAttachment> =
         attacks
+                .sortedBy { attack -> attack.attackName }
                 .map { attack -> attackToButton(key, type, attack) }
                 .groupBy(3)
                 .mapIndexed { index, list ->
