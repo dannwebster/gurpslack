@@ -9,7 +9,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class PcController(val npcRepository: CharacterRepository) {
+class PcController(val characterRepository: CharacterRepository) {
     companion object {
         private val logger = LoggerFactory.getLogger(PcController::class.java)
     }
@@ -34,11 +34,14 @@ class PcController(val npcRepository: CharacterRepository) {
             doGetPc(slashData, arrayOf(CharacterSections.MELEE_ATTACKS, CharacterSections.RANGED_ATTACKS))
 
     fun doGetPc(slashData: SlashData, sections: Array<CharacterSections>): RichMessage {
-        val username = slashData.userName.trim()
-        val npc = npcRepository.getByUserName(username)
-        return when (npc) {
-            null -> RichMessage("CharacterRoller with username ${username} does not exist")
-            else -> richMessage(username, npc, sections)
+        logger.debug("doGetPC: ${slashData}")
+        val username = slashData.user_name.trim()
+        logger.debug("getting PC for username ${username}")
+        val keyPcPair = characterRepository.getByUserName(username)
+        logger.debug("pc for username ${username} is ${keyPcPair?.second?.characterName} for key ${keyPcPair?.first}")
+        return when (keyPcPair) {
+            null -> RichMessage("CharacterRoller with username '${username}' does not exist")
+            else -> richMessage(keyPcPair.first, keyPcPair.second, sections)
         }.encodedMessage()
     }
 

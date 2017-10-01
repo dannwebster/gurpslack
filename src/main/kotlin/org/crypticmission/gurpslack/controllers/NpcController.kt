@@ -10,7 +10,7 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class NpcController(val npcRepository: CharacterRepository) {
+class NpcController(val characterRepository: CharacterRepository) {
     companion object {
         private val logger = LoggerFactory.getLogger(NpcController::class.java)
     }
@@ -22,7 +22,7 @@ class NpcController(val npcRepository: CharacterRepository) {
     fun delNpc(slashData: SlashData): RichMessage {
         val characterAbbrev = slashData.text
 
-        val removed = npcRepository.removeByKey(characterAbbrev)
+        val removed = characterRepository.removeByKey(characterAbbrev)
         return when (removed) {
             null -> RichMessage("No character with abbreviation ${characterAbbrev} exists, so none removed")
             else -> RichMessage("Removed CharacterRoller ${removed.characterName} with abbreviation ${characterAbbrev}")
@@ -43,7 +43,7 @@ class NpcController(val npcRepository: CharacterRepository) {
 
     fun doGetNpc(slashData: SlashData, sections: Array<CharacterSections>): RichMessage {
         val key = slashData.text.trim()
-        val npc = npcRepository.getByKey(key)
+        val npc = characterRepository.getByKey(key)
         return when (npc) {
             null -> RichMessage("CharacterRoller with abbreviation ${key} does not exist")
             else -> richMessage(key, npc, sections)
@@ -52,7 +52,7 @@ class NpcController(val npcRepository: CharacterRepository) {
 
     @PostMapping("/npclist")
     fun listNpcs(slashData: SlashData): RichMessage {
-        return RichMessage(npcRepository
+        return RichMessage(characterRepository
                 .listByKey()
                 .joinToString("\n") { (key, character) -> "${key} => ${character.characterName}" })
                 .encodedMessage()
@@ -63,7 +63,7 @@ class NpcController(val npcRepository: CharacterRepository) {
         val (characterAbbrev, characterName) = parseName(slashData.text) ?:
             return RichMessage("Can't add character from data '${slashData.text}'")
 
-        return when (npcRepository.add(characterAbbrev, null, characterName)) {
+        return when (characterRepository.add(characterAbbrev, null, characterName)) {
             true -> RichMessage("Created CharacterRoller ${characterName} with abbreviation ${characterAbbrev}")
             false -> RichMessage("CharacterRoller with abbreviation ${characterAbbrev} already exists")
         }.encodedMessage()
@@ -74,7 +74,7 @@ class NpcController(val npcRepository: CharacterRepository) {
         val attackData = parseAttack(slashData.text) ?:
                 return RichMessage("Can't add an ranged attack from data '${slashData.text}'")
         val key = attackData.first
-        val character = npcRepository.getByKey(key)
+        val character = characterRepository.getByKey(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}")
             else -> {
@@ -90,7 +90,7 @@ class NpcController(val npcRepository: CharacterRepository) {
         val attackData = parseAttack(slashData.text) ?:
                 return RichMessage("Can't add an melee attack from data '${slashData.text}'")
         val key = attackData.first
-        val character = npcRepository.getByKey(key)
+        val character = characterRepository.getByKey(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}")
             else -> {
@@ -115,7 +115,7 @@ class NpcController(val npcRepository: CharacterRepository) {
         val attributeData = parseAttribute(slashData.text) ?:
                 return RichMessage("Can't add ${type} from data '${slashData.text}'")
         val key = attributeData.first
-        val character = npcRepository.getByKey(key)
+        val character = characterRepository.getByKey(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}")
             else -> {

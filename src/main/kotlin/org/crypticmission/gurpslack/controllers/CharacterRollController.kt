@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RestController
  */
 
 @RestController
-class CharacterRollController(val randomizer: Randomizer, val npcRepository: CharacterRepository) {
+class CharacterRollController(val randomizer: Randomizer, val characterRepository: CharacterRepository) {
     companion object {
         private val logger = LoggerFactory.getLogger(RollController::class.java)
     }
@@ -55,7 +55,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
         val attackName = data[1]
         val dr = parseDr(slashData.text)
 
-        val character = npcRepository.getByKey(key)
+        val character = characterRepository.getByKey(key)
         return when (character) {
             null -> RichMessage("No character with abbreviation ${key}").inChannel(false).encodedMessage()
             else -> {
@@ -78,7 +78,7 @@ class CharacterRollController(val randomizer: Randomizer, val npcRepository: Cha
             null -> RichMessage("Could not roll vs a ${type} from data '${slashData.text}'").inChannel(false).encodedMessage()
             else -> {
                 val (characterKey, attributeName, modifier) = vsData
-                val character = npcRepository.getByKey(characterKey)
+                val character = characterRepository.getByKey(characterKey)
                 when (character) {
                     null -> RichMessage("No character with abbreviation ${characterKey}")
                     else -> {

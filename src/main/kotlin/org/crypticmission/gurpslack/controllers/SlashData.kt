@@ -1,16 +1,21 @@
 package org.crypticmission.gurpslack.controllers
 
+import com.fasterxml.jackson.databind.PropertyNamingStrategy
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+
 /**
+ * @TODO: make snakecase work so I don't have to have these wonky snakeCase variable names
  */
-class SlashData {
-    lateinit var token: String
-    lateinit var teamId: String
-    lateinit var teamDomain: String
-    lateinit var channelId: String
-    lateinit var channelName: String
-    lateinit var userId: String
-    lateinit var userName: String
-    lateinit var command: String
-    lateinit var text: String
-    lateinit var responseUrl: String
-}
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
+data class SlashData (
+    var token: String = "",
+    var team_id: String = "",
+    var team_domain: String = "",
+    var channel_id: String = "",
+    var channel_name: String = "",
+    var user_id: String = "",
+    var user_name: String = "",
+    var command: String = "",
+    var text: String = "",
+    var response_url: String = ""
+)
