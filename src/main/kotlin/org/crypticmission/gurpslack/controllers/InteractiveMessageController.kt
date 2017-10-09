@@ -89,8 +89,8 @@ class InteractiveMessageController(val characterRepository: CharacterRepository,
         val richMessage = when (action.type) {
             "button" -> doButtonMessage(action, message, messageData)
             "select" -> when(action.name) {
-                "shots-fired" -> doRateOfFire(action, message, messageData, modifierCache)
-                "success-margin" -> doSuccessMargin(action, message, messageData, modifierCache)
+                "shots-fired" -> doShotsFired(action, messageData, shotsFiredCache, marginOfSuccessCache)
+                "success-margin" -> doMarginOfSuccess(action, messageData, shotsFiredCache, marginOfSuccessCache)
                 "modifier" -> doModifier(action, message, messageData, modifierCache)
                 "visibility" -> doVisibility(action, message, messageData, visibilityCache)
                 "dr" -> doDamageResistance(action, message, messageData, damageResistanceCache)
@@ -108,22 +108,23 @@ class InteractiveMessageController(val characterRepository: CharacterRepository,
     }
 
     private fun shotsFiredMessage(messageData: MessageData, shotsFired: Int, marginOfSuccess: Int): RichMessage {
-        return RichMessage("""
-            > Next attack made by ${messageData.user.name}:
-            > *- Shots Fired:* ${shotsFired.toSignedStringWithZero()}
-            > *- Margin of Success:* ${marginOfSuccess.toSignedStringWithZero()}
-            """.trimMargin()
+        return RichMessage(
+"""
+Next attack made by ${messageData.user.name}:
+> *- Shots Fired:* ${shotsFired.toSignedStringWithZero()}
+> *- Margin of Success:* ${marginOfSuccess.toSignedStringWithZero()}
+""".trimMargin()
         )
     }
 
-    private fun doRateOfFire(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
+    private fun doShotsFired(action: Action, messageData: MessageData, shotsFiredCache: ValueCache<Int>, marginOfSuccessCache: ValueCache<Int>): RichMessage {
         val shotsFired = action.selectedValue()?.toInt() ?: 0
         shotsFiredCache.putValue(messageData, shotsFired)
         val marginOfSuccess = marginOfSuccessCache.getValue(messageData)
         return shotsFiredMessage(messageData, shotsFired, marginOfSuccess)
     }
 
-    private fun doSuccessMargin(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
+    private fun doMarginOfSuccess(action: Action, messageData: MessageData, shotsFiredCache: ValueCache<Int>, marginOfSuccessCache: ValueCache<Int>): RichMessage {
         val marginOfSuccess = action.selectedValue()?.toInt() ?: 0
         marginOfSuccessCache.putValue(messageData, marginOfSuccess)
         val shotsFired = shotsFiredCache.getValue(messageData)
