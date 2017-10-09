@@ -68,6 +68,8 @@ class ValueCache<T>(val defaultValue: T) {
 class InteractiveMessageController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(InteractiveMessageController::class.java)
 
+    val rateOfFireCache = ValueCache<Int>(1)
+    val marginOfSuccessCache = ValueCache<Int>(0)
     val modifierCache = ValueCache<Int>(0)
     val damageResistanceCache = ValueCache<Int>(0)
     val visibilityCache = ValueCache<Boolean>(true)
@@ -87,6 +89,8 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         val richMessage = when (action.type) {
             "button" -> doButtonMessage(action, message, messageData, modifierCache)
             "select" -> when(action.name) {
+                "rate-of-fire" -> doRateOfFire(action, message, messageData, modifierCache)
+                "success-margin" -> doSuccessMargin(action, message, messageData, modifierCache)
                 "modifier" -> doModifier(action, message, messageData, modifierCache)
                 "visibility" -> doVisibility(action, message, messageData, visibilityCache)
                 "dr" -> doDamageResistance(action, message, messageData, damageResistanceCache)
@@ -101,6 +105,29 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
                 .replaceOriginal(false)
                 .inChannel(inChannel)
                 .encodedMessage()
+    }
+
+    private fun rofMessage(messageData: MessageData, rof: Int, marginOfSuccess: Int): RichMessage {
+        return RichMessage("""
+            > Next attack made by ${messageData.user.name}:
+            > * Rate of Fire: ${rof.toSignedStringWithZero()}
+            > * Margin of Success : ${rof.toSignedStringWithZero()}
+            """.trimMargin()
+        )
+    }
+
+    private fun doRateOfFire(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
+        val rateOfFire = action.selectedValue()?.toInt() ?: 0
+        rateOfFireCache.putValue(messageData, rateOfFire)
+        val marginOfSuccess = marginOfSuccessCache.getValue(messageData)
+        return rofMessage(messageData, rateOfFire, marginOfSuccess)
+    }
+
+    private fun doSuccessMargin(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
+        val marginOfSuccess = action.selectedValue()?.toInt() ?: 0
+        marginOfSuccessCache.putValue(messageData, marginOfSuccess)
+        val rateOfFire = rateOfFireCache.getValue(messageData)
+        return rofMessage(messageData, rateOfFire, marginOfSuccess)
     }
 
     private fun doModifier(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
