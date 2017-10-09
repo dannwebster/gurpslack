@@ -65,10 +65,10 @@ class ValueCache<T>(val defaultValue: T) {
 
 }
 @RestController
-class InteractiveMessageController(val characterRepository: CharacterRepository) {
+class InteractiveMessageController(val characterRepository: CharacterRepository, val shotsFiredCalculator: ShotsFiredCalculator) {
     private val logger = LoggerFactory.getLogger(InteractiveMessageController::class.java)
 
-    val rateOfFireCache = ValueCache<Int>(1)
+    val shotsFiredCache = ValueCache<Int>(1)
     val marginOfSuccessCache = ValueCache<Int>(0)
     val modifierCache = ValueCache<Int>(0)
     val damageResistanceCache = ValueCache<Int>(0)
@@ -87,7 +87,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         logger.info(message)
 
         val richMessage = when (action.type) {
-            "button" -> doButtonMessage(action, message, messageData, modifierCache)
+            "button" -> doButtonMessage(action, message, messageData)
             "select" -> when(action.name) {
                 "rate-of-fire" -> doRateOfFire(action, message, messageData, modifierCache)
                 "success-margin" -> doSuccessMargin(action, message, messageData, modifierCache)
@@ -107,27 +107,27 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
                 .encodedMessage()
     }
 
-    private fun rofMessage(messageData: MessageData, rof: Int, marginOfSuccess: Int): RichMessage {
+    private fun shotsFiredMessage(messageData: MessageData, shotsFired: Int, marginOfSuccess: Int): RichMessage {
         return RichMessage("""
             > Next attack made by ${messageData.user.name}:
-            > * Rate of Fire: ${rof.toSignedStringWithZero()}
-            > * Margin of Success : ${rof.toSignedStringWithZero()}
+            > *- Shots Fired:* ${shotsFired.toSignedStringWithZero()}
+            > *- Margin of Success:* ${marginOfSuccess.toSignedStringWithZero()}
             """.trimMargin()
         )
     }
 
     private fun doRateOfFire(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
-        val rateOfFire = action.selectedValue()?.toInt() ?: 0
-        rateOfFireCache.putValue(messageData, rateOfFire)
+        val shotsFired = action.selectedValue()?.toInt() ?: 0
+        shotsFiredCache.putValue(messageData, shotsFired)
         val marginOfSuccess = marginOfSuccessCache.getValue(messageData)
-        return rofMessage(messageData, rateOfFire, marginOfSuccess)
+        return shotsFiredMessage(messageData, shotsFired, marginOfSuccess)
     }
 
     private fun doSuccessMargin(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
         val marginOfSuccess = action.selectedValue()?.toInt() ?: 0
         marginOfSuccessCache.putValue(messageData, marginOfSuccess)
-        val rateOfFire = rateOfFireCache.getValue(messageData)
-        return rofMessage(messageData, rateOfFire, marginOfSuccess)
+        val shotsFired = shotsFiredCache.getValue(messageData)
+        return shotsFiredMessage(messageData, shotsFired, marginOfSuccess)
     }
 
     private fun doModifier(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
@@ -150,7 +150,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         return RichMessage("next roll will be visible to ${visibility.option.text}")
     }
 
-    private fun doButtonMessage(action: Action, message: String, messageData: MessageData, modifierCache: ValueCache<Int>): RichMessage {
+    private fun doButtonMessage(action: Action, message: String, messageData: MessageData): RichMessage {
         val (characterKey, traitName) = action.value?.split("@") ?: throw IllegalArgumentException("value must be set")
 
         val richMessage: RichMessage = when (action.name) {
@@ -159,7 +159,15 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
             "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifierCache.getAndClearValue(messageData))
 
             "meleeAttack" -> meleeAttack(characterKey.toKey(), traitName.toKey(), damageResistanceCache.getAndClearValue(messageData))
-            "rangedAttack" -> rangedAttack(characterKey.toKey(), traitName.toKey(), damageResistanceCache.getAndClearValue(messageData))
+            "rangedAttack" -> rangedAttack(
+                    characterKey.toKey(),
+                    traitName.toKey(),
+                    damageResistanceCache.getAndClearValue(messageData),
+                    shotsFiredCache.getAndClearValue(messageData),
+                    marginOfSuccessCache.getAndClearValue(messageData),
+                    1
+
+            )
 
             else -> null
         } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", messageData.callbackId, false)
@@ -188,7 +196,8 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
             key,
             traitName)
 
-    fun rangedAttack(key: String, traitName: String, damageResistance: Int) = roll(
+    fun rangedAttack(key: String, traitName: String, damageResistance: Int,
+                     shotsFired: Int, marginOfSuccess: Int, recoil: Int) = roll(
             "attack",
             { cr:CharacterRoller -> cr.rollRangedAttackDamage(traitName, damageResistance )?.let{ richMessage(it) }},
             key,
@@ -198,7 +207,8 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
     fun roll(type: String,
              rollFunction: (CharacterRoller) -> RichMessage?,
              characterKey: String,
-             traitName: String) = characterRepository
+             traitName: String) =
+            characterRepository
              .getByKey(characterKey)
              ?.let { characterRoller ->
                  rollFunction(characterRoller) ?: RichMessage("unable to find ${type} '${traitName}' for character key '${characterKey}'")
