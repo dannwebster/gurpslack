@@ -77,13 +77,13 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-enum class MenuType() { DR, MOD }
+enum class MenuType() { DAMAGE, MOD }
 enum class CharacterSections(val menuType: MenuType) {
     PRIMARY_ATTRIBUTES(MenuType.MOD),
     DERIVED_ATTRIBUTES(MenuType.MOD),
     SKILLS(MenuType.MOD),
-    MELEE_ATTACKS(MenuType.DR),
-    RANGED_ATTACKS(MenuType.DR),
+    MELEE_ATTACKS(MenuType.DAMAGE),
+    RANGED_ATTACKS(MenuType.DAMAGE)
 }
 
 fun richMessage(key: String, characterRoller: CharacterRoller,
@@ -117,6 +117,8 @@ private fun optionsAttachment(key: String, sections : Array<CharacterSections>):
 
 private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"
 
+val SUCCESS_MARGIN_MENU = Menu("sucess-margin", "Margin of Success", "select", options = successMargin())
+val RATE_OF_FIRE_MENU = Menu("rate-of-fire", "Rate of Fire", "select", options = rateOfFire())
 val DR_MENU = Menu("dr", "Damage Resistance", "select", options = dr())
 val MODIFIER_MENU = Menu("modifier", "Modifier", "select", options = modifiers())
 val VISIBILITY_MENU = Menu("visibility", "Visibility", "select", options = visibility())
@@ -125,10 +127,16 @@ private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
     val set = sections.map { it.menuType }.toSet()
     val options = mutableListOf(VISIBILITY_MENU)
     if (set.contains(MenuType.MOD)) options += MODIFIER_MENU
-    if (set.contains(MenuType.DR)) options += DR_MENU
+    if (set.contains(MenuType.DAMAGE)) {
+        options += DR_MENU
+        options += SUCCESS_MARGIN_MENU
+        options += RATE_OF_FIRE_MENU
+    }
     return options
 }
 
+private fun successMargin() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
+private fun rateOfFire() = (0 .. 30).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = VisibilityOption.values().map { it.option }
