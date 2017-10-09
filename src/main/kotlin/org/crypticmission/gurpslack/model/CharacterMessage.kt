@@ -117,7 +117,7 @@ private fun optionsAttachment(key: String, sections : Array<CharacterSections>):
 
 private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"
 
-val SUCCESS_MARGIN_MENU = Menu("sucess-margin", "Margin of Success", "select", options = successMargin())
+val SUCCESS_MARGIN_MENU = Menu("success-margin", "Margin of Success", "select", options = successMargin())
 val RATE_OF_FIRE_MENU = Menu("shots-fired", "Shots Fired", "select", options = rateOfFire())
 val DR_MENU = Menu("dr", "Damage Resistance", "select", options = dr())
 val MODIFIER_MENU = Menu("modifier", "Modifier", "select", options = modifiers())
