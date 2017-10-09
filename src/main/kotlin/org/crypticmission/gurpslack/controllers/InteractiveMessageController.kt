@@ -89,7 +89,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository,
         val richMessage = when (action.type) {
             "button" -> doButtonMessage(action, message, messageData)
             "select" -> when(action.name) {
-                "rate-of-fire" -> doRateOfFire(action, message, messageData, modifierCache)
+                "shots-fired" -> doRateOfFire(action, message, messageData, modifierCache)
                 "success-margin" -> doSuccessMargin(action, message, messageData, modifierCache)
                 "modifier" -> doModifier(action, message, messageData, modifierCache)
                 "visibility" -> doVisibility(action, message, messageData, visibilityCache)
