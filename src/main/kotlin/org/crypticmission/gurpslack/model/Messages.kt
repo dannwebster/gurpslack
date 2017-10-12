@@ -65,7 +65,7 @@ fun message(attackRollOutcome: AttackRollOutcome) = with (attackRollOutcome) {
 fun message(damageRollOutcome: DamageRollOutcome, attackName: String? = null, actor: String? = null) =
         damageRollOutcome.multiShotMessage(attackName, actor)
 
-private fun DamageRollOutcome.linePrefix() = (if (isMultiShot()) "\n>   - " else " ")
+private fun DamageRollOutcome.linePrefix() = (if (isMultiShot()) "\n>   • " else " ")
 
 private fun DamageRollOutcome.multiShotMessage(attackName: String?, actor: String?) =
     messageHeader(actor, attackName) +

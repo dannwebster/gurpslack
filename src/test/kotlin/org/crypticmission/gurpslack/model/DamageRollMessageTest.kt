@@ -84,13 +84,13 @@ class DamageRollMessageTest {
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
                 > *- Rolls:*
-                >   - 9 = :d6-2: :d6-3:+4
-                >   - 9 = :d6-2: :d6-3:+4
-                >   - 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
                 > *- Details:* 42 = 14 + 14 + 14
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
                 """.trimIndent(), msg)
     }
 
@@ -107,13 +107,13 @@ class DamageRollMessageTest {
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
                 > *- Rolls:*
-                >   - 9 = :d6-2: :d6-3:+4
-                >   - 9 = :d6-2: :d6-3:+4
-                >   - 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
                 > *- Details:* 42 = 14 + 14 + 14
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
                 """.trimIndent(), msg)
     }
 
@@ -130,13 +130,13 @@ class DamageRollMessageTest {
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
                 > *- Rolls:*
-                >   - 9 = :d6-2: :d6-3:+4
-                >   - 9 = :d6-2: :d6-3:+4
-                >   - 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
+                >   • 9 = :d6-2: :d6-3:+4
                 > *- Details:* 42 = 14 + 14 + 14
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
-                >   - `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
+                >   • `14 = [(9 impact damage - DR 2) * 2.0 for huge piercing]`
                 """.trimIndent(), msg)
 
     }
