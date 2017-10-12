@@ -42,17 +42,22 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
         val attack = getMeleeAttack(attackName)
         return when (attack) {
             null -> null
-            else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer))
+            else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer, 1))
         }
     }
 
     fun rollRangedAttackDamage(attackName: String, damageResistance: Int, shotsFired: Int = 1, marginOfSuccess: Int = 0): CharacterAttackRollOutcome? {
         val attack = getRangedAttack(attackName)
+
         return when (attack) {
             null -> null
-            else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer))
+            else -> {
+                val hits = calculateHits(shotsFired, marginOfSuccess, attack.recoil)
+                CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer, hits))
+            }
         }
     }
+
 
     fun getSkill(name: String) = skills[name.toKey()]
     fun getAttribute(name: String) = attributes[name.toKey()]
@@ -81,3 +86,10 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     fun addSkill(newSkills: Iterable<Attribute>) =
             newSkills.forEach { skill -> skills[skill.name.toKey()] = skill }
 }
+
+fun calculateHits(shotsFired: Int, marginOfSuccess: Int, recoil: Int) =
+        if (shotsFired < 1 || marginOfSuccess < 0)
+            0
+        else
+            Math.min(1 + (marginOfSuccess / recoil), shotsFired)
+

@@ -15,17 +15,15 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
 }
 
 
-data class Attack(val attackName: String, val damageSpec: DamageSpec) {
-    fun rollVsDr(damageResistance: Int, rand: Randomizer) =
-            AttackRollOutcome(attackName, damageSpec.rollVsDr(damageResistance, rand))
+data class Attack(val attackName: String, val damageSpec: DamageSpec, val recoil: Int = 1) {
+    fun rollVsDr(damageResistance: Int, rand: Randomizer, hits: Int) =
+            AttackRollOutcome(attackName, damageSpec.rollVsDr(damageResistance, rand, hits))
 }
 
 data class DamageSpec(val rollSpec: RollSpec, val damageType: DamageType = DamageType.cru) {
     val canonical = "${rollSpec.canonical} ${damageType.shortForm}"
-    fun rollVsDr(damageResistance: Int, rand: Randomizer): DamageRollOutcome =
-            DamageRollOutcome(this, rollSpec.roll(rand), damageResistance)
 
-    fun rollMultipleShotsVsDr(damageResistance: Int, rand: Randomizer, hits:Int): DamageRollOutcome =
+    fun rollVsDr(damageResistance: Int, rand: Randomizer, hits:Int): DamageRollOutcome =
             DamageRollOutcome(this, (1 .. hits).map{rollSpec.roll(rand)}, damageResistance)
 
 }
