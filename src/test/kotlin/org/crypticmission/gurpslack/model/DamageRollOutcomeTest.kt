@@ -15,7 +15,7 @@ class DamageRollOutcomeTest {
         val rand = Randomizer.MAX
 
         // when
-        val outcome = spec.rollVsDr(dr, rand, 1)
+        val outcome = spec.rollVsDr(rand, dr)
 
         // then
         assertEquals(DamageType.cut, outcome.damageSpec.damageType)
@@ -32,7 +32,7 @@ class DamageRollOutcomeTest {
         val rand = Randomizer.MAX
 
         // when
-        val outcome = spec.rollVsDr(dr, rand, 1)
+        val outcome = spec.rollVsDr(rand, dr)
 
         // then
         assertEquals(DamageType.pi_plus, outcome.damageSpec.damageType)
@@ -49,7 +49,7 @@ class DamageRollOutcomeTest {
         val rand = Randomizer.MAX
 
         // when
-        val outcome = spec.rollVsDr(dr, rand, 1)
+        val outcome = spec.rollVsDr(rand, dr)
 
         // then
         assertEquals(DamageType.imp, outcome.damageSpec.damageType)

@@ -69,17 +69,27 @@ private fun DamageRollOutcome.linePrefix() = (if (isMultiShot()) "\n>   • " el
 
 private fun DamageRollOutcome.multiShotMessage(attackName: String?, actor: String?) =
     messageHeader(actor, attackName) +
+            multiShotPart() +
             rollDetailsPart() +
             mathPart()
 
 private fun DamageRollOutcome.messageHeader(actor: String?, attackName: String?): String {
     return """
-    |*Damage Roll:* ${actor?.plus(" attacks") ?: "Attack"}${attackName?.let { " with " + attackName } ?: ""}${if (isMultiShot()) " ${rollOutcomes.size} times" else ""} vs DR ${damageResistance}
+    |*Damage Roll:* ${actor?.plus("'s attack") ?: "Attack"}${attackName?.let { " with " + attackName } ?: ""}${if (isMultiShot()) " hits ${rollOutcomes.size} times" else ""} vs DR ${damageResistance}
     |> *- Outcome:* ${totalFinalDamage} ${damageSpec.damageType.longForm} damage after DR
     |> *- Damage:* ${damageSpec.canonical}
     |> *- DR:* ${damageResistance}
     """.trimMargin("|").trimIndent() + "\n"
 }
+
+private fun DamageRollOutcome.multiShotPart() =
+    when (this.multiShotDescriptor) {
+        null -> ""
+        else -> with(this.multiShotDescriptor) {
+            "> *- Hits:* ${hits} hits from ${shotsFired} shots fired = " +
+                    "`max of (${shotsFired} or [1 hit + (made by ${marginOfSuccess} / recoil of ${recoil})])`\n"
+        }
+    }
 
 private fun DamageRollOutcome.rollDetailsPart(): String  =
     "> *- Roll${if (isMultiShot()) "s" else ""}:*" +

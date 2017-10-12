@@ -10,6 +10,10 @@ data class CharacterAttackRollOutcome(val characterName: String, val attackRollO
     override fun toString() = message(this)
 }
 
+data class TrackedValue(val name: String, val max: Int, var current: Int) {
+    fun change(amount: Int) { current = Math.min(max, current + amount)}
+}
+
 class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       val characterName: String,
                       attributes: Map<String, Attribute> = emptyMap(),
@@ -21,6 +25,11 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     val skills = HashMap<String, Attribute>(skills.mapKeys { (k, _) -> k.toKey() })
     val meleeAttacks = HashMap<String, Attack>(meleeAttacks.mapKeys { (k, _) -> k.toKey() })
     val rangedAttacks = HashMap<String, Attack>(rangedAttacks.mapKeys { (k, _) -> k.toKey() })
+//    val trackedStats = trackedValues.map { Pair(it.name, it) }.toMap()
+
+//    fun modifyTrackedStat(statName: String, change: Int) {
+//        trackedStats.get(statName)?.change(change)
+//    }
 
     fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome? {
         val skill = getSkill(name)
@@ -42,7 +51,7 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
         val attack = getMeleeAttack(attackName)
         return when (attack) {
             null -> null
-            else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer, 1))
+            else -> CharacterAttackRollOutcome(characterName, attack.rollVsDr(randomizer, damageResistance))
         }
     }
 
@@ -52,8 +61,7 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
         return when (attack) {
             null -> null
             else -> {
-                val hits = calculateHits(shotsFired, marginOfSuccess, attack.recoil)
-                CharacterAttackRollOutcome(characterName, attack.rollVsDr(damageResistance, randomizer, hits))
+                CharacterAttackRollOutcome(characterName, attack.rollMultiVsDr(randomizer, damageResistance, shotsFired, marginOfSuccess))
             }
         }
     }
@@ -87,11 +95,5 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
             newSkills.forEach { skill -> skills[skill.name.toKey()] = skill }
 }
 
-fun calculateHits(shotsFired: Int, marginOfSuccess: Int, recoil: Double?) =
-        if (recoil == null)
-            throw IllegalStateException("cannot calculate multiple shots if the attack does not have recoil")
-        else if (shotsFired < 1 || marginOfSuccess < 0)
-            0
-        else
-            Math.min(1 + (marginOfSuccess / recoil).toInt(), shotsFired)
+
 

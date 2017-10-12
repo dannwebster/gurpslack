@@ -16,7 +16,8 @@ class DamageRollMessageTest {
     val rollOutcome2 = RollOutcome(rollSpec, listOf(2, 3), 4)
     val rollOutcome3 = RollOutcome(rollSpec, listOf(2, 3), 4)
     val rollOutcomes = listOf(rollOutcome, rollOutcome2, rollOutcome3)
-    val multiDamageRollOutcome = DamageRollOutcome(damageSpec, rollOutcomes, 2)
+    val multiShotDescriptor = MultiShotDescriptor(5, 2.0, 5)
+    val multiDamageRollOutcome = DamageRollOutcome(damageSpec, rollOutcomes, 2, multiShotDescriptor)
     val multiAttackRollOutcome = AttackRollOutcome("Rifle", multiDamageRollOutcome)
     val multiCharacterAttackRollOutcome = CharacterAttackRollOutcome("R. C. Cleveland", multiAttackRollOutcome)
 
@@ -62,7 +63,7 @@ class DamageRollMessageTest {
         // then
         assertEquals(
                 """
-                *Damage Roll:* R. C. Cleveland attacks with Rifle vs DR 2
+                *Damage Roll:* R. C. Cleveland's attack with Rifle vs DR 2
                 > *- Outcome:* 14 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
@@ -79,10 +80,11 @@ class DamageRollMessageTest {
         // then
         assertEquals(
                 """
-                *Damage Roll:* Attack 3 times vs DR 2
+                *Damage Roll:* Attack hits 3 times vs DR 2
                 > *- Outcome:* 42 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
+                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2.0)])`
                 > *- Rolls:*
                 >   • 9 = :d6-2: :d6-3:+4
                 >   • 9 = :d6-2: :d6-3:+4
@@ -102,10 +104,11 @@ class DamageRollMessageTest {
         // then
         assertEquals(
                 """
-                *Damage Roll:* Attack with Rifle 3 times vs DR 2
+                *Damage Roll:* Attack with Rifle hits 3 times vs DR 2
                 > *- Outcome:* 42 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
+                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2.0)])`
                 > *- Rolls:*
                 >   • 9 = :d6-2: :d6-3:+4
                 >   • 9 = :d6-2: :d6-3:+4
@@ -125,10 +128,11 @@ class DamageRollMessageTest {
         // then
         assertEquals(
                 """
-                *Damage Roll:* R. C. Cleveland attacks with Rifle 3 times vs DR 2
+                *Damage Roll:* R. C. Cleveland's attack with Rifle hits 3 times vs DR 2
                 > *- Outcome:* 42 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
+                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2.0)])`
                 > *- Rolls:*
                 >   • 9 = :d6-2: :d6-3:+4
                 >   • 9 = :d6-2: :d6-3:+4

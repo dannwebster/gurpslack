@@ -51,7 +51,7 @@ class UploadController(val characterRepository : CharacterRepository,
     fun postCharacter(@RequestParam key: String,
                       @RequestParam username: String,
                       @RequestParam("file") file: MultipartFile) : String {
-        val character = addCharacter(key, username, file)
+        addCharacter(key, username, file)
         return "redirect:/character?key=${key}"
     }
 

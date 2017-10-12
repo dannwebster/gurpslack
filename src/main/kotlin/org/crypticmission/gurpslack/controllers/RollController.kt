@@ -51,7 +51,7 @@ class RollController(val randomizer: Randomizer) {
     fun doRollDmg(slashData: SlashData, inChannel: Boolean = true) : RichMessage {
         val damage = parseDamage(slashData.text)
         val dr = parseDr(slashData.text)
-        val damageRollOutcome = damage?.rollVsDr(dr, randomizer, 1)
+        val damageRollOutcome = damage?.rollVsDr(randomizer, dr)
         val message = when (damageRollOutcome) {
             null -> RichMessage("${slashData.text} is not a valid rollSpec")
             else -> richMessage(damageRollOutcome)

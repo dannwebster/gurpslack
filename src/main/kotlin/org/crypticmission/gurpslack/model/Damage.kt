@@ -16,26 +16,66 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
 
 
 data class Attack(val attackName: String, val damageSpec: DamageSpec, val recoil: Double? = null) {
-    fun rollVsDr(damageResistance: Int, rand: Randomizer, hits: Int) =
-            AttackRollOutcome(attackName, damageSpec.rollVsDr(damageResistance, rand, hits))
+
+    fun rollVsDr(rand: Randomizer, damageResistance: Int): AttackRollOutcome =
+        AttackRollOutcome(attackName, damageSpec.rollVsDr(rand, damageResistance))
+
+    fun rollMultiVsDr(rand: Randomizer, damageResistance: Int, shotsFired: Int, marginOfSuccess: Int): AttackRollOutcome =
+        AttackRollOutcome(
+                attackName,
+                damageSpec.rollMultiVsDr(
+                        rand,
+                        damageResistance,
+                        MultiShotDescriptor(
+                                shotsFired,
+                                recoil ?: 1.0,
+                                marginOfSuccess
+                        )
+                )
+        )
+}
+
+data class MultiShotDescriptor(val shotsFired: Int, val recoil: Double, val marginOfSuccess: Int) {
+    val hits = calculateHits(shotsFired, marginOfSuccess, recoil)
+
+    companion object {
+        fun calculateHits(shotsFired: Int, marginOfSuccess: Int, recoil: Double) =
+                if (shotsFired < 1 || marginOfSuccess < 0)
+                    0
+                else
+                    Math.min(1 + (marginOfSuccess / recoil).toInt(), shotsFired)
+    }
 }
 
 data class DamageSpec(val rollSpec: RollSpec, val damageType: DamageType = DamageType.cru) {
     val canonical = "${rollSpec.canonical} ${damageType.shortForm}"
 
-    fun rollVsDr(damageResistance: Int, rand: Randomizer, hits:Int): DamageRollOutcome =
-            DamageRollOutcome(this, (1 .. hits).map{rollSpec.roll(rand)}, damageResistance)
+    fun rollVsDr(rand: Randomizer, damageResistance: Int): DamageRollOutcome =
+            DamageRollOutcome(
+                    this,
+                    listOf(rollSpec.roll(rand)),
+                    damageResistance,
+                    null)
 
+    fun rollMultiVsDr(rand: Randomizer, damageResistance: Int, multiShotDescriptor: MultiShotDescriptor): DamageRollOutcome =
+        DamageRollOutcome(
+                this,
+                (1..multiShotDescriptor.hits).map { rollSpec.roll(rand) },
+                damageResistance,
+                multiShotDescriptor)
 }
+
 data class AttackRollOutcome(val attackName: String, val damageRollOutcome: DamageRollOutcome)
 
 data class DamageDetails(val rollOutcome: RollOutcome, val impactDamage: Int, val damageAfterDr: Int, val finalDamage: Int)
 
 data class DamageRollOutcome(val damageSpec: DamageSpec,
                              val rollOutcomes: List<RollOutcome>,
-                             val damageResistance: Int) {
+                             val damageResistance: Int,
+                             val multiShotDescriptor: MultiShotDescriptor?) {
+
     constructor(damageSpec: DamageSpec, rollOutcome: RollOutcome, damageResistance: Int) :
-            this(damageSpec, listOf(rollOutcome), damageResistance)
+            this(damageSpec, listOf(rollOutcome), damageResistance, null)
 
 
     val damageDetails: List<DamageDetails> = rollOutcomes.map { rollOutcome ->
