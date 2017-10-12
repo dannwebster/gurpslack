@@ -62,16 +62,43 @@ fun message(attackRollOutcome: AttackRollOutcome) = with (attackRollOutcome) {
     message(damageRollOutcome, attackName)
 }
 
-fun message(damageRollOutcome: DamageRollOutcome, attackName: String? = null, actor: String? = null) = with (damageRollOutcome) {
-"""
-*Damage Roll:* ${actor?.plus(" ") ?: ""}${attackName?.let{"Attacks with " + attackName} ?: "Attack" } vs DR ${damageResistance}
-> *- Outcome*: ${totalDamage} ${damageSpec.damageType.longForm} damage after DR
-> *- Roll*: ${rollOutcome.emoji()} = ${rollOutcome.total}
-> *- Damage:* ${damageSpec.canonical}
-> *- DR*: ${damageResistance}
-> *- Details:* `[(${rollOutcome.total} impact damage - DR ${damageResistance}) * ${damageSpec.damageType.multiplier} for ${damageSpec.damageType.longForm}] = ${totalDamage}`
-""".trimIndent()
+fun message(damageRollOutcome: DamageRollOutcome, attackName: String? = null, actor: String? = null) =
+        damageRollOutcome.multiShotMessage(attackName, actor)
+
+private fun DamageRollOutcome.linePrefix() = (if (isMultiShot()) "\n>   - " else " ")
+
+private fun DamageRollOutcome.multiShotMessage(attackName: String?, actor: String?) =
+    messageHeader(actor, attackName) +
+            rollDetailsPart() +
+            mathPart()
+
+private fun DamageRollOutcome.messageHeader(actor: String?, attackName: String?): String {
+    return """
+    |*Damage Roll:* ${actor?.plus(" attacks") ?: "Attack"}${attackName?.let { " with " + attackName } ?: ""}${if (isMultiShot()) " ${rollOutcomes.size} times" else ""} vs DR ${damageResistance}
+    |> *- Outcome:* ${totalFinalDamage} ${damageSpec.damageType.longForm} damage after DR
+    |> *- Damage:* ${damageSpec.canonical}
+    |> *- DR:* ${damageResistance}
+    """.trimMargin("|").trimIndent() + "\n"
 }
+
+private fun DamageRollOutcome.rollDetailsPart(): String  =
+    "> *- Roll${if (isMultiShot()) "s" else ""}:*" +
+    this.rollOutcomes.map{ rollOutcome ->
+         linePrefix() + "${rollOutcome.total} = ${rollOutcome.emoji()}"
+    }.joinToString("") + "\n"
+
+private fun DamageRollOutcome.mathPart(): String =
+    "> *- Details:*" + totalLine() +
+    this.damageDetails.map { damageDetails ->
+        linePrefix() + "`${damageDetails.finalDamage} = [(${damageDetails.rollOutcome.total} impact damage - DR ${this.damageResistance}) * ${this.damageSpec.damageType.multiplier} for ${this.damageSpec.damageType.longForm}]`"
+    }.joinToString("")
+
+private fun DamageRollOutcome.totalLine(): String =
+        if (isMultiShot())
+            " ${totalFinalDamage} = " + this.damageDetails
+                            .map { it.finalDamage.toString() }
+                            .joinToString(" + ")
+        else ""
 
 fun message(rollOutcome: RollOutcome) = with (rollOutcome) {
     "${emoji()} => Rolled *${total}* on ${rollSpec.canonical}"

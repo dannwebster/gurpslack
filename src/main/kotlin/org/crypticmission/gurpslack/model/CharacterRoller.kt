@@ -46,7 +46,7 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
         }
     }
 
-    fun rollRangedAttackDamage(attackName: String, damageResistance: Int): CharacterAttackRollOutcome? {
+    fun rollRangedAttackDamage(attackName: String, damageResistance: Int, shotsFired: Int, marginOfSuccess: Int): CharacterAttackRollOutcome? {
         val attack = getRangedAttack(attackName)
         return when (attack) {
             null -> null

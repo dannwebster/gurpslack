@@ -118,7 +118,7 @@ private fun optionsAttachment(key: String, sections : Array<CharacterSections>):
 private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"
 
 val SUCCESS_MARGIN_MENU = Menu("success-margin", "Margin of Success", "select", options = successMargin())
-val RATE_OF_FIRE_MENU = Menu("shots-fired", "Shots Fired", "select", options = rateOfFire())
+val RATE_OF_FIRE_MENU = Menu("shots-fired", "Shots Fired", "select", options = shotsFired())
 val DR_MENU = Menu("dr", "Damage Resistance", "select", options = dr())
 val MODIFIER_MENU = Menu("modifier", "Modifier", "select", options = modifiers())
 val VISIBILITY_MENU = Menu("visibility", "Visibility", "select", options = visibility())
@@ -136,7 +136,7 @@ private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
 }
 
 private fun successMargin() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
-private fun rateOfFire() = (0 .. 30).map { Option(it.toSignedStringWithZero(), it.toString()) }
+private fun shotsFired() = (1 .. 30).map { Option(it.toString(), it.toString()) }
 private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = VisibilityOption.values().map { it.option }

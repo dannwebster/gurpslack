@@ -65,7 +65,7 @@ class ValueCache<T>(val defaultValue: T) {
 
 }
 @RestController
-class InteractiveMessageController(val characterRepository: CharacterRepository, val shotsFiredCalculator: ShotsFiredCalculator) {
+class InteractiveMessageController(val characterRepository: CharacterRepository) {
     private val logger = LoggerFactory.getLogger(InteractiveMessageController::class.java)
 
     val shotsFiredCache = ValueCache<Int>(1)
@@ -165,9 +165,7 @@ Next attack made by ${messageData.user.name}:
                     traitName.toKey(),
                     damageResistanceCache.getAndClearValue(messageData),
                     shotsFiredCache.getAndClearValue(messageData),
-                    marginOfSuccessCache.getAndClearValue(messageData),
-                    1
-
+                    marginOfSuccessCache.getAndClearValue(messageData)
             )
 
             else -> null
@@ -197,10 +195,11 @@ Next attack made by ${messageData.user.name}:
             key,
             traitName)
 
-    fun rangedAttack(key: String, traitName: String, damageResistance: Int,
-                     shotsFired: Int, marginOfSuccess: Int, recoil: Int) = roll(
-            "attack",
-            { cr:CharacterRoller -> cr.rollRangedAttackDamage(traitName, damageResistance )?.let{ richMessage(it) }},
+    fun rangedAttack(key: String, traitName: String, damageResistance: Int, shotsFired: Int, marginOfSuccess: Int) =
+            roll("attack",
+            { cr:CharacterRoller ->
+                cr.rollRangedAttackDamage(traitName, damageResistance, shotsFired, marginOfSuccess)?.let{ richMessage(it) }
+            },
             key,
             traitName)
 

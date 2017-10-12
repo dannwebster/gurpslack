@@ -25,14 +25,34 @@ data class DamageSpec(val rollSpec: RollSpec, val damageType: DamageType = Damag
     fun rollVsDr(damageResistance: Int, rand: Randomizer): DamageRollOutcome =
             DamageRollOutcome(this, rollSpec.roll(rand), damageResistance)
 
+    fun rollMultipleShotsVsDr(damageResistance: Int, rand: Randomizer, hits:Int): DamageRollOutcome =
+            DamageRollOutcome(this, (1 .. hits).map{rollSpec.roll(rand)}, damageResistance)
+
 }
 data class AttackRollOutcome(val attackName: String, val damageRollOutcome: DamageRollOutcome)
 
-data class DamageRollOutcome(val damageSpec: DamageSpec,
-                             val rollOutcome: RollOutcome, val damageResistance: Int) {
-    val impactDamage =  rollOutcome.total
-    val damageAfterDr =  Math.max(rollOutcome.total - damageResistance, 0)
-    val totalDamage = Math.floor(damageAfterDr * damageSpec.damageType.multiplier).toInt()
+data class DamageDetails(val rollOutcome: RollOutcome, val impactDamage: Int, val damageAfterDr: Int, val finalDamage: Int)
 
+data class DamageRollOutcome(val damageSpec: DamageSpec,
+                             val rollOutcomes: List<RollOutcome>,
+                             val damageResistance: Int) {
+    constructor(damageSpec: DamageSpec, rollOutcome: RollOutcome, damageResistance: Int) :
+            this(damageSpec, listOf(rollOutcome), damageResistance)
+
+
+    val damageDetails: List<DamageDetails> = rollOutcomes.map { rollOutcome ->
+        val impact = rollOutcome.total
+        val afterDr = Math.max(rollOutcome.total - damageResistance, 0)
+        val finalDamage = (afterDr * (damageSpec.damageType.multiplier)).toInt()
+
+        DamageDetails(rollOutcome, impact, afterDr, finalDamage)
+    }
+
+    val totalImpactDamage: Int = damageDetails.map { it.impactDamage }.sum()
+    val totalDamageAfterDr: Int = damageDetails.map { it.damageAfterDr }.sum()
+    val totalFinalDamage: Int = damageDetails.map { it.finalDamage }.sum()
+
+    fun isMultiShot() = damageDetails.size > 1
+    fun only() = if (!isMultiShot()) damageDetails.first() else throw IllegalStateException("should be only 1 roll")
     override fun toString() = message(this)
 }

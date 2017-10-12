@@ -2,7 +2,6 @@ package org.crypticmission.gurpslack.controllers
 
 import org.crypticmission.gurpslack.model.Attribute
 import org.crypticmission.gurpslack.model.CharacterRoller
-import org.crypticmission.gurpslack.model.ShotsFiredCalculator
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Assert.*
@@ -58,7 +57,6 @@ class InteractiveMessageControllerTest {
 }
 """.trim()
 
-    val shotsFiredCalculator = ShotsFiredCalculator();
     @Test
     fun shouldParseBodyWhenPosted() {
         // given
@@ -83,7 +81,7 @@ class InteractiveMessageControllerTest {
         val repo = CharacterRepository()
         repo.put("character-key", null, cr)
 
-        val subject = InteractiveMessageController(repo, shotsFiredCalculator)
+        val subject = InteractiveMessageController(repo)
 
         // when
         val message = subject.skill("character-key", "skill-name", 0)
@@ -106,7 +104,7 @@ class InteractiveMessageControllerTest {
         // given
         val repo = CharacterRepository()
 
-        val subject = InteractiveMessageController(repo, shotsFiredCalculator)
+        val subject = InteractiveMessageController(repo)
 
         // when
         val message = subject.skill("character-key", "skill-name", 0)
@@ -123,7 +121,7 @@ class InteractiveMessageControllerTest {
         val repo = CharacterRepository()
         repo.put("character-key", null, cr)
 
-        val subject = InteractiveMessageController(repo, shotsFiredCalculator       )
+        val subject = InteractiveMessageController(repo)
 
         // when
         val message = subject.skill("character-key", "skill-name", 0)

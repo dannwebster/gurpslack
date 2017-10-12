@@ -7,6 +7,7 @@ import org.junit.Assert.*
 /**
  */
 class CharacterRollerRepositoryTest {
+
     @Test fun shouldCreateCharacterWhenOneDoesNotExist() {
         // given
         val subject = CharacterRepository()
