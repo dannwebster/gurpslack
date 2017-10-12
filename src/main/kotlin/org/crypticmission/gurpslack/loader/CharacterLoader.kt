@@ -55,7 +55,7 @@ class SkillData {
 
 }
 
-fun parseAttack(description: String, usage: String?, damage: String?, thrust: RollSpec, swing: RollSpec): Attack =
+fun parseAttack(description: String, usage: String?, damage: String?, thrust: RollSpec, swing: RollSpec, recoil: Double? = null): Attack =
         damage?.let {
             val name = description + (usage?.let { " (${usage})" } ?: "")
             if (damage.startsWith("sw")) {
@@ -67,7 +67,7 @@ fun parseAttack(description: String, usage: String?, damage: String?, thrust: Ro
                 val type = parseDamageType(damage.substringAfter(" "))
                 Attack(name, DamageSpec(thrust.modify(mods), type))
             } else
-                damage.let { parseDamage(it)?.let { Attack(name, it) } } ?:
+                damage.let { parseDamage(it)?.let { Attack(name, it, recoil) } } ?:
                         throw IllegalStateException("unable to create ranged attack ${name} for ${damage}")
         } ?: throw IllegalStateException("null damage string value")
 
@@ -83,6 +83,15 @@ class MeleeAttackData {
             parseAttack(description, this.usage, this.damage, thrust, swing)
 }
 
+fun String.fraction() : Double =
+        if (this.contains("/")) {
+            val numerator = this.substringBefore("/").toInt()
+            val denominator = this.substringAfter("/").toInt()
+            numerator.toDouble() / denominator
+        } else {
+            this.toDouble()
+        }
+
 class RangedAttackData {
     val damage by JXML / "damage" / XText
     val minSt by JXML / "strength" / XText
@@ -93,7 +102,7 @@ class RangedAttackData {
     val bulk by JXML / "bulk" / XText
     val recoil by JXML / "recoil" / XText
     fun toAttack(description: String, thrust: RollSpec, swing: RollSpec): Attack =
-        parseAttack(description, null, this.damage, thrust, swing)
+        parseAttack(description, null, this.damage, thrust, swing, recoil?.fraction())
 
 }
 

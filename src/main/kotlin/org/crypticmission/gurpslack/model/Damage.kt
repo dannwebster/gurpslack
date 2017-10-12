@@ -15,7 +15,7 @@ enum class DamageType(val longForm: String, val shortForm: String, val multiplie
 }
 
 
-data class Attack(val attackName: String, val damageSpec: DamageSpec, val recoil: Int = 1) {
+data class Attack(val attackName: String, val damageSpec: DamageSpec, val recoil: Double? = null) {
     fun rollVsDr(damageResistance: Int, rand: Randomizer, hits: Int) =
             AttackRollOutcome(attackName, damageSpec.rollVsDr(damageResistance, rand, hits))
 }

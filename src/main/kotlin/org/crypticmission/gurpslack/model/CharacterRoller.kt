@@ -87,9 +87,11 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
             newSkills.forEach { skill -> skills[skill.name.toKey()] = skill }
 }
 
-fun calculateHits(shotsFired: Int, marginOfSuccess: Int, recoil: Int) =
-        if (shotsFired < 1 || marginOfSuccess < 0)
+fun calculateHits(shotsFired: Int, marginOfSuccess: Int, recoil: Double?) =
+        if (recoil == null)
+            throw IllegalStateException("cannot calculate multiple shots if the attack does not have recoil")
+        else if (shotsFired < 1 || marginOfSuccess < 0)
             0
         else
-            Math.min(1 + (marginOfSuccess / recoil), shotsFired)
+            Math.min(1 + (marginOfSuccess / recoil).toInt(), shotsFired)
 
