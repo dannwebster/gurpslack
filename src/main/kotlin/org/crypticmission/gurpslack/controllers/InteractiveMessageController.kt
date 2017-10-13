@@ -111,8 +111,8 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         return RichMessage(
 """
 Next attack made by ${messageData.user.name}:
-> *- Shots Fired:* ${shotsFired.toSignedStringWithZero()}
-> *- Margin of Success:* ${marginOfSuccess.toSignedStringWithZero()}
+> *- Shots Fired:* ${shotsFired}
+> *- Margin of Success:* ${marginOfSuccess}
 """.trimMargin()
         )
     }

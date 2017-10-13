@@ -19,17 +19,18 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       attributes: Map<String, Attribute> = emptyMap(),
                       skills: Map<String, Attribute> = emptyMap(),
                       meleeAttacks: Map<String, Attack> = emptyMap(),
-                      rangedAttacks: Map<String, Attack> = emptyMap()) {
+                      rangedAttacks: Map<String, Attack> = emptyMap(),
+                      trackedStatList: List<TrackedValue> = emptyList()) {
 
     val attributes = HashMap<String, Attribute>(attributes.mapKeys { (k, _) -> k.toKey() })
     val skills = HashMap<String, Attribute>(skills.mapKeys { (k, _) -> k.toKey() })
     val meleeAttacks = HashMap<String, Attack>(meleeAttacks.mapKeys { (k, _) -> k.toKey() })
     val rangedAttacks = HashMap<String, Attack>(rangedAttacks.mapKeys { (k, _) -> k.toKey() })
-//    val trackedStats = trackedValues.map { Pair(it.name, it) }.toMap()
+    val trackedStats = trackedStatList.map { Pair(it.name, it) }.toMap()
 
-//    fun modifyTrackedStat(statName: String, change: Int) {
-//        trackedStats.get(statName)?.change(change)
-//    }
+    fun modifyTrackedStat(statName: String, change: Int) {
+        trackedStats.get(statName)?.change(change)
+    }
 
     fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome? {
         val skill = getSkill(name)

@@ -54,19 +54,19 @@ class SkillData {
 
 }
 
-fun parseAttack(description: String, usage: String?, damage: String?, thrust: RollSpec, swing: RollSpec, recoil: Int? = null, multiplier: Int = 1): Attack =
+fun parseAttack(description: String, usage: String?, damage: String?, thrust: RollSpec, swing: RollSpec, recoil: Int? = null): Attack =
         damage?.let {
             val name = description + (usage?.let { " (${usage})" } ?: "")
             if (damage.startsWith("sw")) {
                 val mods = damage.substringAfter("sw").substringBefore(" ").toIntOrNull() ?: 0
                 val type = parseDamageType(damage.substringAfter(" "))
-                Attack(name, DamageSpec(swing.modify(mods), type) * multiplier)
+                Attack(name, DamageSpec(swing.modify(mods), type))
             } else if (damage.startsWith("thr")) {
                 val mods = damage.substringAfter("thr").substringBefore(" ").toIntOrNull() ?: 0
                 val type = parseDamageType(damage.substringAfter(" "))
-                Attack(name, DamageSpec(thrust.modify(mods), type) * multiplier)
+                Attack(name, DamageSpec(thrust.modify(mods), type))
             } else
-                damage.let { parseDamage(it)?.let { Attack(name, it * multiplier, recoil) } } ?:
+                damage.let { parseDamage(it)?.let { Attack(name, it, recoil) } } ?:
                         throw IllegalStateException("unable to create ranged attack ${name} for ${damage}")
         } ?: throw IllegalStateException("null damage string value")
 
@@ -118,10 +118,12 @@ class RangedAttackData {
                     null
             )
         } else {
-            return Pair(
-                    parseAttack("Buckshot: " + description, null, this.damage, thrust, swing, splitRecoils.first),
-                    parseAttack("Slugs: "  + description, null, this.damage, thrust, swing, splitRecoils.second, SLUG_DAMAGE_MULTIPLIER)
-            )
+            val baseAttack: Attack = parseAttack(description, null, this.damage, thrust, swing, splitRecoils.first)
+            val shotAttack = baseAttack.copy(attackName = "Buckshot: " + baseAttack.attackName)
+            val slugDamage = (shotAttack.damageSpec * SLUG_DAMAGE_MULTIPLIER).copy(damageType = DamageType.pi_plus_plus)
+            val slugAttack = baseAttack.copy(attackName = "Slugs: " + baseAttack.attackName, damageSpec = slugDamage)
+
+            return Pair(shotAttack, slugAttack)
         }
     }
 
@@ -219,7 +221,12 @@ class CharacterData {
 }
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
-    CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks)
+    val trackedStats = listOf(
+            TrackedValue("FP", characterData.ht, characterData.ht),
+            TrackedValue("HP", characterData.st, characterData.st),
+            TrackedValue("WP", characterData.will, characterData.will)
+    )
+    CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks, trackedStats)
 }
 
 @Component

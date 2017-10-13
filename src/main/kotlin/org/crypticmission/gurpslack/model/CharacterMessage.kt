@@ -77,10 +77,11 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-enum class MenuType() { DAMAGE, MOD }
+enum class MenuType() { DAMAGE, MOD, TRACKED }
 enum class CharacterSections(val menuType: MenuType) {
     PRIMARY_ATTRIBUTES(MenuType.MOD),
     DERIVED_ATTRIBUTES(MenuType.MOD),
+    TRACKED_STATS(MenuType.TRACKED),
     SKILLS(MenuType.MOD),
     MELEE_ATTACKS(MenuType.DAMAGE),
     RANGED_ATTACKS(MenuType.DAMAGE)
@@ -94,6 +95,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
         val attachments = (sections.map { section -> when(section) {
             PRIMARY_ATTRIBUTES -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
             DERIVED_ATTRIBUTES -> attributesAttachments(key, "Derived", characterRoller.derivedAttributes())
+            TRACKED_STATS -> trackedStatsAttachments(key, characterRoller.trackedStats)
             SKILLS -> skillAttachments(key, characterRoller.skills.values)
             MELEE_ATTACKS -> attackAttachments(key, "melee", characterRoller.meleeAttacks.values)
             RANGED_ATTACKS -> attackAttachments(key, "ranged", characterRoller.rangedAttacks.values)
@@ -140,6 +142,20 @@ private fun shotsFired() = (1 .. 30).map { Option(it.toString(), it.toString()) 
 private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = VisibilityOption.values().map { it.option }
+
+
+private fun trackedStatsAttachments(key: String, trackedStats: Map<String, TrackedValue>): List<ActionAttachment> =
+        trackedStats.values
+                .sortedBy { stat -> stat.name }
+                .mapIndexed { index, stat ->
+                    ActionAttachment(
+                            "${stat.name}: ${stat.current} of ${stat.max}",
+                            trackedValueToBar(key, stat),
+                            "${key}-tracked-stats-${index}") }
+
+
+private fun trackedValueToBar(key: String, stat: TrackedValue): List<Action> =
+        listOf()
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
         skills
