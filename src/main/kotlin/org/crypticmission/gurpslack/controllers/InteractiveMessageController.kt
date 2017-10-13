@@ -126,7 +126,7 @@ Next attack made by ${messageData.user.name}:
 
         logger.info("outcome ${richMessage.text}")
 
-        return richMessage.encodedMessage()
+        return richMessage
     }
 
 
