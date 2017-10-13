@@ -120,7 +120,6 @@ fun message(characterAttributeRollOutcome: CharacterAttributeRollOutcome) = with
 
 fun doRichMessage(s: String) = RichMessage(s)
 
-fun richMessage(outcome: TrackedValue) = doRichMessage(message(outcome))
 fun richMessage(outcome: RollOutcome) = doRichMessage(message(outcome))
 fun richMessage(outcome: DamageRollOutcome) = doRichMessage(message(outcome))
 fun richMessage(outcome: AttackRollOutcome) = doRichMessage(message(outcome))

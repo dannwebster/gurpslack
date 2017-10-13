@@ -190,7 +190,7 @@ Next attack made by ${messageData.user.name}:
         if (character == null) return RichMessage("could not find character with key ${key}")
         val stat = character.modifyTrackedStat(traitName, change)
         if (stat == null) return RichMessage("could not find tracked stat ${traitName} for character ${character.characterName}")
-        return richMessage(stat)
+        return richMessage(key, stat)
     }
 
     fun skill(key: String, traitName: String, modifier: Int) = roll(
