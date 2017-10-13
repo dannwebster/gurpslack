@@ -32,14 +32,29 @@ class CharacterLoaderTest {
 
         // then
         assertNotNull(character)
+        println("${character.rangedAttacks}")
         assertEquals("Everett O'Connel", character.name)
         assertEquals("Stewart", character.playerName)
 
         val pistol = character.rangedAttacks.get("FN-Browning High Power, 9x19mm") ?:
                 throw AssertionError("no pistol Damage")
+
         assertEquals("FN-Browning High Power, 9x19mm", pistol.attackName)
         assertEquals(parseDamage("2d+2 pi"), pistol.damageSpec)
-        assertEquals(6, character.rangedAttacks.size)
+
+        val shotgunSlugs = character.rangedAttacks.get("Slugs: FN-Browning Auto-5, 12G, 2.75") ?:
+                throw AssertionError("no shotgun slug Damage")
+
+        assertEquals("Slugs: FN-Browning Auto-5, 12G, 2.75", shotgunSlugs.attackName)
+        assertEquals(parseDamage("4d+4 pi"), shotgunSlugs.damageSpec)
+
+        val shotgunShot = character.rangedAttacks.get("Buckshot: FN-Browning Auto-5, 12G, 2.75") ?:
+                throw AssertionError("no shotgun shot Damage")
+
+        assertEquals("Buckshot: FN-Browning Auto-5, 12G, 2.75", shotgunShot.attackName)
+        assertEquals(parseDamage("1d+1 pi"), shotgunShot.damageSpec)
+
+        assertEquals(7, character.rangedAttacks.size)
         assertEquals(2, character.meleeAttacks.size)
 
     }

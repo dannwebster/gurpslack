@@ -27,5 +27,13 @@ data class RollSpec(val dice: Int, val sides: Int, val adds: Int=0) {
             RollOutcome(this,
                 1.rangeTo(dice).map { rand.random(sides) },
                 adds)
+
+    operator fun times(multiplicand: Int) = RollSpec(dice * multiplicand, sides, adds * multiplicand)
+    operator fun div(denominator: Int) = RollSpec(dice / denominator, sides, adds / denominator)
+    operator fun plus(other: RollSpec) =
+            if (this.sides == other.sides)
+                RollSpec(this.dice + other.dice, sides, this.adds + other.adds)
+            else
+                throw IllegalArgumentException("Can only add dice with matching sides. ${this} and ${other} are not compatible")
 }
 

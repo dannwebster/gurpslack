@@ -1,23 +1,22 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Assert.assertEquals
 import org.junit.Test
 
 /**
  */
 class DamageRollMessageTest {
+    val rand = Randomizer.specified(2, 3)
     val rollSpec = RollSpec(2, 6, 4)
     val damageSpec = DamageSpec(rollSpec, DamageType.pi_plus_plus)
-    val rollOutcome = RollOutcome(rollSpec, listOf(2, 3), 4)
-    val damageRollOutcome = DamageRollOutcome(damageSpec, rollOutcome, 2)
+
+    val damageRollOutcome = DamageRollOutcome.singleHit(rand, damageSpec, 2)
     val attackRollOutcome = AttackRollOutcome("Rifle", damageRollOutcome)
     val characterAttackRollOutcome = CharacterAttackRollOutcome("R. C. Cleveland", attackRollOutcome)
 
-    val rollOutcome2 = RollOutcome(rollSpec, listOf(2, 3), 4)
-    val rollOutcome3 = RollOutcome(rollSpec, listOf(2, 3), 4)
-    val rollOutcomes = listOf(rollOutcome, rollOutcome2, rollOutcome3)
-    val multiShotDescriptor = MultiShotDescriptor(5, 2.0, 5)
-    val multiDamageRollOutcome = DamageRollOutcome(damageSpec, rollOutcomes, 2, multiShotDescriptor)
+    val multiShotDescriptor = MultiShotDescriptor(5, 2, 5)
+    val multiDamageRollOutcome = DamageRollOutcome.multiHit(rand, damageSpec, 2, multiShotDescriptor)
     val multiAttackRollOutcome = AttackRollOutcome("Rifle", multiDamageRollOutcome)
     val multiCharacterAttackRollOutcome = CharacterAttackRollOutcome("R. C. Cleveland", multiAttackRollOutcome)
 
@@ -84,7 +83,7 @@ class DamageRollMessageTest {
                 > *- Outcome:* 42 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
-                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2.0)])`
+                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2)])`
                 > *- Rolls:*
                 >   • 9 = :d6-2: :d6-3:+4
                 >   • 9 = :d6-2: :d6-3:+4
@@ -108,7 +107,7 @@ class DamageRollMessageTest {
                 > *- Outcome:* 42 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
-                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2.0)])`
+                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2)])`
                 > *- Rolls:*
                 >   • 9 = :d6-2: :d6-3:+4
                 >   • 9 = :d6-2: :d6-3:+4
@@ -132,7 +131,7 @@ class DamageRollMessageTest {
                 > *- Outcome:* 42 huge piercing damage after DR
                 > *- Damage:* 2d6+4 pi++
                 > *- DR:* 2
-                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2.0)])`
+                > *- Hits:* 3 hits from 5 shots fired = `max of (5 or [1 hit + (made by 5 / recoil of 2)])`
                 > *- Rolls:*
                 >   • 9 = :d6-2: :d6-3:+4
                 >   • 9 = :d6-2: :d6-3:+4

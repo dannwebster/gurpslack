@@ -15,17 +15,21 @@ class ComponentRandomizer() : SystemRandomizer(Clock.systemUTC().instant())
 interface Randomizer {
     companion object {
         val MAX = AlwaysMaxRandomizer()
-        fun specified(value: Int) = SpecifiedRandomizer(value)
+        fun specified(vararg values: Int) = SpecifiedRandomizer(*values)
         fun system() = SystemRandomizer(Clock.systemUTC().instant())
         val MIN = specified(1)
     }
     fun random(max: Int): Int
 }
 
-class SpecifiedRandomizer(val value: Int): Randomizer {
-    override fun random(max: Int) =
-            if (value <= max) value
-            else throw IllegalArgumentException("value ${value} > max {$max}")
+class SpecifiedRandomizer(vararg val values: Int): Randomizer {
+    var current = 0
+    override fun random(max: Int): Int {
+        if (values[current] > max) throw IllegalArgumentException("value values[${current}]=${values[current]} > max {$max}")
+        val value = values[current]
+        current = (current + 1) % values.size
+        return value
+    }
 }
 
 class AlwaysMaxRandomizer(): Randomizer {

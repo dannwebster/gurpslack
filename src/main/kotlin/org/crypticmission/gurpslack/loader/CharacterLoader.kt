@@ -1,6 +1,5 @@
 package org.crypticmission.gurpslack.loader
 
-import com.sun.xml.internal.messaging.saaj.util.ByteInputStream
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.jdom2.Document
@@ -55,19 +54,19 @@ class SkillData {
 
 }
 
-fun parseAttack(description: String, usage: String?, damage: String?, thrust: RollSpec, swing: RollSpec, recoil: Double? = null): Attack =
+fun parseAttack(description: String, usage: String?, damage: String?, thrust: RollSpec, swing: RollSpec, recoil: Int? = null, multiplier: Int = 1): Attack =
         damage?.let {
             val name = description + (usage?.let { " (${usage})" } ?: "")
             if (damage.startsWith("sw")) {
                 val mods = damage.substringAfter("sw").substringBefore(" ").toIntOrNull() ?: 0
                 val type = parseDamageType(damage.substringAfter(" "))
-                Attack(name, DamageSpec(swing.modify(mods), type))
+                Attack(name, DamageSpec(swing.modify(mods), type) * multiplier)
             } else if (damage.startsWith("thr")) {
                 val mods = damage.substringAfter("thr").substringBefore(" ").toIntOrNull() ?: 0
                 val type = parseDamageType(damage.substringAfter(" "))
-                Attack(name, DamageSpec(thrust.modify(mods), type))
+                Attack(name, DamageSpec(thrust.modify(mods), type) * multiplier)
             } else
-                damage.let { parseDamage(it)?.let { Attack(name, it, recoil) } } ?:
+                damage.let { parseDamage(it)?.let { Attack(name, it * multiplier, recoil) } } ?:
                         throw IllegalStateException("unable to create ranged attack ${name} for ${damage}")
         } ?: throw IllegalStateException("null damage string value")
 
@@ -83,14 +82,18 @@ class MeleeAttackData {
             parseAttack(description, this.usage, this.damage, thrust, swing)
 }
 
-fun String.fraction() : Double =
-        if (this.contains("/")) {
-            val numerator = this.substringBefore("/").toInt()
-            val denominator = this.substringAfter("/").toInt()
-            numerator.toDouble() / denominator
+fun String?.toSplitRecoil() : Pair<Int, Int?>? =
+        if (this == null) {
+            null
+        } else if (this.contains("/")) {
+            val shot = this.substringBefore("/").toInt()
+            val slugs = this.substringAfter("/").toInt()
+            Pair(shot, slugs)
         } else {
-            this.toDouble()
+            Pair(this.toInt(), null)
         }
+
+val SLUG_DAMAGE_MULTIPLIER = 4
 
 class RangedAttackData {
     val damage by JXML / "damage" / XText
@@ -101,8 +104,26 @@ class RangedAttackData {
     val shots by JXML / "shots" / XText
     val bulk by JXML / "bulk" / XText
     val recoil by JXML / "recoil" / XText
-    fun toAttack(description: String, thrust: RollSpec, swing: RollSpec): Attack =
-        parseAttack(description, null, this.damage, thrust, swing, recoil?.fraction())
+
+    fun toAttacks(description: String, thrust: RollSpec, swing: RollSpec): Pair<Attack, Attack?> {
+        val splitRecoils = recoil.toSplitRecoil()
+        if (splitRecoils == null) {
+            return Pair(
+                    parseAttack(description, null, this.damage, thrust, swing, null),
+                    null
+            )
+        } else if (splitRecoils.second == null) {
+            return Pair(
+                    parseAttack(description, null, this.damage, thrust, swing, splitRecoils.first),
+                    null
+            )
+        } else {
+            return Pair(
+                    parseAttack("Buckshot: " + description, null, this.damage, thrust, swing, splitRecoils.first),
+                    parseAttack("Slugs: "  + description, null, this.damage, thrust, swing, splitRecoils.second, SLUG_DAMAGE_MULTIPLIER)
+            )
+        }
+    }
 
 }
 
@@ -188,7 +209,8 @@ class CharacterData {
     val rangedAttacks : Map<String, Attack> by lazy {
         equipment.map { data -> data.description?.let { name -> data.rangedAttackData?.let {attacks -> Pair(name, attacks)}}}
                 .filterNotNull()
-                .flatMap { (name, attacks) -> attacks.map { it.toAttack(name, thrust, swing)} }
+                .flatMap { (name, attacks) -> attacks.map { it.toAttacks(name, thrust, swing).toList() } }
+                .flatMap { it.filterNotNull() }
                 .map { attack -> Pair(attack.attackName, attack)}
                 .toMap()
     }
