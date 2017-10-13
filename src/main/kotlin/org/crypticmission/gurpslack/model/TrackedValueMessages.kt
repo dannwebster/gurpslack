@@ -14,7 +14,7 @@ fun message(stat: TrackedValue) = with (stat) {
 }
 
 fun shortMessage(stat: TrackedValue) = with (stat) {
-    "_*${stat.name} (${shortName}):*_ Current: ${currentValue} / Max: ${maxValue} (${effect().status})"
+    "${stat.name} (${shortName}): ${currentValue} of ${maxValue} (${effect().status})"
 }
 
 fun trackedStatsAttachments(key: String, trackedStats: Map<String, TrackedValue>): List<ActionAttachment> =

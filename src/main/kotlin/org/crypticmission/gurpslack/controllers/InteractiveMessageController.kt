@@ -161,9 +161,11 @@ Next attack made by ${messageData.user.name}:
             "skill" -> skill(key, traitKey, modifierCache.getAndClearValue(messageData))
             "attribute" -> attribute(key, traitKey, modifierCache.getAndClearValue(messageData))
 
-            "meleeAttack" -> meleeAttack(key, traitKey, damageResistanceCache.getAndClearValue(messageData))
+            "showTrackedStat" -> showTrackedStat(key, traitKey)
             "incTrackedStat" -> changeTrackedStat(key, traitKey, 1)
             "decTrackedStat" -> changeTrackedStat(key, traitKey, -1)
+
+            "meleeAttack" -> meleeAttack(key, traitKey, damageResistanceCache.getAndClearValue(messageData))
             "rangedAttack" -> rangedAttack(
                     key,
                     traitKey,
@@ -180,6 +182,8 @@ Next attack made by ${messageData.user.name}:
         return richMessage
     }
 
+
+    fun showTrackedStat(key: String, traitName: String) : RichMessage = changeTrackedStat(key, traitName, 0)
 
     fun changeTrackedStat(key: String, traitName: String, change: Int) : RichMessage {
         val character = characterRepository.getByKey(key)
