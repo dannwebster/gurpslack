@@ -159,8 +159,8 @@ private fun trackedStatsAttachments(key: String, trackedStats: Map<String, Track
 
 private fun trackedValueToBar(key: String, stat: TrackedValue): List<Action> =
         listOf(
-            Button("incTrackedStat", "+", buttonValue(key, "${key}@${stat.name}")),
-            Button("decTrackedStat", "-", buttonValue(key, "${key}@${stat.name}"))
+            Button("incTrackedStat", "+", buttonValue(key, stat.name)),
+            Button("decTrackedStat", "-", buttonValue(key, stat.name))
         )
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
