@@ -145,30 +145,22 @@ private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toStri
 private fun visibility() = VisibilityOption.values().map { it.option }
 
 
-private fun trackedStatMessage(stat: TrackedValue) = with (stat) {
-    val effect = effect()
-    """
-    |_*${stat.name}:*_
-    |  Max ${shortName}: ${maxValue}
-    |  Current ${shortName}: ${currentValue}
-    |  Effects: ${effect.status}${if (effect.details != null) " (" + effect.details + ")" else ""}
-    """.trimIndent().trimMargin("|")
-}
+
 
 private fun trackedStatsAttachments(key: String, trackedStats: Map<String, TrackedValue>): List<ActionAttachment> =
         trackedStats.values
                 .sortedBy { stat -> stat.name }
                 .mapIndexed { index, stat ->
                     ActionAttachment(
-                            trackedStatMessage(stat),
+                            message(stat),
                             trackedValueToBar(key, stat),
                             "${key}-tracked-stats-${index}") }
 
 
 private fun trackedValueToBar(key: String, stat: TrackedValue): List<Action> =
         listOf(
-            Button(stat.name, "+", buttonValue(key, "track-${stat.name}-plus")),
-            Button(stat.name, "-", buttonValue(key, "track-${stat.name}-minus"))
+            Button("incTrackedStat", "+", buttonValue(key, "${key}@${stat.name}")),
+            Button("decTrackedStat", "-", buttonValue(key, "${key}@${stat.name}"))
         )
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =

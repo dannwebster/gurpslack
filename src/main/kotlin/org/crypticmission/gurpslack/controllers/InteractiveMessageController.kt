@@ -154,15 +154,19 @@ Next attack made by ${messageData.user.name}:
     private fun doButtonMessage(action: Action, message: String, messageData: MessageData): RichMessage {
         val (characterKey, traitName) = action.value?.split("@") ?: throw IllegalArgumentException("value must be set")
 
+        val key = characterKey.toKey()
+        val traitKey = traitName.toKey()
         val richMessage: RichMessage = when (action.name) {
 
-            "skill" -> skill(characterKey.toKey(), traitName.toKey(), modifierCache.getAndClearValue(messageData))
-            "attribute" -> attribute(characterKey.toKey(), traitName.toKey(), modifierCache.getAndClearValue(messageData))
+            "skill" -> skill(key, traitKey, modifierCache.getAndClearValue(messageData))
+            "attribute" -> attribute(key, traitKey, modifierCache.getAndClearValue(messageData))
 
-            "meleeAttack" -> meleeAttack(characterKey.toKey(), traitName.toKey(), damageResistanceCache.getAndClearValue(messageData))
+            "meleeAttack" -> meleeAttack(key, traitKey, damageResistanceCache.getAndClearValue(messageData))
+            "incTrackedStat" -> changeTrackedStat(key, traitKey, 1)
+            "decTrackedStat" -> changeTrackedStat(key, traitKey, -1)
             "rangedAttack" -> rangedAttack(
-                    characterKey.toKey(),
-                    traitName.toKey(),
+                    key,
+                    traitKey,
                     damageResistanceCache.getAndClearValue(messageData),
                     shotsFiredCache.getAndClearValue(messageData),
                     marginOfSuccessCache.getAndClearValue(messageData)
@@ -176,6 +180,14 @@ Next attack made by ${messageData.user.name}:
         return richMessage
     }
 
+
+    fun changeTrackedStat(key: String, traitName: String, change: Int) : RichMessage {
+        val character = characterRepository.getByKey(key)
+        if (character == null) return RichMessage("could not find character with key ${key}")
+        val stat = character.modifyTrackedStat(traitName, change)
+        if (stat == null) return RichMessage("could not find tracked stat ${traitName} for character ${character.characterName}")
+        return richMessage(stat)
+    }
 
     fun skill(key: String, traitName: String, modifier: Int) = roll(
             "skill",

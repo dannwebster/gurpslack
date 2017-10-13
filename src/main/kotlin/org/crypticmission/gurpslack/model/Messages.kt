@@ -53,6 +53,15 @@ fun message(attributeRollOutcome: AttributeRollOutcome, actor: String? = null) =
 """.trimIndent()
 }
 
+fun message(stat: TrackedValue) = with (stat) {
+    val effect = effect()
+    """
+    |_*${stat.name}:*_
+    |  Max ${shortName}: ${maxValue}
+    |  Current ${shortName}: ${currentValue}
+    |  Effects: ${effect.status}${if (effect.details != null) " (" + effect.details + ")" else ""}
+    """.trimIndent().trimMargin("|")
+}
 
 fun message(characterAttackRollOutcome: CharacterAttackRollOutcome) = with (characterAttackRollOutcome) {
     message(attackRollOutcome.damageRollOutcome, attackRollOutcome.attackName, characterName)
@@ -121,6 +130,7 @@ fun message(characterAttributeRollOutcome: CharacterAttributeRollOutcome) = with
 
 fun doRichMessage(s: String) = RichMessage(s)
 
+fun richMessage(outcome: TrackedValue) = doRichMessage(message(outcome))
 fun richMessage(outcome: RollOutcome) = doRichMessage(message(outcome))
 fun richMessage(outcome: DamageRollOutcome) = doRichMessage(message(outcome))
 fun richMessage(outcome: AttackRollOutcome) = doRichMessage(message(outcome))
