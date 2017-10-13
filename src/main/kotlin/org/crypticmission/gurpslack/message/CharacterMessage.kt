@@ -1,8 +1,10 @@
-package org.crypticmission.gurpslack.model
+package org.crypticmission.gurpslack.message
 
 import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.model.CharacterSections.*
+import org.crypticmission.gurpslack.message.CharacterSections.*
+import org.crypticmission.gurpslack.model.*
+import org.crypticmission.gurpslack.message.CharacterSections.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -10,11 +12,11 @@ import org.slf4j.LoggerFactory
 
 private val logger = LoggerFactory.getLogger("CharacterMessage")
 
-data class Option(val text: String, val value: String)
+data class MenuOption(val text: String, val value: String)
 
-enum class VisibilityOption(val option: Option, val isInChannel: Boolean) {
-    OPEN(Option("The Channel", "open"), true),
-    PRIVATE(Option("Me Only", "private"), false);
+enum class VisibilityOption(val menuOption: MenuOption, val isInChannel: Boolean) {
+    OPEN(MenuOption("The Channel", "open"), true),
+    PRIVATE(MenuOption("Me Only", "private"), false);
 
     companion object {
         fun fromValue(value: String?) = when(value) {
@@ -39,7 +41,7 @@ data class Button(override val name: String,
 
 data class Menu(override val name: String,
                 override val text: String,
-                val options: List<Option>? = emptyList()) : Action {
+                val options: List<MenuOption>? = emptyList()) : Action {
     override val type = "select"
 }
 
@@ -79,16 +81,9 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-enum class MenuType() { DAMAGE, MOD, TRACKED }
-enum class CharacterSections(val menuType: MenuType) {
-    PRIMARY_ATTRIBUTES(MenuType.MOD),
-    DERIVED_ATTRIBUTES(MenuType.MOD),
-    TRACKED_STATS(MenuType.TRACKED),
-    SKILLS(MenuType.MOD),
-    MELEE_ATTACKS(MenuType.DAMAGE),
-    RANGED_ATTACKS(MenuType.DAMAGE)
-}
 
+
+@JvmOverloads
 fun richMessage(key: String, characterRoller: CharacterRoller,
                 sections : Array<CharacterSections> = values()): RichMessage {
     with (characterRoller){
@@ -138,11 +133,11 @@ private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
     return options
 }
 
-private fun successMargin() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
-private fun shotsFired() = (1 .. 30).map { Option(it.toString(), it.toString()) }
-private fun modifiers() = (-10 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
-private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toString()) }
-private fun visibility() = VisibilityOption.values().map { it.option }
+private fun successMargin() = (0 .. 10).map { MenuOption(it.toSignedStringWithZero(), it.toString()) }
+private fun shotsFired() = (1 .. 30).map { MenuOption(it.toString(), it.toString()) }
+private fun modifiers() = (-10 .. 10).map { MenuOption(it.toSignedStringWithZero(), it.toString()) }
+private fun dr() = (0 .. 10).map { MenuOption(it.toSignedStringWithZero(), it.toString()) }
+private fun visibility() = VisibilityOption.values().map { it.menuOption }
 
 
 
@@ -152,11 +147,12 @@ private fun skillAttachments(key: String, skills: Collection<Attribute>): List<A
                 .map { attribute -> skillToButton(key, attribute) }
                 .groupBy(3)
                 .mapIndexed { index, list ->
-                    ActionAttachment( when(index)  {
+                    ActionAttachment(when (index) {
                         0 -> "_*Skills:*_"
                         else -> null
 
-                    }, list, "${key}-skills-${index}") }
+                    }, list, "${key}-skills-${index}")
+                }
 
 private fun attackAttachments(key: String, type: String, attacks: Collection<Attack>): List<ActionAttachment> =
         attacks
@@ -164,11 +160,12 @@ private fun attackAttachments(key: String, type: String, attacks: Collection<Att
                 .map { attack -> attackToButton(key, type, attack) }
                 .groupBy(3)
                 .mapIndexed { index, list ->
-                    ActionAttachment( when(index)  {
+                    ActionAttachment(when (index) {
                         0 -> "_*${type.capitalize()} Attacks:*_"
                         else -> null
 
-                    }, list, "${key}-${type}-attacks-${index}") }
+                    }, list, "${key}-${type}-attacks-${index}")
+                }
 
 fun skillToButton(key: String, attribute: Attribute) =
         Button("skill", "${attribute.name}: ${attribute.level}",

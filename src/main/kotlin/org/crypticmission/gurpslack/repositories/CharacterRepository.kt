@@ -1,7 +1,7 @@
 package org.crypticmission.gurpslack.repositories
 
 import org.crypticmission.gurpslack.model.CharacterRoller
-import org.crypticmission.gurpslack.model.toKey
+import org.crypticmission.gurpslack.message.toKey
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 

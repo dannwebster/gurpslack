@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.message.message
 import org.crypticmission.gurpslack.repositories.Randomizer
 import org.junit.Assert.assertEquals
 import org.junit.Test
@@ -23,7 +24,7 @@ class DamageRollMessageTest {
     @Test
     fun shouldCreateABulletedMessageWhenDamageRollVsDr() {
         // when
-        val msg = message(damageRollOutcome )
+        val msg = message(damageRollOutcome)
 
         // then
         assertEquals(

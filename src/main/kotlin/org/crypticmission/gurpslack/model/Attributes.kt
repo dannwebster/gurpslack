@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.message.message
 import org.crypticmission.gurpslack.repositories.Randomizer
 
 data class Attribute(val name: String, val level: Int, val rollSpec: RollSpec = Attribute.ROLL_SPEC)  {

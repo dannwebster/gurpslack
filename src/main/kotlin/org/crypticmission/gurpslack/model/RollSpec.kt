@@ -4,7 +4,7 @@ import org.crypticmission.gurpslack.repositories.Randomizer
 
 data class RollOutcome(val rollSpec: RollSpec, val rollValues: List<Int>, val adds: Int) {
     val total = rollValues.sum() + adds
-    val message = message(this)
+    val message = org.crypticmission.gurpslack.message.message(this)
     override fun toString(): String = message
 }
 

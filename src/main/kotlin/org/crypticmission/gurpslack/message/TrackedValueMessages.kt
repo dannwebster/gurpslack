@@ -1,6 +1,7 @@
-package org.crypticmission.gurpslack.model
+package org.crypticmission.gurpslack.message
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.crypticmission.gurpslack.model.*
 
 /**
  */
@@ -15,11 +16,12 @@ fun message(stat: TrackedValue) = with (stat) {
     """.trimIndent().trimMargin("|")
 }
 
-fun richMessage(key: String, stat: TrackedValue) : RichMessage {
+fun richMessage(key: String, stat: TrackedValue) : CallbackMessage {
     val m = RichMessage(message(stat))
-    val attachments = arrayOf(ActionAttachment(null, trackedIncDec(key, stat), "${key}-${stat.name}-tracked-detail"))
+    val callbackId = "${key}-${stat.name}-tracked-detail"
+    val attachments = arrayOf(ActionAttachment(null, trackedIncDec(key, stat), callbackId))
     m.attachments = attachments
-    return m
+    return m.withCallback(callbackId)
 }
 
 fun shortMessage(stat: TrackedValue) = with (stat) {
@@ -30,13 +32,13 @@ fun trackedStatsAttachments(key: String, trackedStats: Map<String, TrackedValue>
             listOf(ActionAttachment(
                     "_*Tracked Stats*_",
                     trackedStats.values.map { stat -> toDetailButton(key, stat) },
-                       "${key}-tracked-stats")
+                    "${key}-tracked-stats")
             )
 
 
 private fun toDetailButton(key: String, stat: TrackedValue): Action =
         Button("showTrackedStat", shortMessage(stat), buttonValue(key, stat.name)
-)
+        )
 private fun trackedIncDec(key: String, stat: TrackedValue): List<Action> =
         listOf(
                 Button("incTrackedStat", "+", buttonValue(key, stat.name)),

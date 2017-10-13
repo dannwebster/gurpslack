@@ -1,5 +1,7 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.message.message
+import org.crypticmission.gurpslack.message.toTitleCase
 import org.junit.Assert.assertEquals
 import org.junit.Test
 

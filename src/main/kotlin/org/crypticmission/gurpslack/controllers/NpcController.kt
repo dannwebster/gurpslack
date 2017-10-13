@@ -1,8 +1,9 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.crypticmission.gurpslack.message.CharacterSections
 import org.crypticmission.gurpslack.model.*
-import org.crypticmission.gurpslack.model.CharacterSections.*
+import org.crypticmission.gurpslack.message.CharacterSections.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -46,7 +47,7 @@ class NpcController(val characterRepository: CharacterRepository) {
         val npc = characterRepository.getByKey(key)
         return when (npc) {
             null -> RichMessage("CharacterRoller with abbreviation ${key} does not exist")
-            else -> richMessage(key, npc, sections)
+            else -> org.crypticmission.gurpslack.message.richMessage(key, npc, sections)
         }.encodedMessage()
     }
 

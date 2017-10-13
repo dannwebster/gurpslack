@@ -44,7 +44,7 @@ _*Ranged Attacks*_:
 """
 
         // when
-        val message = message(subject)
+        val message = org.crypticmission.gurpslack.message.message(subject)
 
         // then
         assertEquals(expected, message)

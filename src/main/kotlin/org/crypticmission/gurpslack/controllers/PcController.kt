@@ -1,8 +1,8 @@
 package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
-import org.crypticmission.gurpslack.model.*
-import org.crypticmission.gurpslack.model.CharacterSections.*
+import org.crypticmission.gurpslack.message.CharacterSections
+import org.crypticmission.gurpslack.message.CharacterSections.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -42,7 +42,7 @@ class PcController(val characterRepository: CharacterRepository) {
         logger.debug("pc for username ${username} is ${keyPcPair?.second?.characterName} for key ${keyPcPair?.first}")
         return when (keyPcPair) {
             null -> RichMessage("CharacterRoller with username '${username}' does not exist")
-            else -> richMessage(keyPcPair.first, keyPcPair.second, sections)
+            else -> org.crypticmission.gurpslack.message.richMessage(keyPcPair.first, keyPcPair.second, sections)
         }.encodedMessage()
     }
 
