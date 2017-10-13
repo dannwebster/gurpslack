@@ -2,6 +2,7 @@ package org.crypticmission.gurpslack.controllers
 
 import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.model.*
+import org.crypticmission.gurpslack.model.CharacterSections.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.slf4j.LoggerFactory
 import org.springframework.beans.factory.annotation.Value
@@ -19,19 +20,19 @@ class PcController(val characterRepository: CharacterRepository) {
 
     @PostMapping("/pc")
     fun getPc(slashData: SlashData) =
-            doGetPc(slashData, CharacterSections.values())
+            doGetPc(slashData, values())
 
     @PostMapping("/attributes")
     fun getPcAttributes(slashData: SlashData) =
-            doGetPc(slashData, arrayOf(CharacterSections.PRIMARY_ATTRIBUTES, CharacterSections.DERIVED_ATTRIBUTES))
+            doGetPc(slashData, arrayOf(PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES, TRACKED_STATS))
 
     @PostMapping("/skills")
     fun getPcSkills(slashData: SlashData) =
-            doGetPc(slashData, arrayOf(CharacterSections.SKILLS))
+            doGetPc(slashData, arrayOf(SKILLS))
 
     @PostMapping("/attacks")
     fun getPcDamage(slashData: SlashData) =
-            doGetPc(slashData, arrayOf(CharacterSections.MELEE_ATTACKS, CharacterSections.RANGED_ATTACKS))
+            doGetPc(slashData, arrayOf(MELEE_ATTACKS, RANGED_ATTACKS))
 
     fun doGetPc(slashData: SlashData, sections: Array<CharacterSections>): RichMessage {
         logger.debug("doGetPC: ${slashData}")

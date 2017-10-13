@@ -33,13 +33,15 @@ interface Action {
 
 data class Button(override val name: String,
                   override val text: String,
-                  override val type: String,
-                  val value: String) : Action
+                  val value: String) : Action {
+    override val type = "button"
+}
 
 data class Menu(override val name: String,
                 override val text: String,
-                override val type: String,
-                val options: List<Option>? = emptyList()) : Action
+                val options: List<Option>? = emptyList()) : Action {
+    override val type = "select"
+}
 
 class ActionAttachment(text: String?, val actions: List<Action>,
                        val callback_id: String,
@@ -117,13 +119,12 @@ private fun optionsAttachment(key: String, sections : Array<CharacterSections>):
         menuOptions(sections),
         "${key}-visibility")
 
-private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"
 
-val SUCCESS_MARGIN_MENU = Menu("success-margin", "Margin of Success", "select", options = successMargin())
-val RATE_OF_FIRE_MENU = Menu("shots-fired", "Shots Fired", "select", options = shotsFired())
-val DR_MENU = Menu("dr", "Damage Resistance", "select", options = dr())
-val MODIFIER_MENU = Menu("modifier", "Modifier", "select", options = modifiers())
-val VISIBILITY_MENU = Menu("visibility", "Visibility", "select", options = visibility())
+val SUCCESS_MARGIN_MENU = Menu("success-margin", "Margin of Success", options = successMargin())
+val RATE_OF_FIRE_MENU = Menu("shots-fired", "Shots Fired", options = shotsFired())
+val DR_MENU = Menu("dr", "Damage Resistance", options = dr())
+val MODIFIER_MENU = Menu("modifier", "Modifier", options = modifiers())
+val VISIBILITY_MENU = Menu("visibility", "Visibility", options = visibility())
 
 private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
     val set = sections.map { it.menuType }.toSet()
@@ -144,18 +145,31 @@ private fun dr() = (0 .. 10).map { Option(it.toSignedStringWithZero(), it.toStri
 private fun visibility() = VisibilityOption.values().map { it.option }
 
 
+private fun trackedStatMessage(stat: TrackedValue) = with (stat) {
+    val effect = effect()
+    """
+    |_*${stat.name}:*_
+    |  Max ${shortName}: ${maxValue}
+    |  Current ${shortName}: ${currentValue}
+    |  Effects: ${effect.status}${if (effect.details != null) " (" + effect.details + ")" else ""}
+    """.trimIndent().trimMargin("|")
+}
+
 private fun trackedStatsAttachments(key: String, trackedStats: Map<String, TrackedValue>): List<ActionAttachment> =
         trackedStats.values
                 .sortedBy { stat -> stat.name }
                 .mapIndexed { index, stat ->
                     ActionAttachment(
-                            "${stat.name}: ${stat.current} of ${stat.max}",
+                            trackedStatMessage(stat),
                             trackedValueToBar(key, stat),
                             "${key}-tracked-stats-${index}") }
 
 
 private fun trackedValueToBar(key: String, stat: TrackedValue): List<Action> =
-        listOf()
+        listOf(
+            Button(stat.name, "+", buttonValue(key, "track-${stat.name}-plus")),
+            Button(stat.name, "-", buttonValue(key, "track-${stat.name}-minus"))
+        )
 
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
         skills
@@ -182,11 +196,11 @@ private fun attackAttachments(key: String, type: String, attacks: Collection<Att
                     }, list, "${key}-${type}-attacks-${index}") }
 
 fun skillToButton(key: String, attribute: Attribute) =
-        Button("skill", "${attribute.name}: ${attribute.level}", "button",
+        Button("skill", "${attribute.name}: ${attribute.level}",
                 buttonValue(key, attribute.name))
 
 fun attackToButton(key: String, type: String, attack: Attack) =
-        Button("${type}Attack", "${attack.attackName}: ${attack.damageSpec.canonical}", "button",
+        Button("${type}Attack", "${attack.attackName}: ${attack.damageSpec.canonical}",
                 buttonValue(key, attack.attackName))
 
 fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
@@ -199,7 +213,9 @@ private fun attributesAttachments(key: String, type: String, attributes: Collect
 
 private fun attributesAttachment(key: String, type: String, attributes: Collection<Attribute>): ActionAttachment {
     val attributeButtons = attributes
-            .map { Button("attribute", "${it.name}: ${it.level}", "button", buttonValue(key, it.name)) }
+            .map { Button("attribute", "${it.name}: ${it.level}", buttonValue(key, it.name)) }
     val attributeAttachment = ActionAttachment("_*${type} Attributes:*_", attributeButtons, "${key}-attributes")
     return attributeAttachment
 }
+
+private fun buttonValue(characterKey: String, traitName: String) = "${characterKey.toKey()}@${traitName.toKey()}"

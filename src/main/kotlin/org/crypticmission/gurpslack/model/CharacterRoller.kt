@@ -10,10 +10,6 @@ data class CharacterAttackRollOutcome(val characterName: String, val attackRollO
     override fun toString() = message(this)
 }
 
-data class TrackedValue(val name: String, val max: Int, var current: Int) {
-    fun change(amount: Int) { current = Math.min(max, current + amount)}
-}
-
 class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       val characterName: String,
                       attributes: Map<String, Attribute> = emptyMap(),
@@ -28,8 +24,9 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     val rangedAttacks = HashMap<String, Attack>(rangedAttacks.mapKeys { (k, _) -> k.toKey() })
     val trackedStats = trackedStatList.map { Pair(it.name, it) }.toMap()
 
-    fun modifyTrackedStat(statName: String, change: Int) {
-        trackedStats.get(statName)?.change(change)
+    fun modifyTrackedStat(statName: String, change: Int) : TrackedValue? {
+        trackedStats[statName]?.plusAssign(change)
+        return trackedStats[statName]
     }
 
     fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome? {

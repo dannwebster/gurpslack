@@ -31,7 +31,7 @@ class NpcController(val characterRepository: CharacterRepository) {
 
     @PostMapping("/npc")
     fun getNpcAttributes(slashData: SlashData) =
-            doGetNpc(slashData, arrayOf(PRIMARY_ATTRIBUTES, DERIVED_ATTRIBUTES))
+            doGetNpc(slashData, CharacterSections.values())
 
     @PostMapping("/npcs")
     fun getNpcSkills(slashData: SlashData) =

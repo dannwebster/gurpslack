@@ -222,9 +222,9 @@ class CharacterData {
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
     val trackedStats = listOf(
-            TrackedValue("FP", characterData.ht, characterData.ht),
-            TrackedValue("HP", characterData.st, characterData.st),
-            TrackedValue("WP", characterData.will, characterData.will)
+            TrackedValue.hp(characterData.ht),
+            TrackedValue.fp(characterData.st),
+            TrackedValue.wp(characterData.will)
     )
     CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks, trackedStats)
 }
