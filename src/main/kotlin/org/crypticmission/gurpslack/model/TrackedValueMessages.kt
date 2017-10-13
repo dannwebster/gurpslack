@@ -17,7 +17,8 @@ fun message(stat: TrackedValue) = with (stat) {
 
 fun richMessage(key: String, stat: TrackedValue) : RichMessage {
     val m = RichMessage(message(stat))
-    m.attachments = arrayOf(ActionAttachment(null, trackedIncDec(key, stat), "${key}-${stat.name}-detail"))
+    val attachments = arrayOf(ActionAttachment(null, trackedIncDec(key, stat), "${key}-${stat.name}-tracked-detail"))
+    m.attachments = attachments
     return m
 }
 
