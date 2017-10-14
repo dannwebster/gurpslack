@@ -16,8 +16,8 @@ class TrackedValueMessagesTest {
         val msg = richMessage("foo", subject)
 
         // then
-        assertEquals(1, msg.attachments.size)
-        assertEquals(2, (msg.attachments.first() as ActionAttachment).actions.size  )
+        assertEquals(1, msg.attachments?.size)
+        assertEquals(2, (msg.attachments?.first() as Attachment).actions?.size  )
 
     }
 }

@@ -1,6 +1,5 @@
 package org.crypticmission.gurpslack.message
 
-import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.model.*
 
 /**

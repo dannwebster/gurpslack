@@ -1,7 +1,5 @@
 package org.crypticmission.gurpslack.message
 
-import me.ramswaroop.jbot.core.slack.models.Attachment
-import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.message.CharacterSections.*
 import org.crypticmission.gurpslack.model.*
 import org.slf4j.LoggerFactory
@@ -26,31 +24,7 @@ enum class VisibilityOption(val menuOption: MenuOption, val isInChannel: Boolean
     }
 }
 
-interface Action {
-    val name: String
-    val text: String
-    val type: String
-}
 
-data class Button(override val name: String,
-                  override val text: String,
-                  val value: String) : Action {
-    override val type = "button"
-}
-
-data class Menu(override val name: String,
-                override val text: String,
-                val options: List<MenuOption>? = emptyList()) : Action {
-    override val type = "select"
-}
-
-class ActionAttachment(text: String?, val actions: List<Action>,
-                       val callback_id: String,
-                       val mrkdwn_in: List<String> = listOf("text", "pretext")) : Attachment() {
-    init {
-        super.setText(text)
-    }
-}
 
 
 fun message(characterRoller: CharacterRoller) = with (characterRoller) {
@@ -102,13 +76,13 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
 
 
         val richMessage = RichMessage(msg)
-        richMessage.attachments = attachments
+        richMessage.withAttachments(attachments)
 
         return richMessage
     }
 }
 
-private fun optionsAttachment(key: String, sections : Array<CharacterSections>): ActionAttachment = ActionAttachment(
+private fun optionsAttachment(key: String, sections : Array<CharacterSections>): Attachment = Attachment(
         "*Options*",
         menuOptions(sections),
         "${key}-visibility")
@@ -140,26 +114,26 @@ private fun visibility() = VisibilityOption.values().map { it.menuOption }
 
 
 
-private fun skillAttachments(key: String, skills: Collection<Attribute>): List<ActionAttachment> =
+private fun skillAttachments(key: String, skills: Collection<Attribute>): List<Attachment> =
         skills
                 .sortedBy { skill -> skill.name }
                 .map { attribute -> skillToButton(key, attribute) }
                 .groupBy(3)
                 .mapIndexed { index, list ->
-                    ActionAttachment(when (index) {
+                    Attachment(when (index) {
                         0 -> "_*Skills:*_"
                         else -> null
 
                     }, list, "${key}-skills-${index}")
                 }
 
-private fun attackAttachments(key: String, type: String, attacks: Collection<Attack>): List<ActionAttachment> =
+private fun attackAttachments(key: String, type: String, attacks: Collection<Attack>): List<Attachment> =
         attacks
                 .sortedBy { attack -> attack.attackName }
                 .map { attack -> attackToButton(key, type, attack) }
                 .groupBy(3)
                 .mapIndexed { index, list ->
-                    ActionAttachment(when (index) {
+                    Attachment(when (index) {
                         0 -> "_*${type.capitalize()} Attacks:*_"
                         else -> null
 
@@ -179,13 +153,13 @@ fun <T> List<T>.groupBy(groupSize: Int): List<List<T>> =
                 .groupBy { it.index / groupSize }.values
                 .map { it.map { it.value }}
 
-private fun attributesAttachments(key: String, type: String, attributes: Collection<Attribute>): List<ActionAttachment> =
+private fun attributesAttachments(key: String, type: String, attributes: Collection<Attribute>): List<Attachment> =
         listOf(attributesAttachment(key, type, attributes))
 
-private fun attributesAttachment(key: String, type: String, attributes: Collection<Attribute>): ActionAttachment {
+private fun attributesAttachment(key: String, type: String, attributes: Collection<Attribute>): Attachment {
     val attributeButtons = attributes
             .map { Button("attribute", "${it.name}: ${it.level}", buttonValue(key, it.name)) }
-    val attributeAttachment = ActionAttachment("_*${type} Attributes:*_", attributeButtons, "${key}-attributes")
+    val attributeAttachment = Attachment("_*${type} Attributes:*_", attributeButtons, "${key}-attributes")
     return attributeAttachment
 }
 

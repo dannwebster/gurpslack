@@ -1,7 +1,6 @@
 package org.crypticmission.gurpslack.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
-import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.message.*
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
@@ -121,7 +120,7 @@ Next attack made by ${messageData.user.name}:
                     marginOfSuccessCache.getAndClearValue(messageData)
             )
 
-            else -> ReplaceOriginalRichMessage("unable to find action from message ${message}", messageData.callbackId, false)
+            else -> RichMessage("unable to find action from message ${message}", messageData.callbackId).replaceOriginal().inChannel(false)
         }
 
         logger.info("outcome ${richMessage.text}")

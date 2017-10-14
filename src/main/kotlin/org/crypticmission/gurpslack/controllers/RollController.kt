@@ -1,6 +1,6 @@
 package org.crypticmission.gurpslack.controllers
 
-import me.ramswaroop.jbot.core.slack.models.RichMessage
+import org.crypticmission.gurpslack.message.RichMessage
 import org.crypticmission.gurpslack.message.richMessage
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.Randomizer
@@ -10,10 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 
-fun RichMessage.inChannel(inChannel: Boolean) = when(inChannel) {
-    true -> {this.responseType = "in_channel"; this}
-    false -> {this.responseType = "ephemeral"; this}
-}
 
 @RestController
 class RollController(val randomizer: Randomizer) {

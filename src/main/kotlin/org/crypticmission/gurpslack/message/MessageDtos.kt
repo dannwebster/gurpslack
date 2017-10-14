@@ -3,7 +3,6 @@ package org.crypticmission.gurpslack.message
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
-import me.ramswaroop.jbot.core.slack.models.RichMessage
 
 class Option() {
     lateinit var value: String
@@ -30,21 +29,7 @@ class MessageData() {
     lateinit var responseUrl: String
 }
 
-open class CallbackMessage(text: String, val calllback_id: String) : RichMessage(text)
 
-fun RichMessage.withCallback(calllback_id: String) : CallbackMessage {
-    val msg = CallbackMessage(this.text, calllback_id)
-    msg.attachments = this.attachments
-    return msg
-}
-
-fun CallbackMessage.replaceOriginal(replaceOriginal: Boolean) : ReplaceOriginalRichMessage {
-    val msg =ReplaceOriginalRichMessage(this.text, this.calllback_id, replaceOriginal)
-    msg.attachments = this.attachments
-    return msg
-}
-
-class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_original: Boolean) : CallbackMessage(text, callback_id)
 
 @JsonIgnoreProperties(ignoreUnknown = true)
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)

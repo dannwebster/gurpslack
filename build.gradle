@@ -1,10 +1,7 @@
 buildscript {
 	ext {
-		// kotlinVersion = '1.1.4-2'
 		kotlinVersion = '1.1.51'
 		springBootVersion = '2.0.0.M3'
-
-        jbotVersion = '3.0.2'
 	}
 	repositories {
 		mavenCentral()
@@ -53,9 +50,9 @@ dependencies {
 
 	compile("org.jetbrains.kotlin:kotlin-stdlib-jre8:${kotlinVersion}")
 	compile("org.jetbrains.kotlin:kotlin-reflect:${kotlinVersion}")
-	compile("me.ramswaroop.jbot:jbot:${jbotVersion}")
 	compile("com.fasterxml.jackson.module:jackson-module-kotlin")
 	compile("org.eclipse.persistence:org.eclipse.persistence.moxy:2.5.0")
+	compile('javax.servlet:javax.servlet-api:4.0.0')
 
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('io.projectreactor:reactor-test')
