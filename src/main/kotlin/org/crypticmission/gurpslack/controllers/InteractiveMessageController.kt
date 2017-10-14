@@ -41,9 +41,9 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
                 "modifier" -> doModifier(action, message, messageData, modifierCache)
                 "visibility" -> doVisibility(action, message, messageData, visibilityCache)
                 "dr" -> doDamageResistance(action, message, messageData, damageResistanceCache)
-                else -> throw IllegalArgumentException("select action name must be 'modifier' or 'visibility', but is '${action.type}'")
+                else -> RichMessage("unable to find action '${action.type}'")
             }
-            else -> throw IllegalArgumentException("action type must be 'button' or 'select', but is '${action.type}'")
+            else -> RichMessage("action type must be 'button' or 'select', but is '${action.type}'")
         }
 
         val inChannel = visibilityCache.getValue(messageData)

@@ -86,8 +86,8 @@ val HP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
             TrackedValueEffectDescription(
                     negative(stat).times(x),
                     negative(stat).times(x + 1),
-                "Verge of Death - Level ${x})",
-                {fullHp: Int -> "At HP=-${fullHp * x}, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."})  } +
+                "Verge of Death - Level ${x}: ",
+                {fullHp: Int -> "At -${fullHp * x} HP, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."})  } +
 listOf(
         TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(5), "Instant Death", {fullHp: Int -> "At HP=-${fullHp * 5}, you die immediately"}),
         TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10).minusOne(), "Dead", "Your body is being destroyed"),

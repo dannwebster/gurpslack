@@ -10,8 +10,8 @@ fun message(stat: TrackedValue) = with (stat) {
     val effect = effect()
     """
     |_*${shortMessage(stat)}:*_
-    |> - *Max ${key}:* ${maxValue}
-    |> - *Current ${key}:* ${currentValue}
+    |> - *Max:* ${maxValue} ${key}
+    |> - *Current:* ${currentValue} ${key}
     |> - *Effects:* ${effect.status}${if (effect.details != null) " (" + effect.details + ")" else ""}
     """.trimIndent().trimMargin("|")
 }
