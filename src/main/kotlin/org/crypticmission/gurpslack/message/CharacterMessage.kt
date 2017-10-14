@@ -4,7 +4,6 @@ import me.ramswaroop.jbot.core.slack.models.Attachment
 import me.ramswaroop.jbot.core.slack.models.RichMessage
 import org.crypticmission.gurpslack.message.CharacterSections.*
 import org.crypticmission.gurpslack.model.*
-import org.crypticmission.gurpslack.message.CharacterSections.*
 import org.slf4j.LoggerFactory
 
 /**

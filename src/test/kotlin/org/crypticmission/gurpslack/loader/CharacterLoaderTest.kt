@@ -8,13 +8,23 @@ import org.junit.Test
 /**
  */
 class CharacterLoaderTest {
-    @Test fun shouldParseNoraWhenLoadedFromFile() {
-        // given
-        val reader = this::class.java.getResourceAsStream("/NoraBlackburn.gcs").bufferedReader()
+
+    private fun loadCharacter(fileName: String): CharacterData {
+        val reader = this::class.java.getResourceAsStream(fileName).bufferedReader()
         val subject = CharacterLoader()
 
         // when
         val character = subject.load(reader) ?: throw IllegalArgumentException()
+        return character
+    }
+
+    val nora = loadCharacter("/NoraBlackburn.gcs")
+    val ev = loadCharacter("/Everett O'Connell.gcs")
+    val rc = loadCharacter("/rc-cleveland.gcs")
+
+    @Test fun shouldParseNoraWhenLoadedFromFile() {
+        // given
+        val character = nora
 
         // then
         assertNotNull(character)
@@ -24,15 +34,11 @@ class CharacterLoaderTest {
 
     @Test fun shouldLoadEquipmentFromContainer() {
         // given
-        val reader = this::class.java.getResourceAsStream("/Everett O'Connell.gcs").bufferedReader()
-        val subject = CharacterLoader()
-
-        // when
-        val character = subject.load(reader) ?: throw AssertionError("failed to read character")
+        val character = ev
 
         // then
         assertNotNull(character)
-        assertEquals("Everett O'Connel", character.name)
+        assertEquals("Everett O'Connell", character.name)
         assertEquals("Stewart", character.playerName)
 
         val pistol = character.rangedAttacks.get("FN-Browning High Power, 9x19mm") ?:
@@ -41,29 +47,55 @@ class CharacterLoaderTest {
         assertEquals("FN-Browning High Power, 9x19mm", pistol.attackName)
         assertEquals(parseDamage("2d+2 pi"), pistol.damageSpec)
 
-        val shotgunSlugs = character.rangedAttacks.get("Slugs: FN-Browning Auto-5, 12G, 2.75") ?:
-                throw AssertionError("no shotgun slug Damage")
-
-        assertEquals("Slugs: FN-Browning Auto-5, 12G, 2.75", shotgunSlugs.attackName)
+        val slugs = "Slugs: Shotgun (FN-Browning Auto-5, 12G, 2.75\")"
+        val shotgunSlugs = character.rangedAttacks.get(slugs) ?: throw AssertionError("no shotgun slug Damage")
+        assertEquals(slugs, shotgunSlugs.attackName)
         assertEquals(parseDamage("4d+4 pi++"), shotgunSlugs.damageSpec)
 
-        val shotgunShot = character.rangedAttacks.get("Buckshot: FN-Browning Auto-5, 12G, 2.75") ?:
-                throw AssertionError("no shotgun shot Damage")
-
-        assertEquals("Buckshot: FN-Browning Auto-5, 12G, 2.75", shotgunShot.attackName)
+        val shot = "Buckshot: Shotgun (FN-Browning Auto-5, 12G, 2.75\")"
+        val shotgunShot = character.rangedAttacks.get(shot) ?: throw AssertionError("no shotgun shot Damage")
+        assertEquals(shot, shotgunShot.attackName)
         assertEquals(parseDamage("1d+1 pi"), shotgunShot.damageSpec)
 
         assertEquals(7, character.rangedAttacks.size)
         assertEquals(2, character.meleeAttacks.size)
 
     }
+
+    @Test
+    fun shouldDefaultCurrentFpAndHpToMaxFileWhenFileDoesNotHaveThemSet() {
+        // given
+        val character = ev
+
+        assertEquals(13, character.ht)
+        assertEquals(3, character.fp)
+        assertEquals(16, character.maxFp)
+        assertEquals(10, character.currentFp)
+
+        assertEquals(12, character.st)
+        assertEquals(1, character.hp)
+        assertEquals(13, character.maxHp)
+        assertEquals(9, character.currentHp)
+    }
+    @Test
+    fun shouldLoadCurrentHpFpFromaFileWhenItHasTheSet() {
+        // given
+        var character = nora
+
+        // then
+        assertEquals(12, character.ht)
+        assertEquals(0, character.fp)
+        assertEquals(12, character.maxFp)
+        assertEquals(12, character.currentFp)
+
+        assertEquals(10, character.st)
+        assertEquals(1, character.hp)
+        assertEquals(11, character.maxHp)
+        assertEquals(11, character.currentHp)
+    }
     @Test fun shouldParseRcWhenLoadedFromFile() {
         // given
-        val reader = this::class.java.getResourceAsStream("/rc-cleveland.gcs").bufferedReader()
-        val subject = CharacterLoader()
-
-        // when
-        val character = subject.load(reader) ?: throw AssertionError("failed to read character")
+        val character = rc
 
         // then
         assertNotNull(character)

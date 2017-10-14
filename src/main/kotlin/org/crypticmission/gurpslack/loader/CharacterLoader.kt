@@ -151,13 +151,23 @@ class CharacterData {
     val dxS by JXML / "DX" / XText
     val iqS by JXML / "IQ" / XText
     val htS by JXML / "HT" / XText
+    val hpS by JXML / "HP" / XText
+    val fpS by JXML / "FP" / XText
     val willS by JXML / "will" / XText
     val perS by JXML / "perception" / XText
+    val currentHpS by JXML / "current_hp" / XText
+    val currentFpS by JXML / "current_fp" / XText
 
     val st: Int by lazy { stS?.toInt() ?: throw IllegalStateException("no value for ST") }
     val dx: Int by lazy { dxS?.toInt() ?: throw IllegalStateException("no value for DX") }
     val iq: Int by lazy { iqS?.toInt() ?: throw IllegalStateException("no value for IQ")  }
     val ht: Int by lazy { htS?.toInt() ?: throw IllegalStateException("no value for HT")  }
+    val hp: Int by lazy { hpS?.toInt() ?: throw IllegalStateException("no value for HP")  }
+    val fp: Int by lazy { fpS?.toInt() ?: throw IllegalStateException("no value for FP")  }
+    val maxHp: Int by lazy { st + hp }
+    val maxFp: Int by lazy { ht + fp }
+    val currentHp: Int by lazy { currentHpS?.toInt() ?: maxHp }
+    val currentFp: Int by lazy { currentFpS?.toInt() ?: maxFp }
     val will: Int by lazy { (willS?.toInt() ?: 0) + 10 }
     val per: Int by lazy { (perS?.toInt() ?: 0) + 10 }
     val equipment: List<Equipment> by lazy {
@@ -222,9 +232,9 @@ class CharacterData {
 
 fun toRoller(randomizer: Randomizer, characterData: CharacterData) = with(characterData) {
     val trackedStats = listOf(
-            TrackedValue.hp(characterData.ht),
-            TrackedValue.fp(characterData.st),
-            TrackedValue.wp(characterData.will)
+            TrackedValue.hp(characterData.maxHp, characterData.currentHp),
+            TrackedValue.fp(characterData.maxFp, characterData.currentFp),
+            TrackedValue.wp(characterData.will, characterData.will)
     )
     CharacterRoller(randomizer, name?: "UNKNOWN" , attributes, skills, meleeAttacks, rangedAttacks, trackedStats)
 }

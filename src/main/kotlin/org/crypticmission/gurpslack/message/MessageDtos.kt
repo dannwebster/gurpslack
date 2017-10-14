@@ -32,9 +32,17 @@ class MessageData() {
 
 open class CallbackMessage(text: String, val calllback_id: String) : RichMessage(text)
 
-fun RichMessage.withCallback(calllback_id: String) = CallbackMessage(this.text, calllback_id)
+fun RichMessage.withCallback(calllback_id: String) : CallbackMessage {
+    val msg = CallbackMessage(this.text, calllback_id)
+    msg.attachments = this.attachments
+    return msg
+}
 
-fun CallbackMessage.replaceOriginal(replaceOriginal: Boolean) = ReplaceOriginalRichMessage(this.text, this.calllback_id, replaceOriginal)
+fun CallbackMessage.replaceOriginal(replaceOriginal: Boolean) : ReplaceOriginalRichMessage {
+    val msg =ReplaceOriginalRichMessage(this.text, this.calllback_id, replaceOriginal)
+    msg.attachments = this.attachments
+    return msg
+}
 
 class ReplaceOriginalRichMessage(text: String, callback_id: String, val replace_original: Boolean) : CallbackMessage(text, callback_id)
 

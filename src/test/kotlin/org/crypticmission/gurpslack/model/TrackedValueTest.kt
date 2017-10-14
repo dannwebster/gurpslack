@@ -23,7 +23,7 @@ class TrackedValueTest {
     fun isContiguousForRange(name: String, range: IntRange, trackedValuesEffectDescriptions: List<TrackedValueEffectDescription>) {
 //        println("*** Testing ${name} ***")
         range.forEach { maxValue ->
-            val trackedValue = TrackedValue.create(name, name, maxValue, trackedValuesEffectDescriptions)
+            val trackedValue = TrackedValue.create(name, name, maxValue, maxValue, trackedValuesEffectDescriptions)
             isContiguous(name, maxValue, trackedValue)
 //            trackedValue.effects.forEach {
 //                println(it.toString())
