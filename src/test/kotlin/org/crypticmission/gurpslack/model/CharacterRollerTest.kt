@@ -90,4 +90,17 @@ _*Ranged Attacks*_:
 
     }
 
+    @Test
+    fun shouldModifyTrackedStatWhenStatExists() {
+        // given
+        val subject = CharacterRoller(Randomizer.MAX, "Foo Bar", trackedValueList = listOf(TrackedValue.fp(13, 13)))
+        assertNotNull(subject.getTrackedStat("fp"))
+
+        // when
+        val fp = subject.modifyTrackedStat("fp", -3) ?: throw AssertionError("fp should exist")
+
+        // then
+        assertEquals(10, fp.currentValue)
+
+    }
 }

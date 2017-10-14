@@ -9,22 +9,14 @@ fun IntProgression.containsExcludeLast(i: Int) =
         else
             this.contains(i)
 
-data class TrackedValue private constructor(val valueName: String,
-                        val _key: String,
-                        val maxValue: Int,
-                        private var _currentValue: Int,
-                        val effects: List<TrackedValueEffect>) {
+data class TrackedValue private constructor(private val _key: String,
+                                            val valueName: String,
+                                            val maxValue: Int,
+                                            var currentValue: Int,
+                                            val effects: List<TrackedValueEffect>) {
 
     val key = _key.toKey()
     val minValue = effects.last().range.last + 1
-
-    var currentValue: Int = _currentValue
-        set(newValue: Int) =
-            if (newValue >= minValue)
-                _currentValue = newValue
-            else
-                throw IllegalStateException("${newValue} for ${valueName} (${key}) is less than the lowest allowed " +
-                        "value of ${minValue} as defined by effect ${effects.last()}")
 
     companion object {
         fun create(name: String,
@@ -32,7 +24,7 @@ data class TrackedValue private constructor(val valueName: String,
                    maxValue: Int,
                    currentValue: Int,
                    effectDescriptions: List<TrackedValueEffectDescription>) =
-                TrackedValue(name, key, maxValue, currentValue, toEffects(maxValue, effectDescriptions))
+                TrackedValue(key, name, maxValue, currentValue, toEffects(maxValue, effectDescriptions))
 
         fun toEffects(maxValue: Int, effectDescriptions: List<TrackedValueEffectDescription>) =
                 effectDescriptions.map { it.toEffect(maxValue) }.filterNotNull()
@@ -98,8 +90,8 @@ val HP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
                 {fullHp: Int -> "At HP=-${fullHp * x}, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."})  } +
 listOf(
         TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(5), "Instant Death", {fullHp: Int -> "At HP=-${fullHp * 5}, you die immediately"}),
-        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10), "Dead", "Your body is being destroyed"),
-        TrackedValueEffectDescription(negative(stat).times(10), negative(stat).times(10), "Total Bodily Destruction", { fullHp: Int -> "At HP=-${fullHp * 10}, your body is totally destroyed. There is nothing left of you to resurrect"})
+        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10).minusOne(), "Dead", "Your body is being destroyed"),
+        TrackedValueEffectDescription(negative(stat).times(10).minusOne(), negative(stat).times(10).minusOne(), "Total Bodily Destruction", { fullHp: Int -> "At HP=-${fullHp * 10}, your body is totally destroyed. There is nothing left of you to resurrect"})
 )
 
 val FP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(

@@ -42,8 +42,8 @@ class TrackController(val characterRepository: CharacterRepository) {
     }
 
     fun trackValue(characterRoller: CharacterRoller, key: String, trait: String) : RichMessage {
-        logger.debug("${characterRoller.characterName} : ${key} = ${characterRoller.trackedStats}")
-        val trackedValue = characterRoller.trackedStats.get(trait)
+        logger.debug("${characterRoller.characterName} : ${key} = ${characterRoller.trackedValues}")
+        val trackedValue = characterRoller.trackedValues.get(trait)
         return if (trackedValue != null) {
             richMessage(key, trackedValue)
         } else {

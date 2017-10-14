@@ -32,6 +32,35 @@ class TrackedValueTest {
     }
 
     @Test
+    fun shouldCalculateCorrectMinValuesWhenCreatingStats() {
+        assertEquals(-100, TrackedValue.hp(10, 10).minValue)
+        assertEquals(-10, TrackedValue.fp(10, 10).minValue)
+        assertEquals(-10, TrackedValue.wp(10, 10).minValue)
+        assertEquals(0, TrackedValue.ammo("pistol", 10, 10).minValue)
+
+    }
+    @Test
+    fun shouldIncrementCurrentValueWhenUsingPlusEqualsOnAMaxedStat() {
+        // given
+        val subject = TrackedValue.fp(11, 11)
+
+        // when
+        subject += 1
+
+        // then
+        assertEquals(11, subject.maxValue)
+        assertEquals(12, subject.currentValue)
+    }
+    @Test
+    fun shouldAllowCurrentGreaterThanMax() {
+        // given
+        val subject = TrackedValue.fp(11, 12)
+
+        // then
+        assertEquals(11, subject.maxValue)
+        assertEquals(12, subject.currentValue)
+    }
+    @Test
     fun willpowerDescriptionsShouldBeContiguousForWPsOf1to20() {
         isContiguousForRange("WP", 1..20, WP_TRACKED_VALUE_EFFECT_DESCRIPTORS)
     }

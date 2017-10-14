@@ -3,6 +3,7 @@ package org.crypticmission.gurpslack.model
 import org.crypticmission.gurpslack.message.message
 import org.crypticmission.gurpslack.message.toKey
 import org.crypticmission.gurpslack.repositories.Randomizer
+import org.slf4j.LoggerFactory
 
 data class CharacterAttributeRollOutcome(val characterName: String, val attributeRollOutcome: AttributeRollOutcome) {
     override fun toString() = message(this)
@@ -18,17 +19,22 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       skills: Map<String, Attribute> = emptyMap(),
                       meleeAttacks: Map<String, Attack> = emptyMap(),
                       rangedAttacks: Map<String, Attack> = emptyMap(),
-                      trackedStatList: List<TrackedValue> = emptyList()) {
+                      trackedValueList: List<TrackedValue> = emptyList()) {
+
+    private val logger = LoggerFactory.getLogger(CharacterRoller::class.java)
 
     val attributes = HashMap<String, Attribute>(attributes.mapKeys { (k, _) -> k.toKey() })
     val skills = HashMap<String, Attribute>(skills.mapKeys { (k, _) -> k.toKey() })
     val meleeAttacks = HashMap<String, Attack>(meleeAttacks.mapKeys { (k, _) -> k.toKey() })
     val rangedAttacks = HashMap<String, Attack>(rangedAttacks.mapKeys { (k, _) -> k.toKey() })
-    val trackedStats = trackedStatList.map { Pair(it.key.toKey(), it) }.toMap()
+    val trackedValues = trackedValueList.map { Pair(it.key.toKey(), it) }.toMap().toMutableMap()
 
     fun modifyTrackedStat(key: String, change: Int) : TrackedValue? {
-        trackedStats[key]?.plusAssign(change)
-        return trackedStats[key]
+        val stat = trackedValues[key]
+        logger.debug("modifying ${key} = ${stat} by ${change}")
+        stat?.plusAssign(change)
+        logger.debug("after modification by ${change}: ${stat}")
+        return stat
     }
 
     fun rollVsSkill(name: String, modifier: Int): CharacterAttributeRollOutcome? {
@@ -71,11 +77,13 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     fun getAttribute(name: String) = attributes[name.toKey()]
     fun getMeleeAttack(name: String) = meleeAttacks[name.toKey()]
     fun getRangedAttack(name: String) = rangedAttacks[name.toKey()]
+    fun getTrackedStat(key: String) : TrackedValue? = trackedValues[key.toKey()]
 
     fun addMeleeAttack(newAttack: Attack)  = addMeleeAttacks(listOf(newAttack))
     fun addRangedAttack(newAttack: Attack)  = addRangedAttacks(listOf(newAttack))
     fun addAttribute(newAttribute: Attribute) = addAttributes(listOf(newAttribute))
     fun addSkill(newSkill: Attribute) = addSkill(listOf(newSkill))
+    fun addTrackedValue(newTrackedValue: TrackedValue) = addTrackedValue(listOf(newTrackedValue))
 
     fun String.isPrimary() = (this == "ht" || this == "st" || this == "iq" || this == "dx")
 
@@ -93,6 +101,9 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
 
     fun addSkill(newSkills: Iterable<Attribute>) =
             newSkills.forEach { skill -> skills[skill.name.toKey()] = skill }
+
+    fun addTrackedValue(newTrackedValues: Iterable<TrackedValue>) =
+            newTrackedValues.forEach { trackedValue -> trackedValues[trackedValue.key.toKey()] = trackedValue }
 }
 
 

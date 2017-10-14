@@ -121,8 +121,8 @@ Next attack made by ${messageData.user.name}:
                     marginOfSuccessCache.getAndClearValue(messageData)
             )
 
-            else -> null
-        } ?: ReplaceOriginalRichMessage("unable to find action when ${message}", messageData.callbackId, false)
+            else -> ReplaceOriginalRichMessage("unable to find action from message ${message}", messageData.callbackId, false)
+        }
 
         logger.info("outcome ${richMessage.text}")
 
@@ -133,11 +133,10 @@ Next attack made by ${messageData.user.name}:
     fun showTrackedStat(key: String, traitName: String) : RichMessage = changeTrackedStat(key, traitName, 0)
 
     fun changeTrackedStat(key: String, traitName: String, change: Int) : RichMessage {
-        val character = characterRepository.getByKey(key)
-        if (character == null) return RichMessage("could not find character with key ${key}")
-        val stat = character.modifyTrackedStat(traitName, change)
-        if (stat == null) return RichMessage("could not find tracked stat ${traitName} for character ${character.characterName}")
-        return richMessage(key, stat)
+        logger.debug("Changing stat ${traitName} for ${key} by ${change}")
+        val character = characterRepository.getByKey(key) ?: return RichMessage("could not find character with key ${key}")
+        val stat = character.modifyTrackedStat(traitName, change) ?: return RichMessage("could not find tracked stat ${traitName} for character ${character.characterName}")
+        return richMessage(key, stat).replaceOriginal(true)
     }
 
     fun skill(key: String, traitName: String, modifier: Int) = roll(
