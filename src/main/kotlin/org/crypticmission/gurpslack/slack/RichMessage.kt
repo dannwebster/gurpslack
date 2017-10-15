@@ -1,8 +1,9 @@
-package org.crypticmission.gurpslack.message
+package org.crypticmission.gurpslack.slack
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import org.crypticmission.gurpslack.message.MenuOption
 
 /**
  */
@@ -52,6 +53,7 @@ data class Menu(override val name: String,
 }
 
 @JsonIgnoreProperties(ignoreUnknown = true)
+@JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 data class Field(
     val title: String,
     val value: String,

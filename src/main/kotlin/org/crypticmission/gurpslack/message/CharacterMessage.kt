@@ -1,7 +1,8 @@
 package org.crypticmission.gurpslack.message
 
-import org.crypticmission.gurpslack.message.CharacterSections.*
+import org.crypticmission.gurpslack.slack.CharacterSections.*
 import org.crypticmission.gurpslack.model.*
+import org.crypticmission.gurpslack.slack.*
 import org.slf4j.LoggerFactory
 
 /**
@@ -74,11 +75,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
                 + optionsAttachment(key, sections))
                 .toTypedArray()
 
-
-        val richMessage = RichMessage(msg)
-        richMessage.withAttachments(attachments)
-
-        return richMessage
+        return RichMessage(msg).withAttachments(attachments)
     }
 }
 

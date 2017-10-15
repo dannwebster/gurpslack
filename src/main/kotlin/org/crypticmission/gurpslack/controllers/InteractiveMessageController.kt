@@ -4,6 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import org.crypticmission.gurpslack.message.*
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
+import org.crypticmission.gurpslack.slack.ActionTaken
+import org.crypticmission.gurpslack.slack.MessageData
+import org.crypticmission.gurpslack.slack.RichMessage
 import org.slf4j.LoggerFactory
 import org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE
 import org.springframework.web.bind.annotation.PostMapping
@@ -39,6 +42,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
                 "success-margin" -> doMarginOfSuccess(action, messageData, shotsFiredCache, marginOfSuccessCache)
                 "modifier" -> doModifier(action, message, messageData, modifierCache)
                 "visibility" -> doVisibility(action, message, messageData, visibilityCache)
+                "changeTrackedStat" -> changeTrackedStatFromMenu(action, message, messageData)
                 "dr" -> doDamageResistance(action, message, messageData, damageResistanceCache)
                 else -> RichMessage("unable to find action '${action.type}'")
             }
@@ -55,7 +59,7 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
 
     private fun shotsFiredMessage(messageData: MessageData, shotsFired: Int, marginOfSuccess: Int): RichMessage {
         return RichMessage(
-"""
+                """
 Next attack made by ${messageData.user.name}:
 > *- Shots Fired:* ${shotsFired}
 > *- Margin of Success:* ${marginOfSuccess}
@@ -91,7 +95,7 @@ Next attack made by ${messageData.user.name}:
                 "made by ${messageData.user.name}")
     }
 
-    private fun doVisibility(action: ActionTaken, message: String, messageData: MessageData, visibilityCache: ValueCache<Boolean>): RichMessage  {
+    private fun doVisibility(action: ActionTaken, message: String, messageData: MessageData, visibilityCache: ValueCache<Boolean>): RichMessage {
         val visibility = VisibilityOption.fromValue(action.selectedValue())
         visibilityCache.putValue(messageData, visibility.isInChannel)
         return RichMessage("next roll will be visible to ${visibility.menuOption.text}")
@@ -130,7 +134,12 @@ Next attack made by ${messageData.user.name}:
 
 
     fun showTrackedStat(key: String, traitName: String) : RichMessage = changeTrackedStat(key, traitName, 0)
-
+    fun changeTrackedStatFromMenu(action : ActionTaken, message: String, messageData: MessageData) : RichMessage {
+       val key = "ev"
+       val traitName = "fp"
+       val change = action.selectedValue()?.toInt() ?: 0
+       return changeTrackedStat(key, traitName, change)
+    }
     fun changeTrackedStat(key: String, traitName: String, change: Int) : RichMessage {
         logger.debug("Changing stat ${traitName} for ${key} by ${change}")
         val character = characterRepository.getByKey(key) ?: return RichMessage("could not find character with key ${key}")

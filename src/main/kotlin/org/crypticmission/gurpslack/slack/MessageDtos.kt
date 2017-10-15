@@ -1,4 +1,4 @@
-package org.crypticmission.gurpslack.message
+package org.crypticmission.gurpslack.slack
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.PropertyNamingStrategy

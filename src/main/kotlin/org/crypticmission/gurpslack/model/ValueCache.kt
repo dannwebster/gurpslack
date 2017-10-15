@@ -1,6 +1,6 @@
 package org.crypticmission.gurpslack.model
 
-import org.crypticmission.gurpslack.message.MessageData
+import org.crypticmission.gurpslack.slack.MessageData
 
 class ValueCache<T>(val defaultValue: T) {
     private val cache : MutableMap<String, T> = mutableMapOf()

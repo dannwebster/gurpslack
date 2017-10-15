@@ -1,6 +1,7 @@
 package org.crypticmission.gurpslack.message
 
 import org.crypticmission.gurpslack.model.*
+import org.crypticmission.gurpslack.slack.RichMessage
 
 /**
  */

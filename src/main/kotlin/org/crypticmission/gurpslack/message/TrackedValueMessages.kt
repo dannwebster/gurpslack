@@ -1,6 +1,7 @@
 package org.crypticmission.gurpslack.message
 
 import org.crypticmission.gurpslack.model.*
+import org.crypticmission.gurpslack.slack.*
 
 /**
  */
@@ -41,5 +42,8 @@ private fun toDetailButton(key: String, stat: TrackedValue): Action =
 private fun trackedIncDec(key: String, stat: TrackedValue): List<Action> =
         listOf(
                 Button("incTrackedStat", "+", buttonValue(key, stat.key)),
-                Button("decTrackedStat", "-", buttonValue(key, stat.key))
+                Button("decTrackedStat", "-", buttonValue(key, stat.key)),
+                Menu("changeTrackedStat@${stat.key}", "Change", changeValues())
         )
+
+private fun changeValues(): List<MenuOption> = (-10..10).map { MenuOption(it.toSignedStringWithZero(), it.toString())}

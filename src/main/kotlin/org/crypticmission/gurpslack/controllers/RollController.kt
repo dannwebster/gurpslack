@@ -1,6 +1,6 @@
 package org.crypticmission.gurpslack.controllers
 
-import org.crypticmission.gurpslack.message.RichMessage
+import org.crypticmission.gurpslack.slack.RichMessage
 import org.crypticmission.gurpslack.message.richMessage
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.Randomizer
