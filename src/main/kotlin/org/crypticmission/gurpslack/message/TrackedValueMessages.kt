@@ -13,7 +13,8 @@ fun message(stat: TrackedValue) = with (stat) {
     |> - *Max:* ${maxValue} ${key}
     |> - *Current:* ${currentValue} ${key}
     |> - *Effects:* ${effect.status}${if (effect.details != null) " (" + effect.details + ")" else ""}
-    """.trimIndent().trimMargin("|")
+    """.trimIndent().trimMargin("|") + "\n"
+    stat.emoji()
 }
 
 fun richMessage(key: String, stat: TrackedValue) : RichMessage {
@@ -47,3 +48,18 @@ private fun trackedIncDec(key: String, stat: TrackedValue): List<Action> =
         )
 
 private fun changeValues(): List<MenuOption> = (-10..10).map { MenuOption(it.toSignedStringWithZero(), it.toString())}
+
+
+private fun TrackedValue.emoji(): String =
+        this.effects.map {
+            it.emoji(this.currentValue)
+        }.joinToString("\n")
+
+private fun TrackedValueEffect.emoji(value: Int): String =
+    this.range.map {
+        if (it > value) {
+            ":new_moon:"
+        }  else {
+           ":full_moon:"
+        }
+    }.joinToString("")
