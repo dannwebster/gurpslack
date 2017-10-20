@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.message
 
+import org.crypticmission.gurpslack.controllers.SelectType
 import org.crypticmission.gurpslack.slack.CharacterSections.*
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.slack.*
@@ -85,11 +86,11 @@ private fun optionsAttachment(key: String, sections : Array<CharacterSections>):
         "${key}-visibility")
 
 
-val SUCCESS_MARGIN_MENU = Menu("success-margin", "Margin of Success", options = successMargin())
-val RATE_OF_FIRE_MENU = Menu("shots-fired", "Shots Fired", options = shotsFired())
-val DR_MENU = Menu("dr", "Damage Resistance", options = dr())
-val MODIFIER_MENU = Menu("modifier", "Modifier", options = modifiers())
-val VISIBILITY_MENU = Menu("visibility", "Visibility", options = visibility())
+val SUCCESS_MARGIN_MENU = Menu(SelectType.SuccessMargin.commandString, "Margin of Success", options = successMargin())
+val RATE_OF_FIRE_MENU = Menu(SelectType.ShotsFired.commandString, "Shots Fired", options = shotsFired())
+val DR_MENU = Menu(SelectType.DamageResistance.commandString, "Damage Resistance", options = dr())
+val MODIFIER_MENU = Menu(SelectType.Modifier.commandString, "Modifier", options = modifiers())
+val VISIBILITY_MENU = Menu(SelectType.Visibility.commandString, "Visibility", options = visibility())
 
 private fun menuOptions(sections: Array<CharacterSections>) : List<Menu> {
     val set = sections.map { it.menuType }.toSet()

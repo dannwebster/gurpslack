@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.message
 
+import org.crypticmission.gurpslack.controllers.SelectType
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.slack.*
 
@@ -13,8 +14,8 @@ fun message(stat: TrackedValue) = with (stat) {
     |> - *Max:* ${maxValue} ${key}
     |> - *Current:* ${currentValue} ${key}
     |> - *Effects:* ${effect.status}${if (effect.details != null) " (" + effect.details + ")" else ""}
-    """.trimIndent().trimMargin("|") + "\n"
-    stat.emoji()
+    """.trimIndent().trimMargin("|")
+//    + "\n" + stat.emoji()
 }
 
 fun richMessage(key: String, stat: TrackedValue) : RichMessage {
@@ -40,14 +41,16 @@ fun trackedStatsAttachments(key: String, trackedStats: Map<String, TrackedValue>
 private fun toDetailButton(key: String, stat: TrackedValue): Action =
         Button("showTrackedStat", shortMessage(stat), buttonValue(key, stat.key)
         )
+
 private fun trackedIncDec(key: String, stat: TrackedValue): List<Action> =
         listOf(
                 Button("incTrackedStat", "+", buttonValue(key, stat.key)),
                 Button("decTrackedStat", "-", buttonValue(key, stat.key)),
-                Menu("changeTrackedStat@${stat.key}", "Change", changeValues())
+                Menu(SelectType.ChangeAmount.commandString, "Change", changeValues(key, stat.key))
         )
 
-private fun changeValues(): List<MenuOption> = (-10..10).map { MenuOption(it.toSignedStringWithZero(), it.toString())}
+private fun changeValues(characterKey: String, statKey: String): List<MenuOption> =
+        (-10..10).map { MenuOption(it.toSignedStringWithZero(), "${characterKey}@${statKey}@${it.toString()}") }
 
 
 private fun TrackedValue.emoji(): String =

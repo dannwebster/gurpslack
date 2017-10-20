@@ -1,10 +1,13 @@
 package org.crypticmission.gurpslack.controllers
 
 import com.fasterxml.jackson.databind.ObjectMapper
+import org.crypticmission.gurpslack.controllers.SelectType.*
 import org.crypticmission.gurpslack.message.*
 import org.crypticmission.gurpslack.model.*
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.slack.ActionTaken
+import org.crypticmission.gurpslack.slack.ActionType
+import org.crypticmission.gurpslack.slack.ActionType.*
 import org.crypticmission.gurpslack.slack.MessageData
 import org.crypticmission.gurpslack.slack.RichMessage
 import org.slf4j.LoggerFactory
@@ -12,6 +15,23 @@ import org.springframework.http.MediaType.APPLICATION_FORM_URLENCODED_VALUE
 import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RequestParam
 import org.springframework.web.bind.annotation.RestController
+
+enum class SelectType(val commandString: String) {
+    ShotsFired("shots-fired"),
+    SuccessMargin("success-margin"),
+    Modifier("modifier"),
+    Visibility("visibility"),
+    ChangeAmount("change-amount"),
+    DamageResistance("dr");
+
+    companion object {
+        fun fromString(commandString: String): SelectType? =
+                when(commandString) {
+                    null -> null
+                    else -> values().find { it.commandString == commandString }
+                }
+    }
+}
 
 @RestController
 class InteractiveMessageController(val characterRepository: CharacterRepository) {
@@ -35,18 +55,19 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         val message = "Pressed button ${action.name} and got value ${action.value} "
         logger.info(message)
 
+        val selectType = SelectType.fromString(action.name)
+
         val richMessage = when (action.type) {
-            "button" -> doButtonMessage(action, message, messageData)
-            "select" -> when(action.name) {
-                "shots-fired" -> doShotsFired(action, messageData, shotsFiredCache, marginOfSuccessCache)
-                "success-margin" -> doMarginOfSuccess(action, messageData, shotsFiredCache, marginOfSuccessCache)
-                "modifier" -> doModifier(action, message, messageData, modifierCache)
-                "visibility" -> doVisibility(action, message, messageData, visibilityCache)
-                "changeTrackedStat" -> changeTrackedStatFromMenu(action, message, messageData)
-                "dr" -> doDamageResistance(action, message, messageData, damageResistanceCache)
-                else -> RichMessage("unable to find action '${action.type}'")
+            button -> doButtonMessage(action, message, messageData)
+            select -> when(selectType) {
+                ShotsFired -> doShotsFired(action, messageData, shotsFiredCache, marginOfSuccessCache)
+                SuccessMargin -> doMarginOfSuccess(action, messageData, shotsFiredCache, marginOfSuccessCache)
+                Modifier -> doModifier(action, message, messageData, modifierCache)
+                Visibility -> doVisibility(action, message, messageData, visibilityCache)
+                ChangeAmount -> changeTrackedStatFromMenu(action, message, messageData)
+                DamageResistance -> doDamageResistance(action, message, messageData, damageResistanceCache)
+                null -> RichMessage("unable to find action '${action.name}'")
             }
-            else -> RichMessage("action type must be 'button' or 'select', but is '${action.type}'")
         }
 
         val inChannel = visibilityCache.getValue(messageData)
@@ -134,12 +155,13 @@ Next attack made by ${messageData.user.name}:
 
 
     fun showTrackedStat(key: String, traitName: String) : RichMessage = changeTrackedStat(key, traitName, 0)
+
     fun changeTrackedStatFromMenu(action : ActionTaken, message: String, messageData: MessageData) : RichMessage {
-       val key = "ev"
-       val traitName = "fp"
-       val change = action.selectedValue()?.toInt() ?: 0
-       return changeTrackedStat(key, traitName, change)
+        val (characterKey, statKey, value) = (action.selectedValue()?: return RichMessage("incorrectly formatted value : ${action.selectedValue()}")).split("@")
+        val change = value?.toInt() ?: 0
+        return changeTrackedStat(characterKey, statKey, change)
     }
+
     fun changeTrackedStat(key: String, traitName: String, change: Int) : RichMessage {
         logger.debug("Changing stat ${traitName} for ${key} by ${change}")
         val character = characterRepository.getByKey(key) ?: return RichMessage("could not find character with key ${key}")
@@ -167,11 +189,11 @@ Next attack made by ${messageData.user.name}:
 
     fun rangedAttack(key: String, traitName: String, damageResistance: Int, shotsFired: Int, marginOfSuccess: Int) =
             roll("attack",
-            { cr:CharacterRoller ->
-                cr.rollRangedAttackDamage(traitName, damageResistance, shotsFired, marginOfSuccess)?.let{ richMessage(it) }
-            },
-            key,
-            traitName)
+                    { cr:CharacterRoller ->
+                        cr.rollRangedAttackDamage(traitName, damageResistance, shotsFired, marginOfSuccess)?.let{ richMessage(it) }
+                    },
+                    key,
+                    traitName)
 
 
     fun roll(type: String,
@@ -179,10 +201,10 @@ Next attack made by ${messageData.user.name}:
              characterKey: String,
              traitName: String) =
             characterRepository
-             .getByKey(characterKey)
-             ?.let { characterRoller ->
-                 rollFunction(characterRoller) ?: RichMessage("unable to find ${type} '${traitName}' for character key '${characterKey}'")
-            }
-            ?: RichMessage("unable to find character '${characterKey}'")
+                    .getByKey(characterKey)
+                    ?.let { characterRoller ->
+                        rollFunction(characterRoller) ?: RichMessage("unable to find ${type} '${traitName}' for character key '${characterKey}'")
+                    }
+                    ?: RichMessage("unable to find character '${characterKey}'")
 
 }

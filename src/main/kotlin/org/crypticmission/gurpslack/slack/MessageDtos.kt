@@ -3,6 +3,22 @@ package org.crypticmission.gurpslack.slack
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties
 import com.fasterxml.jackson.databind.PropertyNamingStrategy
 import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.fasterxml.jackson.annotation.JsonCreator
+
+
+
+enum class ActionType {
+    button,
+    select;
+
+    companion object {
+        @JsonCreator
+        fun forValue(value: String): ActionType? {
+            return ActionType.values().find { value == it.name }
+        }
+    }
+}
+
 
 class Option() {
     lateinit var value: String
@@ -12,7 +28,7 @@ class Option() {
 @JsonNaming(PropertyNamingStrategy.SnakeCaseStrategy::class)
 class ActionTaken() {
     lateinit var name: String
-    lateinit var type: String
+    lateinit var type: ActionType
     var value: String? = null
     var selectedOptions: List<Option>? = null
 
