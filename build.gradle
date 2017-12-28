@@ -53,6 +53,8 @@ dependencies {
 	compile("com.fasterxml.jackson.module:jackson-module-kotlin")
 	compile("org.eclipse.persistence:org.eclipse.persistence.moxy:2.5.0")
 
+	compile("org.springframework.boot:spring-boot-devtools")
+
 	testCompile('org.springframework.boot:spring-boot-starter-test')
 	testCompile('io.projectreactor:reactor-test')
 }

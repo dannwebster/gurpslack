@@ -55,11 +55,9 @@ class InteractiveMessageController(val characterRepository: CharacterRepository)
         val message = "Pressed button ${action.name} and got value ${action.value} "
         logger.info(message)
 
-        val selectType = SelectType.fromString(action.name)
-
         val richMessage = when (action.type) {
             button -> doButtonMessage(action, message, messageData)
-            select -> when(selectType) {
+            select -> when(SelectType.fromString(action.name)) {
                 ShotsFired -> doShotsFired(action, messageData, shotsFiredCache, marginOfSuccessCache)
                 SuccessMargin -> doMarginOfSuccess(action, messageData, shotsFiredCache, marginOfSuccessCache)
                 Modifier -> doModifier(action, message, messageData, modifierCache)

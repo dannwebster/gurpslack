@@ -50,21 +50,29 @@ data class TrackedValue private constructor(private val _key: String,
             throw IllegalStateException("value ${currentValue} was not contained in the effects for ${key}. Effects: ${effects}")
 }
 
-data class TrackedValueEffectDescription(val startGenerator: (Int) -> Int, val endGenerator: (Int) -> Int, val status: String, val detailGenerator: (Int) -> String?, val severity: Severity) {
+data class TrackedValueEffectDescription(
+        val startGenerator: (Int) -> Int,
+        val endGenerator: (Int) -> Int,
+        val status: String,
+        val detailGenerator: (Int) -> String?,
+        val severity: Severity,
+        val isTracked: Boolean) {
 
-    constructor(startGenerator: (Int) -> Int, endGenerator: (Int) -> Int, status: String, detail: String?, severity: Severity) :
-            this(startGenerator, endGenerator, status, static(detail), severity)
+    constructor(startGenerator: (Int) -> Int, endGenerator: (Int) -> Int, status: String, detail: String?, severity: Severity, isTracked: Boolean) :
+            this(startGenerator, endGenerator, status, static(detail), severity, isTracked)
 
     fun toEffect(maxStatValue: Int) : TrackedValueEffect? {
         val rangeStart = startGenerator(maxStatValue)
-        val rangeEnd = endGenerator(maxStatValue)
+        val rangeEnd = endGenerator(maxStatValue) + 1
         val details = detailGenerator(maxStatValue)
-        return if (rangeEnd >= rangeStart) null else TrackedValueEffect( (rangeStart downTo rangeEnd), status, details, severity)
+        return if (rangeEnd >= rangeStart) null else TrackedValueEffect( (rangeStart downTo rangeEnd),
+                status, details, severity, isTracked)
     }
 }
 
 
-data class TrackedValueEffect(val range: IntProgression, val status: String, val details: String?, val severity: Severity)
+data class TrackedValueEffect(val range: IntProgression, val status: String, val details: String?,
+                              val severity: Severity, val isTracked: Boolean)
 
 enum class Severity {
     LightBlue, Blue, DarkBlue, LightGreen, Green, DarkGreen, Yellow, Orange, Red, Black
@@ -78,48 +86,48 @@ val one = { _: Int -> 1 }
 
 fun negative(f: (Int) -> Int) = { i: Int -> f(i) * -1}
 fun ((Int) -> Int).minusOne() = { i: Int -> this(i) - 1 }
+fun ((Int) -> Int).plusOne() = { i: Int -> this(i) + 1 }
 fun ((Int) -> Int).times(x: Int) = { i: Int -> this(i) * x }
 fun static(s: String?) = { _: Int -> s }
 
 val HP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
-        TrackedValueEffectDescription(stat, oneThird, "OK", "No Effects", Green),
-        TrackedValueEffectDescription(oneThird, zero, "Reeling", "Halve your Move, Dodge, and ST (round up).", LightGreen),
-        TrackedValueEffectDescription(zero, negative(stat), "Verge of Collapse", "Do Nothing, or make an HT roll. On a failure, fall unconscious.", Yellow)
+        TrackedValueEffectDescription(stat, oneThird, "OK", "No Effects", Green, true),
+        TrackedValueEffectDescription(oneThird, zero, "Reeling", "Halve your Move, Dodge, and ST (round up).", LightGreen, true),
+        TrackedValueEffectDescription(zero, negative(stat), "Verge of Collapse", "Do Nothing, or make an HT roll. On a failure, fall unconscious.", Yellow, true)
 ) +
         (1..4).map {x ->
             TrackedValueEffectDescription(
                     negative(stat).times(x),
                     negative(stat).times(x + 1),
                 "Verge of Death - Level ${x}: ",
-                {fullHp: Int -> "At -${fullHp * x} HP, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."}, Orange)  } +
+                {fullHp: Int -> "At -${fullHp * x} HP, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."}, Orange, true)  } +
 listOf(
-        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(5), "Instant Death", {fullHp: Int -> "At HP=-${fullHp * 5}, you die immediately"}, Black),
-        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10).minusOne(), "Dead", "Your body is being destroyed", Black),
-        TrackedValueEffectDescription(negative(stat).times(10).minusOne(), negative(stat).times(10).minusOne(), "Total Bodily Destruction", { fullHp: Int -> "At HP=-${fullHp * 10}, your body is totally destroyed. There is nothing left of you to resurrect"}, Black)
+        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(5), "Instant Death", {fullHp: Int -> "At HP=-${fullHp * 5}, you die immediately"}, Black, true),
+        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10), "Dead", "Your body is being destroyed", Black, false),
+        TrackedValueEffectDescription(negative(stat).times(10), negative(stat).times(10).minusOne(), "Total Bodily Destruction", { fullHp: Int -> "At HP=-${fullHp * 10}, your body is totally destroyed. There is nothing left of you to resurrect"}, Black, false)
 )
 
 val FP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
-        TrackedValueEffectDescription(stat, oneThird, "OK", "No Effects", LightBlue),
-        TrackedValueEffectDescription(oneThird, zero, "Very Tired", "Halve your Move, Dodge, and ST (round up). This does not affect ST-based quantities, such as HP and damage.", Blue),
-        TrackedValueEffectDescription(zero, negative(stat), "Verge of Collapse", "More FP Loss causes HP Loss. Will or Do Nothing; failure causes collapse.", DarkBlue),
-        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Unconsious", "Awaken when you reach positive FP", Black)
+        TrackedValueEffectDescription(stat, oneThird, "OK", "No Effects", LightBlue, true),
+        TrackedValueEffectDescription(oneThird, zero, "Very Tired", "Halve your Move, Dodge, and ST (round up). This does not affect ST-based quantities, such as HP and damage.", Blue, true),
+        TrackedValueEffectDescription(zero, negative(stat), "Verge of Collapse", "More FP Loss causes HP Loss. Will or Do Nothing; failure causes collapse.", DarkBlue, true),
+        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Unconsious", "Awaken when you reach positive FP", Black, false)
 )
 
 val WP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
-        TrackedValueEffectDescription(stat, twoThirds, "OK", "No Effects", Green),
-        TrackedValueEffectDescription(twoThirds, oneThird, "Vulnerable", "Will Rolls are at -2; Self Control Rolls are one degree harder; Weirdness Magnet", Yellow),
-        TrackedValueEffectDescription(oneThird, zero, "Defenseless", "Will Rolls are at -5; Self Control Rolls automatically fail; Draw nearby supernatural entities", Orange),
-        TrackedValueEffectDescription(zero, negative(stat), "Raving", "Will Rolls are at -10; Self Control Disadvantages are now Compulsions; Draw distant supernatural entities", Red),
-        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Lost", "No longer a rational entity; your soul has left your body and you are a vessel for supernatural inhabitation", Black)
+        TrackedValueEffectDescription(stat, twoThirds, "OK", "No Effects", Green, true),
+        TrackedValueEffectDescription(twoThirds, oneThird, "Vulnerable", "Will Rolls are at -2; Self Control Rolls are one degree harder; Weirdness Magnet", Yellow, true),
+        TrackedValueEffectDescription(oneThird, zero, "Defenseless", "Will Rolls are at -5; Self Control Rolls automatically fail; Draw nearby supernatural entities", Orange, true),
+        TrackedValueEffectDescription(zero, negative(stat), "Raving", "Will Rolls are at -10; Self Control Disadvantages are now Compulsions; Draw distant supernatural entities", Red, true),
+        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Lost", "No longer a rational entity; your soul has left your body and you are a vessel for supernatural inhabitation", Black, false)
 )
 
 val AMMO_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
-        TrackedValueEffectDescription(stat, stat.minusOne(), "Full up", null, DarkGreen),
-        TrackedValueEffectDescription(stat.minusOne(), oneHalf, "More than half", null, Green),
-        TrackedValueEffectDescription(oneHalf, oneHalf.minusOne(), "Half empty", null, LightGreen),
-        TrackedValueEffectDescription(oneHalf.minusOne(), oneThird, "Less than half", null, Yellow),
-        TrackedValueEffectDescription(oneThird, one, "Getting Low...", null, Orange),
-        TrackedValueEffectDescription(one, zero, "Last Shot!", null, Red),
-        TrackedValueEffectDescription(zero, negative(one), "Empty", "RELOAD!", Black)
+        TrackedValueEffectDescription(stat, stat.minusOne(), "Full up", null, DarkGreen, true),
+        TrackedValueEffectDescription(stat.minusOne(), oneHalf, "More than half", null, Green, true),
+        TrackedValueEffectDescription(oneHalf, oneHalf.minusOne(), "Half empty", null, LightGreen, true),
+        TrackedValueEffectDescription(oneHalf.minusOne(), oneThird, "Less than half", null, Yellow, true),
+        TrackedValueEffectDescription(oneThird, one, "Getting Low...", null, Orange, true),
+        TrackedValueEffectDescription(one, zero, "Last Shot!", null, Red, true),
+        TrackedValueEffectDescription(zero, negative(one), "Empty", "RELOAD!", Black, false)
 )
-

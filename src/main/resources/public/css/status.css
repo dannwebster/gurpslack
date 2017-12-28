@@ -1,0 +1,106 @@
+.bubbles span {
+    border-radius: 50%;
+
+    width: 10px;
+    height: 10px;
+    padding: 2px;
+
+    background: #fff;
+    text-align: center;
+
+    font: 10px Arial, sans-serif;
+}
+
+.bubble-selected {
+    border: 2px solid red;
+    color: red;
+}
+
+.bubble {
+    border: 1px solid black;
+    color: black;
+}
+
+.hp-column-headers {
+    background: darkgreen;
+    color: white;
+}
+.wp-column-headers {
+    background: darkblue;
+    color: white;
+}
+.fp-column-headers {
+    background: indigo;
+    color: white;
+}
+.hp-0 {
+    background: PaleGreen;
+}
+
+.hp-1 {
+    background: MediumAquamarine;
+}
+
+.hp-2 {
+    background: MediumSeaGreen;
+}
+
+.hp-3 {
+    background: SeaGreen;
+}
+
+.hp-4 {
+    background: ForestGreen;
+}
+
+.hp-5 {
+    background: green;
+}
+
+.hp-6 {
+    background: DarkGreen;
+    color: white;
+}
+
+.hp-7 {
+    background: black;
+    color: white;
+}
+
+.hp-8 {
+    background: black;
+    color: white;
+}
+
+
+.fp-0 {
+    background: MediumPurple;
+    color: white;
+}
+
+.fp-1 {
+    background: BlueViolet;
+    color: white;
+}
+
+.fp-2 {
+    background: DarkViolet;
+    color: white;
+}
+
+.wp-0 {
+    background: LightSkyBlue;
+}
+
+.wp-1 {
+    background: DeepSkyBlue;
+}
+
+.wp-2 {
+    background: DodgerBlue;
+}
+
+.wp-3 {
+    background: RoyalBlue;
+    color: white;
+}

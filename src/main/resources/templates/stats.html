@@ -1,0 +1,57 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link>
+<title th:text="|Status tracker for ${character.characterName}|">Status tracker for Character</title>
+<link rel="stylesheet" type="text/css" href="/css/status.css"></link>
+</head>
+<body>
+
+
+<table cellspacing="0" padding="2">
+    <thead>
+        <tr>
+            <th>Character Name:</th>
+            <td th:text="${character.characterName}">Character's Name</td>
+
+            <th>Player Name:</th>
+            <td th:text="${playerName}">Player's Name</td>
+        </tr>
+    </thead>
+     <tbody th:each="trackedValueEntry : ${character.trackedValues}" th:object="${trackedValueEntry.value}">
+        <tr th:class="|${trackedValueEntry.key}-column-headers|">
+            <th colspan="4" th:text="|${#strings.toUpperCase(trackedValueEntry.key)}: Current: ${#object.currentValue} / Max: ${#object.maxValue}|">
+                STAT: Current: 10 / Max: 10
+            </th>
+        </tr>
+        <tr th:class="|${trackedValueEntry.key}-column-headers|">
+            <th>Tracking</th>
+            <th>Range</th>
+            <th>Status</th>
+            <th>Effects</th>
+        </tr>
+        <tr th:each="effect, iStat: ${#object.effects}" th:class="|${trackedValueEntry.key}-${iStat.index}|">
+            <td class="bubbles">
+
+                <span th:if="${effect.tracked}" th:each="i : ${effect.range}" th:text="${i}"
+                    th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
+                    ((${i} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
+
+                <span th:unless="${effect.tracked}" th:text="${effect.range.first}"
+                    th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' : 'bubble'">10</span>
+            </td>
+            <td th:text="|${effect.range.first} to ${effect.range.last}|">Max to Min</td>
+            <td th:text="${effect.status}">Status</td>
+            <td th:text="${effect.details}">Details</td>
+        </tr>
+        <tr>
+            <td>&nbsp;</td>
+        </tr>
+    </tbody>
+    <tfooter>
+        <tr>
+            <th>Last Updated:</th>
+            <td th:text="${lastUpdated}">Last Updated Date</td>
+        </tr>
+    </tfooter>
+</table>
+</body>
+</html>
