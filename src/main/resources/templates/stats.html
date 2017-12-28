@@ -2,7 +2,7 @@
 <link>
 <title th:text="|Status tracker for ${character.characterName}|">Status tracker for Character</title>
 <link rel="stylesheet" type="text/css" href="/css/status.css"></link>
-<script src="/public/js/tracked-stat.js"></script>
+<script src="/js/tracked-stat.js"></script>
 </head>
 <body>
 
@@ -35,10 +35,11 @@
                 <span
                     th:if="${effect.tracked}"
                     th:each="i : ${effect.range}"
-                    th:text="${i}"
-                    th:onclick="|updateStat(${key}, ${trackedValueEntry.key}, ${i})|"
                     th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
-                    ((${i} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
+                    ((${i} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">
+
+                        <a th:text="${i}" th:onclick="|updateStat('${key}', '${trackedValueEntry.key}', ${i})|">10</a>
+                    </span>
 
                 <span
                     th:unless="${effect.tracked}"
