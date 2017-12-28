@@ -21,6 +21,12 @@
     color: black;
 }
 
+.bubble-used {
+    border: 1px solid black;
+    background: black;
+    color: black;
+}
+
 .hp-column-headers {
     background: darkgreen;
     color: white;
@@ -87,6 +93,10 @@
     background: DarkViolet;
     color: white;
 }
+.fp-3 {
+    background: Indigo;
+    color: white;
+}
 
 .wp-0 {
     background: LightSkyBlue;
@@ -102,5 +112,10 @@
 
 .wp-3 {
     background: RoyalBlue;
+    color: white;
+}
+
+.wp-4 {
+    background: Blue;
     color: white;
 }

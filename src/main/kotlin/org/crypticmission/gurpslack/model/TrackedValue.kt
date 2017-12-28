@@ -1,8 +1,9 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.controllers.CharacterStatusController
 import org.crypticmission.gurpslack.message.toKey
 import org.crypticmission.gurpslack.model.Severity.*
-
+import org.slf4j.LoggerFactory
 
 fun IntProgression.containsExcludeLast(i: Int) =
         if (i == this.last)
@@ -16,10 +17,12 @@ data class TrackedValue private constructor(private val _key: String,
                                             var currentValue: Int,
                                             val effects: List<TrackedValueEffect>) {
 
+
     val key = _key.toKey()
     val minValue = effects.last().range.last + 1
 
     companion object {
+        private val logger = LoggerFactory.getLogger(CharacterStatusController::class.java)
         fun create(name: String,
                    key: String,
                    maxValue: Int,
@@ -27,8 +30,8 @@ data class TrackedValue private constructor(private val _key: String,
                    effectDescriptions: List<TrackedValueEffectDescription>) =
                 TrackedValue(key, name, maxValue, currentValue, toEffects(maxValue, effectDescriptions))
 
-        fun toEffects(maxValue: Int, effectDescriptions: List<TrackedValueEffectDescription>) =
-                effectDescriptions.map { it.toEffect(maxValue) }.filterNotNull()
+        fun toEffects(maxValue: Int, effectDescriptions: List<TrackedValueEffectDescription>): List<TrackedValueEffect> =
+            effectDescriptions.map { t -> t.toEffect(maxValue) }.filterNotNull()
 
         fun hp(maxValue: Int, currentValue: Int) =
                 create("Hit Points", "HP", maxValue, currentValue, HP_TRACKED_VALUE_EFFECT_DESCRIPTORS)
@@ -65,7 +68,7 @@ data class TrackedValueEffectDescription(
         val rangeStart = startGenerator(maxStatValue)
         val rangeEnd = endGenerator(maxStatValue) + 1
         val details = detailGenerator(maxStatValue)
-        return if (rangeEnd >= rangeStart) null else TrackedValueEffect( (rangeStart downTo rangeEnd),
+        return if (rangeEnd > rangeStart) null else TrackedValueEffect( (rangeStart downTo rangeEnd),
                 status, details, severity, isTracked)
     }
 }
@@ -99,12 +102,12 @@ val HP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
             TrackedValueEffectDescription(
                     negative(stat).times(x),
                     negative(stat).times(x + 1),
-                "Verge of Death - Level ${x}: ",
+                "Verge of Death - Level ${x}",
                 {fullHp: Int -> "At -${fullHp * x} HP, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."}, Orange, true)  } +
 listOf(
         TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(5), "Instant Death", {fullHp: Int -> "At HP=-${fullHp * 5}, you die immediately"}, Black, true),
         TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10), "Dead", "Your body is being destroyed", Black, false),
-        TrackedValueEffectDescription(negative(stat).times(10), negative(stat).times(10).minusOne(), "Total Bodily Destruction", { fullHp: Int -> "At HP=-${fullHp * 10}, your body is totally destroyed. There is nothing left of you to resurrect"}, Black, false)
+        TrackedValueEffectDescription(negative(stat).times(10), negative(stat).times(10).minusOne(), "Total Bodily Destruction", { fullHp: Int -> "At -${fullHp * 10} HP, your body is totally destroyed. There is nothing left of you to resurrect"}, Black, false)
 )
 
 val FP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(

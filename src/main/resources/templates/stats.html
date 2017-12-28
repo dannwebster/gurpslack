@@ -6,7 +6,7 @@
 <body>
 
 
-<table cellspacing="0" padding="2">
+<table cellspacing="0" >
     <thead>
         <tr>
             <th>Character Name:</th>
@@ -36,7 +36,8 @@
                     ((${i} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
 
                 <span th:unless="${effect.tracked}" th:text="${effect.range.first}"
-                    th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' : 'bubble'">10</span>
+                    th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
+                    ((${effect.range.first} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
             </td>
             <td th:text="|${effect.range.first} to ${effect.range.last}|">Max to Min</td>
             <td th:text="${effect.status}">Status</td>
