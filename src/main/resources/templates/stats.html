@@ -2,11 +2,12 @@
 <link>
 <title th:text="|Status tracker for ${character.characterName}|">Status tracker for Character</title>
 <link rel="stylesheet" type="text/css" href="/css/status.css"></link>
+<script src="/public/js/tracked-stat.js"></script>
 </head>
 <body>
 
 
-<table cellspacing="0" >
+<table cellspacing="0" cellpadding="5">
     <thead>
         <tr>
             <th>Character Name:</th>
@@ -31,15 +32,21 @@
         <tr th:each="effect, iStat: ${#object.effects}" th:class="|${trackedValueEntry.key}-${iStat.index}|">
             <td class="bubbles">
 
-                <span th:if="${effect.tracked}" th:each="i : ${effect.range}" th:text="${i}"
+                <span
+                    th:if="${effect.tracked}"
+                    th:each="i : ${effect.range}"
+                    th:text="${i}"
+                    th:onclick="|updateStat(${key}, ${trackedValueEntry.key}, ${i})|"
                     th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
                     ((${i} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
 
-                <span th:unless="${effect.tracked}" th:text="${effect.range.first}"
+                <span
+                    th:unless="${effect.tracked}"
+                    th:text="${effect.range.first}"
                     th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
                     ((${effect.range.first} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
             </td>
-            <td th:text="|${effect.range.first} to ${effect.range.last}|">Max to Min</td>
+            <td th:text="(${effect.range.first} == ${effect.range.last}) ? ${effect.range.first} : |${effect.range.first} to ${effect.range.last}|">Max to Min</td>
             <td th:text="${effect.status}">Status</td>
             <td th:text="${effect.details}">Details</td>
         </tr>

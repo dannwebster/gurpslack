@@ -2,6 +2,7 @@ package org.crypticmission.gurpslack.repositories
 
 import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.message.toKey
+import org.crypticmission.gurpslack.message.trackedStatsAttachments
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 
@@ -9,7 +10,7 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-class CharacterRepository() {
+class CharacterRepository(val trackedStatService: TrackedStatService) {
     private val logger = LoggerFactory.getLogger(CharacterRepository::class.java)
 
     val randomizer = Randomizer.system()
@@ -39,7 +40,20 @@ class CharacterRepository() {
         }
     }
 
-    fun getByKey(abbrev: String) = charactersByKey[abbrev.toKey()]
+    fun getByKey(abbrev: String): CharacterRoller? {
+      val char = charactersByKey[abbrev.toKey()]
+      if (char != null) {
+          val trackedValues = trackedStatService.getTrackedStatMap(abbrev)
+          char.trackedValues.entries.forEach { (statName, stat) ->
+              val currentValue = trackedValues[statName]
+              if (currentValue != null) {
+                  stat.currentValue = currentValue
+              }
+          }
+      }
+      return char
+    }
+
     fun removeByKey(abbrev: String) = charactersByKey.remove(abbrev.toKey())
 
     fun getByUserName(userName: String) : Pair<String, CharacterRoller>? {

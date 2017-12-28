@@ -110,8 +110,6 @@ private fun modifiers() = (-10 .. 10).map { MenuOption(it.toSignedStringWithZero
 private fun dr() = (0 .. 10).map { MenuOption(it.toSignedStringWithZero(), it.toString()) }
 private fun visibility() = VisibilityOption.values().map { it.menuOption }
 
-
-
 private fun skillAttachments(key: String, skills: Collection<Attribute>): List<Attachment> =
         skills
                 .sortedBy { skill -> skill.name }

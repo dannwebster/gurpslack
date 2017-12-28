@@ -114,7 +114,7 @@ val FP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
         TrackedValueEffectDescription(stat, oneThird, "OK", "No Effects", LightBlue, true),
         TrackedValueEffectDescription(oneThird, zero, "Very Tired", "Halve your Move, Dodge, and ST (round up). This does not affect ST-based quantities, such as HP and damage.", Blue, true),
         TrackedValueEffectDescription(zero, negative(stat), "Verge of Collapse", "More FP Loss causes HP Loss. Will or Do Nothing; failure causes collapse.", DarkBlue, true),
-        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Unconsious", "Awaken when you reach positive FP", Black, false)
+        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Unconscious", "Awaken when you reach positive FP", Black, false)
 )
 
 val WP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
