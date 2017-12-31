@@ -3,8 +3,8 @@
 <title th:text="|Status tracker for ${character.characterName}|">Status tracker for Character</title>
 <link rel="stylesheet" type="text/css" href="/css/status.css"></link>
 <script
-  src="https://code.jquery.com/jquery-3.2.1.slim.min.js"
-  integrity="sha256-k2WSCIexGzOj3Euiig+TlR8gA0EmPjuc79OEeY5L45g="
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
   crossorigin="anonymous"></script>
 <script src="/js/tracked-stat.js"></script>
 </head>
@@ -14,42 +14,45 @@
 <table cellspacing="0" cellpadding="5">
     <thead>
         <tr>
-            <th>Character Name:</th>
+            <th>Character Data:</th>
             <td th:text="${character.characterName}">Character's Name</td>
 
             <th>Player Name:</th>
             <td th:text="${playerName}">Player's Name</td>
         </tr>
     </thead>
-     <tbody th:each="trackedValueEntry : ${character.trackedValues}" th:object="${trackedValueEntry.value}">
-        <tr th:class="|${trackedValueEntry.key}-column-headers|">
-            <th colspan="4" th:text="|${#strings.toUpperCase(trackedValueEntry.key)}: Current: ${#object.currentValue} / Max: ${#object.maxValue}|">
-                STAT: Current: 10 / Max: 10
+     <tbody th:each="trackedValueEntry : ${character.trackedValues}" th:with="statName=${trackedValueEntry.key},trackedValue=${trackedValueEntry.value}" th:class="|${statName}-section|">
+        <tr th:class="|${trackedValueEntry.key}-header|">
+            <th colspan="4">
+                 <span th:text="${#strings.toUpperCase(statName)}">STAT</span> (Current / Max):
+                 <span th:id="|${statName}-current|" th:text="${trackedValue.currentValue}">10</span>
+                 /
+                 <span th:id="|${statName}-max|" th:text="${trackedValue.maxValue}">10</span>
             </th>
         </tr>
-        <tr th:class="|${trackedValueEntry.key}-column-headers|">
+        <tr th:class="|${statName}-column-headers|">
             <th>Tracking</th>
             <th>Range</th>
             <th>Status</th>
             <th>Effects</th>
         </tr>
-        <tr th:each="effect, iStat: ${#object.effects}" th:class="|${trackedValueEntry.key}-${iStat.index}|">
+        <tr th:each="effect, iStat: ${trackedValue.effects}" th:class="|${statName}-${iStat.index}|">
             <td class="bubbles">
 
-                <span
+                <button
                     th:if="${effect.tracked}"
                     th:each="i : ${effect.range}"
-                    th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
-                    ((${i} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">
+                    th:class="(${i} == ${trackedValue.currentValue}) ? 'bubble-selected' :
+                    ((${i} &gt; ${trackedValue.currentValue}) ? 'bubble-used' : 'bubble')"
+                    th:attr="characterKey=${characterKey}, statName=${statName}, statValue=${i}"
+                    th:text="${i}" >10
+                    </button>
 
-                        <a th:text="${i}" th:onclick="|updateStat('${key}', '${trackedValueEntry.key}', ${i})|">10</a>
-                    </span>
-
-                <span
+                <button
                     th:unless="${effect.tracked}"
                     th:text="${effect.range.first}"
-                    th:class="(${i} == ${#object.currentValue}) ? 'bubble-selected' :
-                    ((${effect.range.first} &gt; ${#object.currentValue}) ? 'bubble-used' : 'bubble')">10</span>
+                    th:class="(${i} == ${trackedValue.currentValue}) ? 'bubble-selected' :
+                    ((${effect.range.first} &gt; ${trackedValue.currentValue}) ? 'bubble-used' : 'bubble')">10</button>
             </td>
             <td th:text="(${effect.range.first} == ${effect.range.last}) ? ${effect.range.first} : |${effect.range.first} to ${effect.range.last}|">Max to Min</td>
             <td th:text="${effect.status}">Status</td>

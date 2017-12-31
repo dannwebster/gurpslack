@@ -1,0 +1,164 @@
+.bubbles button {
+    /*
+    height: 10px;
+    padding: 2px;
+
+    text-align: center;
+
+    font: 10px Arial, sans-serif;
+    */
+    border-radius: 50%;
+}
+
+.bubble-selected {
+    border: 2px solid red;
+    background: white;
+    color: red;
+}
+
+.bubble {
+    border: 1px solid black;
+    background: white;
+    color: black;
+}
+
+.bubble-used {
+    border: 1px solid black;
+    background: #555555;
+    color: black;
+}
+
+.hp-header {
+    background: white;
+    color: black;
+    outline: thin solid black;
+}
+.wp-header {
+    background: white;
+    color: black;
+    outline: thin solid black;
+}
+.fp-header {
+    background: white;
+    color: black;
+    outline: thin solid black;
+}
+.hp-column-headers {
+    background: DarkGreen;
+    outline: thin solid DarkGreen;
+    color: white;
+}
+.wp-column-headers {
+    background: darkblue;
+    outline: thin solid DarkBlue;
+    color: white;
+}
+.fp-column-headers {
+    background: Indigo;
+    outline: thin solid Indigo;
+    color: white;
+}
+.hp-0 {
+    background: PaleGreen;
+    outline: thin solid PaleGreen;
+}
+
+.hp-1 {
+    background: MediumAquamarine;
+    outline: thin solid MediumAquamarine;
+}
+
+.hp-2 {
+    background: MediumSeaGreen;
+    outline: thin solid MediumSeaGreen;
+}
+
+.hp-3 {
+    background: SeaGreen;
+    outline: thin solid SeaGreen;
+}
+
+.hp-4 {
+    background: ForestGreen;
+    outline: thin solid ForestGreen;
+}
+
+.hp-5 {
+    background: Green;
+    outline: thin solid Green;
+}
+
+.hp-6 {
+    background: DarkGreen;
+    outline: thin solid DarkGreen;
+    color: white;
+}
+
+.hp-7 {
+    background: Black;
+    outline: thin solid Black;
+    color: white;
+}
+
+.hp-8 {
+    background: Black;
+    outline: thin solid Black;
+    color: white;
+}
+
+.fp-0 {
+    background: MediumPurple;
+    outline: thin solid MediumPurple;
+    color: white;
+}
+
+.fp-1 {
+    background: BlueViolet;
+    outline: thin solid BlueViolet;
+    color: white;
+}
+
+.fp-2 {
+    background: DarkViolet;
+    outline: thin solid DarkViolet;
+    color: white;
+}
+
+.fp-3 {
+    background: Indigo;
+    outline: thin solid Indigo;
+    color: white;
+}
+
+.wp-0 {
+    background: LightSkyBlue;
+    outline: thin solid LightSkyBlue;
+}
+
+.wp-1 {
+    background: DeepSkyBlue;
+    outline: thin solid DeepSkyBlue;
+}
+
+.wp-2 {
+    background: DodgerBlue;
+    outline: thin solid DodgerBlue;
+}
+
+.wp-3 {
+    background: RoyalBlue;
+    outline: thin solid RoyalBlue;
+    color: white;
+}
+
+.wp-4 {
+    background: Blue;
+    outline: thin solid Blue;
+    color: white;
+}
+
+.selected-row {
+    outline: thin solid black;
+    font-weight: bold;
+    font-style: italic;
+}

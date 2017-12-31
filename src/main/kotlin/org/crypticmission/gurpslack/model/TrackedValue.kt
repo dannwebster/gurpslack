@@ -49,8 +49,8 @@ data class TrackedValue private constructor(private val _key: String,
     operator fun plusAssign(amount: Int) { this.currentValue += amount }
     operator fun minusAssign(amount: Int) { this.currentValue -= amount }
 
-    fun effect() = effects.find { it.range.containsExcludeLast(currentValue) } ?: maxValue
-//            throw IllegalStateException("value ${currentValue} was not contained in the effects for ${key}. Effects: ${effects}")
+    fun effect() = effects.find { it.range.containsExcludeLast(currentValue) } ?:
+            throw IllegalStateException("value ${currentValue} was not contained in the effects for ${key}. Effects: ${effects}")
 }
 
 data class TrackedValueEffectDescription(

@@ -25,7 +25,7 @@ class CharacterStatusController(val characterSheetRepository: CharacterSheetRepo
         val meta = characterSheetRepository.findOneByCharacterKey(key)
         val playerName = meta?.userName ?: "GM"
         return ModelAndView("stats.html", mapOf(
-                "key" to key,
+                "characterKey" to key,
                 "character" to char,
                 "playerName" to playerName,
                 "lastUpdated" to clock.instant()
@@ -37,7 +37,7 @@ class CharacterStatusController(val characterSheetRepository: CharacterSheetRepo
 class CharacterStatusUpdateController(val trackedStatService: TrackedStatService) {
     private val logger = LoggerFactory.getLogger(CharacterStatusUpdateController::class.java)
 
-    @PostMapping("/character/{key}/stats/{stat}")
+    @PutMapping("/character/{key}/stats/{stat}")
     fun updateStat(@PathVariable("key") key: String,
                    @PathVariable("stat") statName: String,
                    @RequestParam("value") value: Int): Pair<String, Int> {
