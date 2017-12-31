@@ -31,16 +31,11 @@ fun shortMessage(stat: TrackedValue) = with (stat) {
 }
 
 fun trackedStatsAttachments(hostname: String, key: String, trackedStats: Map<String, TrackedValue>): List<Attachment> =
-            listOf(Attachment(
-                    title = "_*Tracked Stats*_",
-                    text = toText(trackedStats),
-                    callbackId = "${key}-tracked-stats",
-                    titleLink = "http://${hostname}/character/${key}/stats")
-            )
+    listOf(Attachment("_*Tracked Stats*_")) +
+    trackedStats.values.map { stat -> Attachment(shortMessage(stat)) } +
+    Attachment("Stats Page: http://${hostname}/character/${key}/stats")
 
 
-private fun toText(trackedStats: Map<String, TrackedValue>): String =
-        trackedStats.values.map { stat -> shortMessage(stat) }.joinToString("/n")
 
 private fun trackedIncDec(key: String, stat: TrackedValue): List<Action> =
         listOf(
