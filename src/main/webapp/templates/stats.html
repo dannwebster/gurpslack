@@ -45,7 +45,7 @@
             <td th:text="${effect.status}">Status</td>
             <td th:text="${effect.details}">Details</td>
         </tr>
-        <tr class="adjust-button-row" >
+        <tr class="adjust-button-row" th:id="|${statName}-adjust-button-row|">
             <td class="adjust-button-cell" colspan="4">
                 <div class="row">
 
@@ -55,7 +55,7 @@
 
                     <span class="amt-buttons column">
                         <button class="sub-button" th:id="|${statName}-sub|" th:onclick="|decByAmount('${characterKey}', '${statName}')|">-</button>
-                        <select  class="amt-input" th:id="|${statName}-amt|" >
+                        <select class="amt-input" th:id="|${statName}-amt|" >
                             <option th:each="v : ${#numbers.sequence(0, 20)}" th:text="${v}"></option>
                         </select>
                         <button class="add-button" th:id="|${statName}-add|" th:onclick="|incByAmount('${characterKey}', '${statName}')|">+</button>

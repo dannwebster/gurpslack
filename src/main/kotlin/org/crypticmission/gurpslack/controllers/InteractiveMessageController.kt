@@ -25,7 +25,7 @@ enum class SelectType(val commandString: String) {
     DamageResistance("dr");
 
     companion object {
-        fun fromString(commandString: String): SelectType? =
+        fun fromString(commandString: String?): SelectType? =
                 when(commandString) {
                     null -> null
                     else -> values().find { it.commandString == commandString }
@@ -156,7 +156,7 @@ Next attack made by ${messageData.user.name}:
 
     fun changeTrackedStatFromMenu(action : ActionTaken, message: String, messageData: MessageData) : RichMessage {
         val (characterKey, statKey, value) = (action.selectedValue()?: return RichMessage("incorrectly formatted value : ${action.selectedValue()}")).split("@")
-        val change = value?.toInt() ?: 0
+        val change = value.toInt()
         return changeTrackedStat(characterKey, statKey, change)
     }
 

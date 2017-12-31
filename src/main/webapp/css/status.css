@@ -190,3 +190,32 @@
 .inc-buttons {
     text-align: right;
 }
+
+.adjust-button-row button {
+    border-radius: 20%;
+    border: thin solid black;
+    margin: 1px;
+}
+
+#hp-adjust-button-row button {
+    background: PaleGreen;
+}
+
+#fp-adjust-button-row button {
+    background: MediumPurple;
+}
+
+#wp-adjust-button-row button {
+    background: LightSkyBlue;
+}
+#hp-amt {
+    background: PaleGreen;
+}
+
+#fp-amt {
+    background: MediumPurple;
+}
+
+#wp-amt {
+    background: LightSkyBlue;
+}

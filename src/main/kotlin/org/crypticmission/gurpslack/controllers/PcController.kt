@@ -10,7 +10,9 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class PcController(val characterRepository: CharacterRepository) {
+class PcController(
+        @Value("\${web.app.hostname}") val urlHostname: String,
+        val characterRepository: CharacterRepository) {
     companion object {
         private val logger = LoggerFactory.getLogger(PcController::class.java)
     }
@@ -42,7 +44,7 @@ class PcController(val characterRepository: CharacterRepository) {
         logger.debug("pc for username ${username} is ${keyPcPair?.second?.characterName} for key ${keyPcPair?.first}")
         return when (keyPcPair) {
             null -> RichMessage("CharacterRoller with username '${username}' does not exist")
-            else -> org.crypticmission.gurpslack.message.richMessage(keyPcPair.first, keyPcPair.second, sections)
+            else -> org.crypticmission.gurpslack.message.richMessage(urlHostname, keyPcPair.first, keyPcPair.second, sections)
         }.encodedMessage()
     }
 

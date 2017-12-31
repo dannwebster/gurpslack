@@ -11,7 +11,10 @@ import org.springframework.web.bind.annotation.PostMapping
 import org.springframework.web.bind.annotation.RestController
 
 @RestController
-class NpcController(val characterRepository: CharacterRepository) {
+class NpcController(
+        @Value("\${web.app.hostname}") val urlHostname: String,
+        val characterRepository: CharacterRepository) {
+
     companion object {
         private val logger = LoggerFactory.getLogger(NpcController::class.java)
     }
@@ -47,7 +50,7 @@ class NpcController(val characterRepository: CharacterRepository) {
         val npc = characterRepository.getByKey(key)
         return when (npc) {
             null -> RichMessage("CharacterRoller with abbreviation ${key} does not exist")
-            else -> org.crypticmission.gurpslack.message.richMessage(key, npc, sections)
+            else -> org.crypticmission.gurpslack.message.richMessage(urlHostname, key, npc, sections)
         }.encodedMessage()
     }
 
@@ -62,7 +65,7 @@ class NpcController(val characterRepository: CharacterRepository) {
     @PostMapping("/addnpc")
     fun addNpc(slashData: SlashData): RichMessage {
         val (characterAbbrev, characterName) = parseName(slashData.text) ?:
-            return RichMessage("Can't add character from data '${slashData.text}'")
+                return RichMessage("Can't add character from data '${slashData.text}'")
 
         return when (characterRepository.add(characterAbbrev, null, characterName)) {
             true -> RichMessage("Created CharacterRoller ${characterName} with abbreviation ${characterAbbrev}")

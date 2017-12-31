@@ -26,9 +26,6 @@ enum class VisibilityOption(val menuOption: MenuOption, val isInChannel: Boolean
     }
 }
 
-
-
-
 fun message(characterRoller: CharacterRoller) = with (characterRoller) {
     "*Character Name: ${characterName}*\n" +
             "_*Primary Attributes:*_\n" +
@@ -56,10 +53,8 @@ fun message(characterRoller: CharacterRoller) = with (characterRoller) {
                     .joinToString("\n", postfix = "\n")
 }
 
-
-
 @JvmOverloads
-fun richMessage(key: String, characterRoller: CharacterRoller,
+fun richMessage(urlHostname: String, key: String, characterRoller: CharacterRoller,
                 sections : Array<CharacterSections> = values()): RichMessage {
     with (characterRoller){
         val msg = "*Character Name: ${characterName}*\n"
@@ -67,7 +62,7 @@ fun richMessage(key: String, characterRoller: CharacterRoller,
         val attachments = (sections.map { section -> when(section) {
             PRIMARY_ATTRIBUTES -> attributesAttachments(key, "Primary", characterRoller.primaryAttributes())
             DERIVED_ATTRIBUTES -> attributesAttachments(key, "Derived", characterRoller.derivedAttributes())
-            TRACKED_STATS -> trackedStatsAttachments(key, characterRoller.trackedValues)
+            TRACKED_STATS -> trackedStatsAttachments(urlHostname, key, characterRoller.trackedValues)
             SKILLS -> skillAttachments(key, characterRoller.skills.values)
             MELEE_ATTACKS -> attackAttachments(key, "melee", characterRoller.meleeAttacks.values)
             RANGED_ATTACKS -> attackAttachments(key, "ranged", characterRoller.rangedAttacks.values)
