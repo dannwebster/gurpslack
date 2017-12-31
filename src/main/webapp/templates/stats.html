@@ -37,22 +37,16 @@
             <th>Effects</th>
         </tr>
         <tr th:each="effect, iStat: ${trackedValue.effects}" th:class="|${statName}-${iStat.index}|">
-            <td class="bubbles">
+            <td class="bubbles" th:with="range=(${effect.tracked}) ? ${effect.range} : ${effect.range.first}">
 
                 <button
-                    th:if="${effect.tracked}"
-                    th:each="i : ${effect.range}"
+                    th:each="i : ${range}"
                     th:class="(${i} == ${trackedValue.currentValue}) ? 'bubble-selected' :
                     ((${i} &gt; ${trackedValue.currentValue}) ? 'bubble-used' : 'bubble')"
                     th:attr="characterKey=${characterKey}, statName=${statName}, statValue=${i}"
                     th:text="${i}" >10
                     </button>
 
-                <button
-                    th:unless="${effect.tracked}"
-                    th:text="${effect.range.first}"
-                    th:class="(${i} == ${trackedValue.currentValue}) ? 'bubble-selected' :
-                    ((${effect.range.first} &gt; ${trackedValue.currentValue}) ? 'bubble-used' : 'bubble')">10</button>
             </td>
             <td th:text="(${effect.range.first} == ${effect.range.last}) ? ${effect.range.first} : |${effect.range.first} to ${effect.range.last}|">Max to Min</td>
             <td th:text="${effect.status}">Status</td>

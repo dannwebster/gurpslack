@@ -106,7 +106,7 @@ val HP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
                 {fullHp: Int -> "At -${fullHp * x} HP, roll vs HT or die immediately. Otherwise Do Nothing, or make an HT-${x} roll; failure causes collapse."}, Orange, true)  } +
 listOf(
         TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(5), "Instant Death", {fullHp: Int -> "At HP=-${fullHp * 5}, you die immediately"}, Black, true),
-        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10), "Dead", "Your body is being destroyed", Black, false),
+        TrackedValueEffectDescription(negative(stat).times(5), negative(stat).times(10), "Dead", { fullHp: Int -> "At -${fullHp * 5} HP you die instantly. Further damage begins to destroy your physical body."}, Black, false),
         TrackedValueEffectDescription(negative(stat).times(10), negative(stat).times(10).minusOne(), "Total Bodily Destruction", { fullHp: Int -> "At -${fullHp * 10} HP, your body is totally destroyed. There is nothing left of you to resurrect"}, Black, false)
 )
 
@@ -114,7 +114,7 @@ val FP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(
         TrackedValueEffectDescription(stat, oneThird, "OK", "No Effects", LightBlue, true),
         TrackedValueEffectDescription(oneThird, zero, "Very Tired", "Halve your Move, Dodge, and ST (round up). This does not affect ST-based quantities, such as HP and damage.", Blue, true),
         TrackedValueEffectDescription(zero, negative(stat), "Verge of Collapse", "More FP Loss causes HP Loss. Will or Do Nothing; failure causes collapse.", DarkBlue, true),
-        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Unconscious", "Awaken when you reach positive FP", Black, false)
+        TrackedValueEffectDescription(negative(stat), negative(stat).minusOne(), "Unconscious", { fullFp: Int -> "Awaken when you reach positive FP (${fullFp * 10} minutes later)"}, Black, false)
 )
 
 val WP_TRACKED_VALUE_EFFECT_DESCRIPTORS = listOf(

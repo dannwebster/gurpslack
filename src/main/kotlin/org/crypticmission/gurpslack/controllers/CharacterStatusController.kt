@@ -37,14 +37,25 @@ class CharacterStatusController(val characterSheetRepository: CharacterSheetRepo
 class CharacterStatusUpdateController(val trackedStatService: TrackedStatService) {
     private val logger = LoggerFactory.getLogger(CharacterStatusUpdateController::class.java)
 
+    @PostMapping("/character/{key}/stats/{stat}/adjustment")
+    fun adjustStat(@PathVariable("key") key: String,
+                   @PathVariable("stat") statName: String,
+                   @PathVariable("value") oldValue: Int,
+                   @RequestParam("adjustment") adjustment: Int): Pair<String, Int> {
+        logger.debug("adjusting ${key} stat ${statName} from ${oldValue} by ${adjustment}");
+        val newValue = trackedStatService.modifyByCharacterKeyAndStatName(key, statName, oldValue, adjustment)
+        logger.debug("updated ${key} stat ${statName} from ${oldValue} by ${adjustment} to ${newValue.value}");
+        return Pair(statName, newValue.value)
+    }
+
     @PutMapping("/character/{key}/stats/{stat}")
     fun updateStat(@PathVariable("key") key: String,
                    @PathVariable("stat") statName: String,
                    @RequestParam("value") value: Int): Pair<String, Int> {
         logger.debug("updating ${key} stat ${statName} to ${value}");
-        trackedStatService.saveOrUpdateByCharacterKeyAndStatName(key, statName, value)
+        val newValue = trackedStatService.saveOrUpdateByCharacterKeyAndStatName(key, statName, value)
         logger.debug("updated ${key} stat ${statName} to ${value}");
-        return Pair(statName, value)
+        return Pair(statName, newValue.value)
     }
 
 }

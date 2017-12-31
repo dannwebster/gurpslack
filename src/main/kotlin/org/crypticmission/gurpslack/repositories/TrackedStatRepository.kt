@@ -19,6 +19,10 @@ class TrackedStatService(val trackedStatRepository: TrackedStatRepository) {
                .map { stat -> Pair(stat.statName, stat.value) }
                .toMap()
 
+    fun modifyByCharacterKeyAndStatName(characterKey: String, statName: String, oldValue: Int, adjustment: Int): TrackedStat {
+        return saveOrUpdateByCharacterKeyAndStatName(characterKey, statName, oldValue+adjustment)
+    }
+
     fun saveOrUpdateByCharacterKeyAndStatName(characterKey: String, statName: String, value: Int): TrackedStat {
         val old = trackedStatRepository.findOneByCharacterKeyAndStatName(characterKey, statName)
         val new = if (old != null) {
