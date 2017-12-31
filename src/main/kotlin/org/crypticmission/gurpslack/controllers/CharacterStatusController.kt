@@ -28,34 +28,42 @@ class CharacterStatusController(val characterSheetRepository: CharacterSheetRepo
                 "characterKey" to key,
                 "character" to char,
                 "playerName" to playerName,
-                "lastUpdated" to clock.instant()
+                "lastUpdated" to clock.instant().toString()
         ))
     }
 }
 
 @RestController
-class CharacterStatusUpdateController(val trackedStatService: TrackedStatService) {
+class CharacterStatusUpdateController(val trackedStatService: TrackedStatService,
+                                      val clock: Clock) {
     private val logger = LoggerFactory.getLogger(CharacterStatusUpdateController::class.java)
 
     @PostMapping("/character/{key}/stats/{stat}/adjustment")
     fun adjustStat(@PathVariable("key") key: String,
                    @PathVariable("stat") statName: String,
-                   @PathVariable("value") oldValue: Int,
-                   @RequestParam("adjustment") adjustment: Int): Pair<String, Int> {
-        logger.debug("adjusting ${key} stat ${statName} from ${oldValue} by ${adjustment}");
-        val newValue = trackedStatService.modifyByCharacterKeyAndStatName(key, statName, oldValue, adjustment)
-        logger.debug("updated ${key} stat ${statName} from ${oldValue} by ${adjustment} to ${newValue.value}");
-        return Pair(statName, newValue.value)
+                   @RequestParam("adjustment") adjustment: Int): Map<String, Any> {
+        logger.debug("adjusting ${key} stat ${statName} from by ${adjustment}");
+        val newValue = trackedStatService.modifyByCharacterKeyAndStatName(key, statName, adjustment)
+        logger.debug("updated ${key} stat ${statName} by ${adjustment} to ${newValue.value}");
+        return mapOf(
+                "statName" to statName,
+                "value" to newValue.value,
+                "lastUpdated" to clock.instant().toString()
+                )
     }
 
     @PutMapping("/character/{key}/stats/{stat}")
     fun updateStat(@PathVariable("key") key: String,
                    @PathVariable("stat") statName: String,
-                   @RequestParam("value") value: Int): Pair<String, Int> {
+                   @RequestParam("value") value: Int): Map<String, Any> {
         logger.debug("updating ${key} stat ${statName} to ${value}");
         val newValue = trackedStatService.saveOrUpdateByCharacterKeyAndStatName(key, statName, value)
         logger.debug("updated ${key} stat ${statName} to ${value}");
-        return Pair(statName, newValue.value)
+        return mapOf(
+                "statName" to statName,
+                "value" to newValue.value,
+                "lastUpdated" to clock.instant().toString()
+                )
     }
 
 }

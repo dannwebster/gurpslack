@@ -11,33 +11,39 @@ import org.springframework.stereotype.Repository
 
 @Component
 class TrackedStatService(val trackedStatRepository: TrackedStatRepository) {
-   private val logger = LoggerFactory.getLogger(TrackedStatService::class.java)
+    private val logger = LoggerFactory.getLogger(TrackedStatService::class.java)
 
-   fun getTrackedStatMap(characterKey: String): Map<String, Int> =
-       trackedStatRepository
-               .findByCharacterKey(characterKey)
-               .map { stat -> Pair(stat.statName, stat.value) }
-               .toMap()
-
-    fun modifyByCharacterKeyAndStatName(characterKey: String, statName: String, oldValue: Int, adjustment: Int): TrackedStat {
-        return saveOrUpdateByCharacterKeyAndStatName(characterKey, statName, oldValue+adjustment)
+    companion object {
+        val DEFAULT_STAT = 10
     }
 
-    fun saveOrUpdateByCharacterKeyAndStatName(characterKey: String, statName: String, value: Int): TrackedStat {
-        val old = trackedStatRepository.findOneByCharacterKeyAndStatName(characterKey, statName)
-        val new = if (old != null) {
-            old.value = value
-            trackedStatRepository.save(old)
-        } else {
-            val new = TrackedStat(characterKey, statName, value)
-            trackedStatRepository.save(new)
-        }
-        return new
+    fun getTrackedStatMap(characterKey: String): Map<String, Int> =
+            trackedStatRepository
+                    .findByCharacterKey(characterKey)
+                    .map { stat -> Pair(stat.statName, stat.value) }
+                    .toMap()
+
+    fun modifyByCharacterKeyAndStatName(characterKey: String, statName: String, adjustment: Int): TrackedStat {
+        return doSaveOrUpdateByCharacterKeyAndStatName("adjusting", characterKey, statName, {t -> t.value + adjustment })
+    }
+
+    fun saveOrUpdateByCharacterKeyAndStatName(characterKey: String, statName: String, newValue: Int): TrackedStat {
+        return doSaveOrUpdateByCharacterKeyAndStatName("setting", characterKey, statName, {t -> newValue})
+    }
+
+    fun doSaveOrUpdateByCharacterKeyAndStatName(action: String, characterKey: String, statName: String, newValueSupplier: (TrackedStat) -> Int): TrackedStat {
+        val trackedStat = trackedStatRepository.findOneByCharacterKeyAndStatName(characterKey, statName) ?:
+                TrackedStat(characterKey, statName, DEFAULT_STAT)
+        val newValue = newValueSupplier(trackedStat)
+        logger.debug("${action} ${if (trackedStat.id == 0L)  "new" else "existing"} ${characterKey}.${statName} from ${trackedStat.value} to ${newValue}")
+        trackedStat.value = newValue
+        trackedStatRepository.save(trackedStat)
+        return trackedStat
     }
 }
 
 @Repository
 interface TrackedStatRepository: CrudRepository<TrackedStat, Long> {
     fun findByCharacterKey(characterKey: String): List<TrackedStat>
-    fun findOneByCharacterKeyAndStatName(characterKey: String, statName: String): TrackedStat
+    fun findOneByCharacterKeyAndStatName(characterKey: String, statName: String): TrackedStat?
 }

@@ -35,28 +35,35 @@ function addUpdateButtonCallbacks() {
 
 function updateStat(characterKey, statName, statValue) {
     var url = "/character/" + characterKey + "/stats/" + statName;
-    console.log("posting to " + url);
+    console.log("putting to " + url);
     var data = { value: statValue };
     $.put(
         url,
         data,
         function(data, status){
-            updatePage(characterKey, statName, statValue, data, status);
+            updatePage(characterKey, statName, data, status);
         },
         "json"
     );
-    console.log("posted to " + url);
+    console.log("put to " + url);
 }
 
-function updatePage(characterKey, statName, statValue, data, status) {
-    updateCurrentValue(characterKey, statName, statValue, data, status);
-    updateButtonClasses(characterKey, statName, statValue, data, status);
+function updatePage(characterKey, statName, data, status) {
+    var newStatValue = data.value;
+    var timestamp = data.lastUpdated;
+
+    console.log("updating page from data '" + data + "' with timestamp " + timestamp + " and newStatValue " + newStatValue);
+
+    updateCurrentValue(characterKey, statName, newStatValue, data, status);
+    updateButtonClasses(characterKey, statName, newStatValue, data, status);
+    updateTimestamp(timestamp);
     updateRowHighlights();
 }
 
 function updateCurrentValue(characterKey, statName, statValue, data, status) {
     $('.' + statName + '-current').text(statValue)
 }
+
 function updateButtonClasses(characterKey, statName, statValue, data, status) {
     var iStatValue = parseInt(statValue);
     var buttons = $("." + statName + "-section button");
@@ -74,4 +81,43 @@ function updateRowHighlights() {
     $("tr").removeClass("selected-row");
     $(".bubble-selected").closest("tr").addClass("selected-row");
 
+}
+
+function adjustByAmount(characterKey, statName, multiplier) {
+    var adjustment = $("#" + statName + "-amt").val();
+    console.log("adjusting " + characterKey + "." + statName + " by " + adjustment);
+    var iAdjustment = parseInt(adjustment) * multiplier;
+    console.log("adjusting " + characterKey + "." + statName + " by " + iAdjustment);
+    adjust(characterKey, statName, iAdjustment);
+}
+
+function decByAmount(characterKey, statName) {
+    console.log("decrementing " + characterKey + "." + statName);
+    adjustByAmount(characterKey, statName, -1);
+}
+
+function incByAmount(characterKey, statName) {
+    console.log("incrementing " + characterKey + "." + statName);
+    adjustByAmount(characterKey, statName, 1);
+}
+
+function adjust(characterKey, statName, adjustment) {
+    var url = "/character/" + characterKey + "/stats/" + statName + "/adjustment";
+    console.log("posting to " + url);
+    var data = {
+        adjustment: adjustment
+    };
+    $.post(
+        url,
+        data,
+        function(data, status){
+            updatePage(characterKey, statName, data, status);
+        },
+        "json"
+    );
+    console.log("posted to " + url);
+}
+
+function updateTimestamp(timestamp) {
+    $('#timestamp').text(timestamp);
 }

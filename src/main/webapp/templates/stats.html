@@ -1,6 +1,6 @@
 <html xmlns:th="http://www.thymeleaf.org">
 <link>
-<title th:text="|Status tracker for ${character.characterName}|">Status tracker for Character</title>
+<title th:text="|Status Tracker for ${character.characterName}|">Status Tracker for Character</title>
 <link rel="stylesheet" type="text/css" href="/css/status.css"></link>
 <script
   src="https://code.jquery.com/jquery-3.2.1.min.js"
@@ -11,16 +11,9 @@
 <body>
 
 
+<h1 th:text="|Status Tracker: ${character.characterName}|">Status Tracker: Character's Name</h1>
+<h2 th:text="|Played By: ${playerName}|">Played By: Player's Name</h2>
 <table cellspacing="0" cellpadding="5">
-    <thead>
-        <tr>
-            <th>Character Data:</th>
-            <td th:text="${character.characterName}">Character's Name</td>
-
-            <th>Player Name:</th>
-            <td th:text="${playerName}">Player's Name</td>
-        </tr>
-    </thead>
      <tbody th:each="trackedValueEntry : ${character.trackedValues}" th:with="statName=${trackedValueEntry.key},trackedValue=${trackedValueEntry.value}" th:class="|${statName}-section|">
         <tr th:class="|${trackedValueEntry.key}-header|">
             <th colspan="4">
@@ -52,16 +45,36 @@
             <td th:text="${effect.status}">Status</td>
             <td th:text="${effect.details}">Details</td>
         </tr>
+        <tr class="adjust-button-row" >
+            <td class="adjust-button-cell" colspan="4">
+                <div class="row">
+
+                    <span class="dec-buttons column">
+                        <button th:each="v : ${#numbers.sequence(-5, -1)}" class="dec-button" th:text="${v}" th:id="|${statName}-dec-${v}|" th:onclick="|adjust('${characterKey}', '${statName}', ${v})|">-1</button>
+                    </span>
+
+                    <span class="amt-buttons column">
+                        <button class="sub-button" th:id="|${statName}-sub|" th:onclick="|decByAmount('${characterKey}', '${statName}')|">-</button>
+                        <select  class="amt-input" th:id="|${statName}-amt|" >
+                            <option th:each="v : ${#numbers.sequence(0, 20)}" th:text="${v}"></option>
+                        </select>
+                        <button class="add-button" th:id="|${statName}-add|" th:onclick="|incByAmount('${characterKey}', '${statName}')|">+</button>
+                    </span>
+
+                    <span class="inc-buttons column">
+                        <button th:each="v : ${#numbers.sequence(1, 5)}" class="inc-button" th:text="'+'+${v}" th:id="|${statName}-inc-${v}|" th:onclick="|adjust('${characterKey}', '${statName}', ${v})|">+1</button>
+                    </span>
+                </div>
+            </td>
+        </tr>
         <tr>
             <td>&nbsp;</td>
         </tr>
     </tbody>
-    <tfooter>
-        <tr>
-            <th>Last Updated:</th>
-            <td th:text="${lastUpdated}">Last Updated Date</td>
-        </tr>
-    </tfooter>
 </table>
+<div id="timestamp-div">
+    <span>Last Updated:</span>
+    <span id="timestamp" th:text="${lastUpdated}">Last Updated Date</td>
+</div>
 </body>
 </html>

@@ -161,3 +161,32 @@
     font-weight: bold;
     font-style: italic;
 }
+
+.adjust-button-row {
+    background: black;
+    outline: thin solid Black;
+}
+
+.column {
+    float: left;
+    width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.dec-buttons {
+    text-align: left;
+}
+
+.amt-buttons {
+    text-align: center;
+}
+
+.inc-buttons {
+    text-align: right;
+}
