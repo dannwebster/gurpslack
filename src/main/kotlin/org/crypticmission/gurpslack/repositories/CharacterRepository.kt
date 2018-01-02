@@ -43,23 +43,47 @@ class CharacterRepository(val trackedStatService: TrackedStatService) {
     fun getByKey(abbrev: String): CharacterRoller? {
       val char = charactersByKey[abbrev.toKey()]
       if (char != null) {
-          val trackedValues = trackedStatService.getTrackedStatMap(abbrev)
-          char.trackedValues.entries.forEach { (statName, stat) ->
-              val currentValue = trackedValues[statName]
-              if (currentValue != null) {
-                  stat.currentValue = currentValue
-              }
-          }
+          addTrackedStats(abbrev, char)
       }
       return char
     }
 
-    fun removeByKey(abbrev: String) = charactersByKey.remove(abbrev.toKey())
+    private fun addTrackedStats(abbrev: String, char: CharacterRoller) {
+        val trackedValues = trackedStatService.getTrackedStatMap(abbrev)
+        char.trackedValues.entries.forEach { (statName, stat) ->
+            val currentValue = trackedValues[statName]
+            if (currentValue != null) {
+                stat.currentValue = currentValue
+            }
+        }
+    }
 
     fun getByUserName(userName: String) : Pair<String, CharacterRoller>? {
         logger.debug("getting character '${userName}' from ${charactersByUserName.keys}")
-        return charactersByUserName[userName.toKey()] }
-    fun removeByUserName(userName: String) = charactersByUserName.remove(userName.toKey())
+        val abbrevToCharacter = charactersByUserName[userName.toKey()]
+        if (abbrevToCharacter != null) {
+            addTrackedStats(abbrevToCharacter.first, abbrevToCharacter.second)
+        }
+        return abbrevToCharacter
+    }
+
+    fun removeByKey(abbrev: String): CharacterRoller? {
+        val username = charactersByUserName.entries.first { it.value.first == abbrev }.key
+        val c = charactersByKey.remove(abbrev.toKey())
+        if (c != null) {
+            charactersByUserName.remove(username)
+        }
+        return c
+    }
+
+    fun removeByUserName(userName: String): CharacterRoller? {
+        val pair = charactersByUserName.remove(userName.toKey())
+        if (pair != null) {
+            val key = pair.first
+            charactersByKey.remove(key.toKey())
+        }
+        return pair?.second
+    }
 
     fun listByKey() = charactersByKey.toList()
     fun listByUserName() = charactersByUserName.toList()
