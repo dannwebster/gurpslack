@@ -26,4 +26,5 @@ class CharacterSheetService(val characterSheetRepository: CharacterSheetReposito
 
 interface CharacterSheetRepository : CrudRepository<CharacterSheet, Long> {
     fun findOneByCharacterKey(characterKey: String) : CharacterSheet?
+    fun findByCampaign(campaign: String) : CharacterSheet?
 }

@@ -30,7 +30,7 @@ class UploadController(val characterRepository : CharacterRepository,
 
 
     @GetMapping("/character", "/")
-    fun getCharacterPage(@RequestParam key: String?) : ModelAndView {
+    fun getCharacterPage(@RequestParam key: String?, @RequestParam campaign: String?) : ModelAndView {
         val message = if (key != null) {
             var character = characterRepository.getByKey(key)
             if (character != null)
@@ -40,10 +40,12 @@ class UploadController(val characterRepository : CharacterRepository,
         } else  {
             "Upload a gcs character file"
         }
+        val byKey = characterRepository.listByKey()
+        val byUsername = characterRepository.listByUserName()
         return ModelAndView("uploadForm", mapOf(
                 "message" to message,
-                "characterByKeyList" to characterRepository.listByKey(),
-                "characterByUsernameList" to characterRepository.listByUserName()
+                "characterByKeyList" to byKey,
+                "characterByUsernameList" to byUsername
         ))
     }
 

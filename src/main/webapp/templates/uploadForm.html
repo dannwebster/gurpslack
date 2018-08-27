@@ -20,14 +20,14 @@
 	<div>
         <h1>Characters by Key</h1>
         <ul th:each="characterPair : ${characterByKeyList}">
-            <li><a th:href="|/character/${characterPair.first}/stats|" th:text="|${characterPair.first}: ${characterPair.second.characterName}|">Character Name</a></li>
+            <li><span th:text="|${characterPair.first}: |"></span><a th:href="|/character/${characterPair.first}/stats|" th:text="${characterPair.second.characterName}">Character Name</a></li>
 		</ul>
 	</div>
 
 	<div>
         <h1>Characters by User Name</h1>
         <ul th:each="characterPair : ${characterByUsernameList}">
-            <li th:text="|${characterPair.second.first}: ${characterPair.second.second.characterName}|"></li>
+            <li th:text="|${characterPair.first}: ${characterPair.second.second.characterName}|"></li>
 		</ul>
 	</div>
 

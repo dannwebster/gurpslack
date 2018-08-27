@@ -12,7 +12,6 @@
 
 
 <h1 th:text="|Status Tracker: ${character.characterName}|">Status Tracker: Character's Name</h1>
-<h2 th:text="|Played By: ${playerName}|">Played By: Player's Name</h2>
 <table cellspacing="0" cellpadding="5">
      <tbody th:each="trackedValueEntry : ${character.trackedValues}" th:with="statName=${trackedValueEntry.key},trackedValue=${trackedValueEntry.value}" th:class="|${statName}-section|">
         <tr class="title-row" th:id="|${trackedValueEntry.key}-header|">

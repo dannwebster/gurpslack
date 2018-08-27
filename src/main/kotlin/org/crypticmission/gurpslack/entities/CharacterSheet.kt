@@ -11,6 +11,7 @@ data class CharacterSheet(
     var characterKey: String = "",
     var characterXml: String = "",
     var userName: String = "",
+    var campaign: String = "",
     @Id @GeneratedValue(strategy = GenerationType.IDENTITY)
     var id: Long = 0
 )
