@@ -102,23 +102,12 @@ class CharacterLoaderTest {
         assertEquals("R.C. Cleveland", character.name)
         assertEquals("marcfaletti", character.playerName)
 
-        assertEquals("10", character.stS)
-        assertEquals("13", character.dxS)
-        assertEquals("14", character.iqS)
-        assertEquals("11", character.htS)
         assertEquals(10, character.st)
         assertEquals(13, character.dx)
         assertEquals(14, character.iq)
         assertEquals(11, character.ht)
         assertEquals(15, character.will)
         assertEquals(12, character.per)
-
-        assertEquals(46, character.skillData?.size)
-        val skillData = character.skillData?.get(0) ?: throw AssertionError("no skillData")
-        assertEquals("Acting", skillData.name)
-        assertEquals("IQ", skillData.baseAttribute)
-        assertEquals("A", skillData.difficulty)
-        assertEquals(1, skillData.points)
 
         val skills = character.skills
         assertEquals(46, skills.size)

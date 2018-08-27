@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="US-ASCII" ?>
 <character id="b66769e2-0abc-4d92-81c2-03f303c4a9ce" version="3">
 	<created_date>Feb 12, 2017</created_date>
-	<modified_date>Aug 26, 2018 4:57 PM</modified_date>
+	<modified_date>Aug 26, 2018 8:35 PM</modified_date>
 	<profile>
 		<player_name>marcfaletti</player_name>
 		<name>R.C. Cleveland</name>
@@ -2369,75 +2369,78 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 				<modifier>-5</modifier>
 			</default>
 		</skill>
-		<skill version="2">
-			<name>Swimming</name>
-			<encumbrance_penalty_multiplier>2</encumbrance_penalty_multiplier>
-			<difficulty>HT/E</difficulty>
-			<points>1</points>
-			<reference>B224</reference>
-			<categories>
-				<category>Athletic</category>
-				<category>Outdoor/Exploration</category>
-			</categories>
-			<default>
-				<type>HT</type>
-				<modifier>-4</modifier>
-			</default>
-		</skill>
-		<skill version="2">
-			<name>Teaching</name>
-			<difficulty>IQ/A</difficulty>
-			<points>1</points>
-			<reference>B224</reference>
-			<categories>
-				<category>Scholarly</category>
-				<category>Social</category>
-			</categories>
-			<default>
-				<type>IQ</type>
-				<modifier>-5</modifier>
-			</default>
-		</skill>
-		<skill version="2">
-			<name>Theology</name>
-			<specialization>Christianity</specialization>
-			<difficulty>IQ/H</difficulty>
-			<points>1</points>
-			<reference>B226</reference>
-			<categories>
-				<category>Social Sciences/Humanities</category>
-			</categories>
-			<default>
-				<type>IQ</type>
-				<modifier>-6</modifier>
-			</default>
-			<default>
-				<type>Skill</type>
-				<name>Religious Ritual</name>
+		<skill_container version="2" open="yes">
+			<name>Contained Skills</name>
+			<skill version="2">
+				<name>Swimming</name>
+				<encumbrance_penalty_multiplier>2</encumbrance_penalty_multiplier>
+				<difficulty>HT/E</difficulty>
+				<points>1</points>
+				<reference>B224</reference>
+				<categories>
+					<category>Athletic</category>
+					<category>Outdoor/Exploration</category>
+				</categories>
+				<default>
+					<type>HT</type>
+					<modifier>-4</modifier>
+				</default>
+			</skill>
+			<skill version="2">
+				<name>Teaching</name>
+				<difficulty>IQ/A</difficulty>
+				<points>1</points>
+				<reference>B224</reference>
+				<categories>
+					<category>Scholarly</category>
+					<category>Social</category>
+				</categories>
+				<default>
+					<type>IQ</type>
+					<modifier>-5</modifier>
+				</default>
+			</skill>
+			<skill version="2">
+				<name>Theology</name>
 				<specialization>Christianity</specialization>
-				<modifier>-4</modifier>
-			</default>
-		</skill>
-		<skill version="2">
-			<name>Theology</name>
-			<specialization>Satanism</specialization>
-			<difficulty>IQ/H</difficulty>
-			<points>2</points>
-			<reference>B226</reference>
-			<categories>
-				<category>Social Sciences/Humanities</category>
-			</categories>
-			<default>
-				<type>IQ</type>
-				<modifier>-6</modifier>
-			</default>
-			<default>
-				<type>Skill</type>
-				<name>Religious Ritual</name>
+				<difficulty>IQ/H</difficulty>
+				<points>1</points>
+				<reference>B226</reference>
+				<categories>
+					<category>Social Sciences/Humanities</category>
+				</categories>
+				<default>
+					<type>IQ</type>
+					<modifier>-6</modifier>
+				</default>
+				<default>
+					<type>Skill</type>
+					<name>Religious Ritual</name>
+					<specialization>Christianity</specialization>
+					<modifier>-4</modifier>
+				</default>
+			</skill>
+			<skill version="2">
+				<name>Theology</name>
 				<specialization>Satanism</specialization>
-				<modifier>-4</modifier>
-			</default>
-		</skill>
+				<difficulty>IQ/H</difficulty>
+				<points>2</points>
+				<reference>B226</reference>
+				<categories>
+					<category>Social Sciences/Humanities</category>
+				</categories>
+				<default>
+					<type>IQ</type>
+					<modifier>-6</modifier>
+				</default>
+				<default>
+					<type>Skill</type>
+					<name>Religious Ritual</name>
+					<specialization>Satanism</specialization>
+					<modifier>-4</modifier>
+				</default>
+			</skill>
+		</skill_container>
 		<skill version="2">
 			<name>Tracking</name>
 			<difficulty>Per/A</difficulty>

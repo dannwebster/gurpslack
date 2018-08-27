@@ -96,24 +96,30 @@ class EquipmentContainer {
     val equipment by JXML / XElements("equipment") / XSub(Equipment::class.java)
     val equipmentContainers by JXML / XElements("equipment_container") / XSub(EquipmentContainer::class.java)
 }
+class SkillContainer {
+    val name by JXML / "name" / XText
+    val skill by JXML / XElements("skill") / XSub(SkillData::class.java)
+    val skillContainers by JXML / XElements("skill_container") / XSub(SkillContainer::class.java)
+}
 
 class CharacterData {
     val name by JXML / "profile" / "name" / XText
     val playerName by JXML / "profile" / "player_name" / XText
-    val skillData by JXML / "skill_list" / XElements("skill") / XSub(SkillData::class.java)
-    val uncontainedEquipment by JXML / "equipment_list" / XElements("equipment") / XSub(Equipment::class.java)
-    val equipmentContainers by JXML / "equipment_list" / XElements("equipment_container") / XSub(EquipmentContainer::class.java)
+    private val uncontainedSkills by JXML / "skill_list" / XElements("skill") / XSub(SkillData::class.java)
+    private val skillContainers by JXML / "skill_list" / XElements("skill_container") / XSub(SkillContainer::class.java)
+    private val uncontainedEquipment by JXML / "equipment_list" / XElements("equipment") / XSub(Equipment::class.java)
+    private val equipmentContainers by JXML / "equipment_list" / XElements("equipment_container") / XSub(EquipmentContainer::class.java)
 
-    val stS by JXML / "ST" / XText
-    val dxS by JXML / "DX" / XText
-    val iqS by JXML / "IQ" / XText
-    val htS by JXML / "HT" / XText
-    val hpS by JXML / "HP" / XText
-    val fpS by JXML / "FP" / XText
-    val willS by JXML / "will" / XText
-    val perS by JXML / "perception" / XText
-    val currentHpS by JXML / "current_hp" / XText
-    val currentFpS by JXML / "current_fp" / XText
+    private val stS by JXML / "ST" / XText
+    private val dxS by JXML / "DX" / XText
+    private val iqS by JXML / "IQ" / XText
+    private val htS by JXML / "HT" / XText
+    private val hpS by JXML / "HP" / XText
+    private val fpS by JXML / "FP" / XText
+    private val willS by JXML / "will" / XText
+    private val perS by JXML / "perception" / XText
+    private val currentHpS by JXML / "current_hp" / XText
+    private val currentFpS by JXML / "current_fp" / XText
 
     val st: Int by lazy { stS?.toInt() ?: throw IllegalStateException("no value for ST") }
     val dx: Int by lazy { dxS?.toInt() ?: throw IllegalStateException("no value for DX") }
@@ -144,6 +150,17 @@ class CharacterData {
 
     }
 
+    private fun extractContainedSkills(skillContainers: List<SkillContainer>?,
+                                          skillList: MutableList<SkillData>) : List<SkillData> {
+        if (skillContainers == null) return skillList
+        skillContainers.forEach { skillContainer ->
+            skillContainer.skill?.forEach { skill -> skillList.add(skill) }
+            extractContainedSkills(skillContainer.skillContainers, skillList)
+        }
+        return skillList
+
+    }
+
     val attributes: Map<String, Attribute> by lazy {
         listOf(
                 Attribute("ST", st),
@@ -156,7 +173,8 @@ class CharacterData {
     }
 
     val skills : Map<String, Attribute> by lazy {
-        skillData
+        ((uncontainedSkills ?: listOf<SkillData>()) +
+                extractContainedSkills(skillContainers, mutableListOf()))
                 ?.sortedBy { skill -> skill.fullName }
                 ?.map { it.toAttribute(this) }
                 ?.map { Pair(it.name, it) }
