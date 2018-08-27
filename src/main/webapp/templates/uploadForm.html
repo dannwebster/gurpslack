@@ -20,7 +20,7 @@
 	<div>
         <h1>Characters by Key</h1>
         <ul th:each="characterPair : ${characterByKeyList}">
-            <li><a th:href="@{/character/${characterPair.first}/stats}" th:text="|${characterPair.first}: ${characterPair.second.characterName}|">Character Name</a></li>
+            <li><a th:href="|/character/${characterPair.first}/stats|" th:text="|${characterPair.first}: ${characterPair.second.characterName}|">Character Name</a></li>
 		</ul>
 	</div>
 
