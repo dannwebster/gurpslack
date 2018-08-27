@@ -19,7 +19,7 @@ data class TrackedValue private constructor(private val _key: String,
 
 
     val key = _key.toKey()
-    val minValue = effects.last().range.last + 1
+    val minValue = effects.last().range.last
 
     companion object {
         private val logger = LoggerFactory.getLogger(CharacterStatusController::class.java)

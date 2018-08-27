@@ -33,9 +33,9 @@ class TrackedValueTest {
 
     @Test
     fun shouldCalculateCorrectMinValuesWhenCreatingStats() {
-        assertEquals(-99, TrackedValue.hp(10, 10).minValue)
-        assertEquals(-9, TrackedValue.fp(10, 10).minValue)
-        assertEquals(-9, TrackedValue.wp(10, 10).minValue)
+        assertEquals(-100, TrackedValue.hp(10, 10).minValue)
+        assertEquals(-10, TrackedValue.fp(10, 10).minValue)
+        assertEquals(-10, TrackedValue.wp(10, 10).minValue)
         assertEquals(0, TrackedValue.ammo("pistol", 10, 10).minValue)
 
     }

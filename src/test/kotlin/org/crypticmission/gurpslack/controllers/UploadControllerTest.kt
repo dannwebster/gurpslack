@@ -46,6 +46,7 @@ class UploadControllerTest {
         val request = multipart("/character")
                 .file(MockMultipartFile("file", file))
                 .param("key", "character-key")
+                .param("username", "my-username")
 
         // when
         val result = mockMvc.perform(request)
