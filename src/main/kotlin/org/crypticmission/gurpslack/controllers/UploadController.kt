@@ -29,7 +29,7 @@ class UploadController(val characterRepository : CharacterRepository,
     var logger = LoggerFactory.getLogger(UploadController::class.java)
 
 
-    @GetMapping("/character")
+    @GetMapping("/character", "/")
     fun getCharacterPage(@RequestParam key: String?) : ModelAndView {
         val message = if (key != null) {
             var character = characterRepository.getByKey(key)

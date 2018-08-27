@@ -3,6 +3,7 @@ package org.crypticmission.gurpslack.repositories
 import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.message.toKey
 import org.crypticmission.gurpslack.message.trackedStatsAttachments
+import org.crypticmission.gurpslack.model.TrackedValue
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Repository
 
@@ -10,7 +11,7 @@ import org.springframework.stereotype.Repository
  */
 
 @Repository
-class CharacterRepository(val trackedStatService: TrackedStatService) {
+class CharacterRepository(val trackedStatService: TrackedStatService, val trackedAmountRespository: TrackedAmountRespository) {
     private val logger = LoggerFactory.getLogger(CharacterRepository::class.java)
 
     val randomizer = Randomizer.system()
@@ -22,9 +23,9 @@ class CharacterRepository(val trackedStatService: TrackedStatService) {
         val key = abbrev.toKey()
         return when (charactersByKey.get(key.toKey())) {
             null -> {
-                charactersByKey[key] = CharacterRoller(randomizer, characterName)
+                charactersByKey[key] = CharacterRoller(randomizer, characterName, userName?: "GM")
                 if (userName != null && !userName.isNullOrBlank()) {
-                    charactersByUserName[userName.toKey()] = Pair(key, CharacterRoller(randomizer, characterName))
+                    charactersByUserName[userName.toKey()] = Pair(key, CharacterRoller(randomizer, characterName, userName))
                 }
                 return true
             }
@@ -56,6 +57,7 @@ class CharacterRepository(val trackedStatService: TrackedStatService) {
                 stat.currentValue = currentValue
             }
         }
+        char.addTrackedAmount(trackedAmountRespository.findByCharacterKey(abbrev))
     }
 
     fun getByUserName(userName: String) : Pair<String, CharacterRoller>? {

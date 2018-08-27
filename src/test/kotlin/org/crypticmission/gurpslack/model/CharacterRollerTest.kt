@@ -9,7 +9,7 @@ import org.junit.Test
 class CharacterRollerTest {
     @Test fun shouldCreatProperMessageWhenMessageCalled() {
         // given
-        val subject = CharacterRoller(Randomizer.MAX, "Foo Bar")
+        val subject = CharacterRoller(Randomizer.MAX, "Foo Bar", "Player Name")
 
         subject.addAttribute(Attribute("ST", 10))
         subject.addAttribute(Attribute("DX", 14))
@@ -53,7 +53,7 @@ _*Ranged Attacks*_:
 
     @Test fun shouldReturnNullWhenRollingMissingAttribute() {
         // given
-        val subject = CharacterRoller(Randomizer.MAX, "character-name")
+        val subject = CharacterRoller(Randomizer.MAX, "character-name", "Player Name")
 
         // when
         val outcome = subject.rollVsAttribute("FOO", -3)
@@ -65,7 +65,7 @@ _*Ranged Attacks*_:
 
     @Test fun shouldRollVsAttributeWhenAttributeIsAvailable() {
         // given
-        val subject = CharacterRoller(Randomizer.MAX, "character-name")
+        val subject = CharacterRoller(Randomizer.MAX, "character-name", "player-name")
         subject.addAttribute(Attribute("BAR", 15))
 
         // when
@@ -80,7 +80,7 @@ _*Ranged Attacks*_:
 
     @Test fun shouldReturnNullWhenRollingMissingDamage() {
         // given
-        val subject = CharacterRoller(Randomizer.MAX, "character-name")
+        val subject = CharacterRoller(Randomizer.MAX, "character-name", "Player Name")
 
         // when
         val attackOutcome = subject.rollMeleeAttackDamage("attack-name", 0)
@@ -93,7 +93,7 @@ _*Ranged Attacks*_:
     @Test
     fun shouldModifyTrackedStatWhenStatExists() {
         // given
-        val subject = CharacterRoller(Randomizer.MAX, "Foo Bar", trackedValueList = listOf(TrackedValue.fp(13, 13)))
+        val subject = CharacterRoller(Randomizer.MAX, "Foo Bar", "player-name", trackedValueList = listOf(TrackedValue.fp(13, 13)))
         assertNotNull(subject.getTrackedStat("fp"))
 
         // when

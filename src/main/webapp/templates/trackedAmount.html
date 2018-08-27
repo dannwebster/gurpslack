@@ -1,0 +1,42 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link>
+<title th:text="|Status Tracker for ${character.characterName}|">Status Tracker for Character</title>
+<link rel="stylesheet" type="text/css" href="/css/status.css"></link>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<script src="/js/tracked-stat.js"></script>
+</head>
+<body>
+
+<h1 th:text="|Add Tracked Amount: ${character.characterName}|">Status Tracker: Character's Name</h1>
+<h2 th:text="|Played By: ${character.playerName}|">Played By: Player's Name</h2>
+<div>
+    <label>Abbreviation</label>
+    <span id="abbreviation" th:text="${trackedAmount.abbreviation}">Abbreviation</span>
+
+    <label>Name</label>
+    <span id="name" th:text="${trackedAmount.name}">Name</span>
+
+    <label>Notes</label>
+    <span id="notes" th:text="${trackedAmount.notes}">Notes</span>
+
+    <label>Type</label>
+    <span id="type" th:text="${trackedAmount.type}">Type</span>
+
+    <label>Sort Order</label>
+    <span id="sortOrder" th:text="${trackedAmount.sortOrder}">Sort Order</span>
+
+    <label>Max Value</label>
+    <span id="maxValue" th:text="${trackedAmount.maxValue}">Max Value</span>
+
+    <label>Current Value</label>
+    <span id="currentValue" th:text="${trackedAmount.currentValue}">Current Value</span>
+</div>
+<div id="timestamp-div">
+    <span>Last Updated:</span>
+    <span id="timestamp" th:text="${lastUpdated}">Last Updated Date</span>
+</div>
+</body>
+</html>

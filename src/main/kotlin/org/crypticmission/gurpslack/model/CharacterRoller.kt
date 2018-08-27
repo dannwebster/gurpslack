@@ -1,5 +1,6 @@
 package org.crypticmission.gurpslack.model
 
+import org.crypticmission.gurpslack.entities.TrackedAmount
 import org.crypticmission.gurpslack.message.message
 import org.crypticmission.gurpslack.message.toKey
 import org.crypticmission.gurpslack.repositories.Randomizer
@@ -15,11 +16,14 @@ data class CharacterAttackRollOutcome(val characterName: String, val attackRollO
 
 class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
                       val characterName: String,
+                      val playerName: String,
                       attributes: Map<String, Attribute> = emptyMap(),
                       skills: Map<String, Attribute> = emptyMap(),
                       meleeAttacks: Map<String, Attack> = emptyMap(),
                       rangedAttacks: Map<String, Attack> = emptyMap(),
-                      trackedValueList: List<TrackedValue> = emptyList()) {
+                      trackedValueList: List<TrackedValue> = emptyList(),
+                      trackedAmountList: List<TrackedAmount> = emptyList()
+                      ) {
 
     private val logger = LoggerFactory.getLogger(CharacterRoller::class.java)
 
@@ -28,6 +32,7 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     val meleeAttacks = HashMap<String, Attack>(meleeAttacks.mapKeys { (k, _) -> k.toKey() })
     val rangedAttacks = HashMap<String, Attack>(rangedAttacks.mapKeys { (k, _) -> k.toKey() })
     val trackedValues = trackedValueList.map { Pair(it.key.toKey(), it) }.toMap().toMutableMap()
+    val trackedAmounts = trackedAmountList.map { Pair(it.abbreviation.toKey(), it) }.toMap().toMutableMap()
 
     fun modifyTrackedStat(key: String, change: Int) : TrackedValue? {
         val stat = trackedValues[key]
@@ -84,6 +89,7 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
     fun addAttribute(newAttribute: Attribute) = addAttributes(listOf(newAttribute))
     fun addSkill(newSkill: Attribute) = addSkill(listOf(newSkill))
     fun addTrackedValue(newTrackedValue: TrackedValue) = addTrackedValue(listOf(newTrackedValue))
+    fun addTrackedAmount(newTrackedAmount: TrackedAmount) = addTrackedAmount(listOf(newTrackedAmount))
 
     fun String.isPrimary() = (this == "ht" || this == "st" || this == "iq" || this == "dx")
 
@@ -104,6 +110,9 @@ class CharacterRoller(val randomizer: Randomizer = Randomizer.system(),
 
     fun addTrackedValue(newTrackedValues: Iterable<TrackedValue>) =
             newTrackedValues.forEach { trackedValue -> trackedValues[trackedValue.key.toKey()] = trackedValue }
+
+    fun addTrackedAmount(newTrackedAmount: Iterable<TrackedAmount>) =
+            newTrackedAmount.forEach { trackedAmount -> trackedAmounts[trackedAmount.abbreviation.toKey()] = trackedAmount }
 }
 
 

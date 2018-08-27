@@ -1,0 +1,60 @@
+<html xmlns:th="http://www.thymeleaf.org">
+<link>
+<title th:text="|Status Tracker for ${character.characterName}|">Status Tracker for Character</title>
+<link rel="stylesheet" type="text/css" href="/css/status.css"></link>
+<script
+  src="https://code.jquery.com/jquery-3.2.1.min.js"
+  integrity="sha256-hwg4gsxgFZhOsEEamdOYGBf13FyQuiTwlAQgxVSNgt4="
+  crossorigin="anonymous"></script>
+<script src="/js/tracked-stat.js"></script>
+</head>
+<body>
+
+<h1 th:text="|Add Tracked Amount: ${character.characterName}|">Status Tracker: Character's Name</h1>
+<h2 th:text="|Played By: ${character.playerName}|">Played By: Player's Name</h2>
+<form th:action="|/character/${characterKey}/amounts|" method="POST">
+<div>
+    <label>Abbreviation</label>
+    <input type="text" name="abbreviation" th:value="${trackedAmount.abbreviation}" />
+</div>
+
+<div>
+    <label>Name</label>
+    <input type="text" name="name" th:value="${trackedAmount.name}" />
+</div>
+
+<div>
+    <label>Notes</label>
+    <input type="text" name="notes" th:value="${trackedAmount.notes}" />
+</div>
+
+<div>
+    <label>Type</label>
+    <input type="text" name="type" th:value="${trackedAmount.type}" />
+</div>
+
+<div>
+    <label>Sort Order</label>
+    <input type="text" name="sortOrder" th:value="${trackedAmount.sortOrder}" />
+</div>
+
+<div>
+    <label>Max Value</label>
+    <input type="text" name="maxValue" th:value="${trackedAmount.maxValue}" />
+</div>
+
+<div>
+    <label>Current Value</label>
+    <input type="text" name="currentValue" th:value="${trackedAmount.currentValue}" />
+</div>
+
+<div>
+    <input type="submit" />
+</div>
+</form>
+<div id="timestamp-div">
+    <span>Last Updated:</span>
+    <span id="timestamp" th:text="${lastUpdated}">Last Updated Date</span>
+</div>
+</body>
+</html>

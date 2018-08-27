@@ -3,14 +3,19 @@ package org.crypticmission.gurpslack.repositories
 import org.crypticmission.gurpslack.model.CharacterRoller
 import org.junit.Test
 import org.junit.Assert.*
+import org.mockito.Mock
+import org.mockito.Mockito
 
 /**
  */
 class CharacterRollerRepositoryTest {
 
+    val trackedStatService = Mockito.mock(TrackedStatService::class.java)
+    val trackedAmountRespository = Mockito.mock(TrackedAmountRespository::class.java)
+
     @Test fun shouldCreateCharacterWhenOneDoesNotExist() {
         // given
-        val subject = CharacterRepository()
+        val subject = CharacterRepository(trackedStatService, trackedAmountRespository)
 
         // when
         val wasAdded = subject.add("foo", null,"Foo Bar")
@@ -23,7 +28,7 @@ class CharacterRollerRepositoryTest {
 
     @Test fun shouldNotCreateCharacterWhenOneDoesExist() {
         // given
-        val subject = CharacterRepository()
+        val subject = CharacterRepository(trackedStatService, trackedAmountRespository)
         val wasAdded = subject.add("foo", null,"Foo Bar")
         assertEquals(true, wasAdded)
 
@@ -39,7 +44,7 @@ class CharacterRollerRepositoryTest {
     @Test
     fun shouldBeAccessibleByUserNameWhenAddedWithUsername() {
         // given
-        val subject = CharacterRepository()
+        val subject = CharacterRepository(trackedStatService, trackedAmountRespository)
         val wasAdded = subject.add("foo", "UserName","Foo Bar")
         assertEquals(true, wasAdded)
 
@@ -56,8 +61,8 @@ class CharacterRollerRepositoryTest {
     @Test
     fun shouldBeAccessibleByUserNameWhenPutWithUsername() {
         // given
-        val subject = CharacterRepository()
-        val roller = CharacterRoller(Randomizer.MAX, "characterName",
+        val subject = CharacterRepository(trackedStatService, trackedAmountRespository)
+        val roller = CharacterRoller(Randomizer.MAX, "characterName", "playerName",
                 emptyMap(),
                 emptyMap())
         subject.put("foo", "username", roller)

@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="US-ASCII" ?>
 <character id="b66769e2-0abc-4d92-81c2-03f303c4a9ce" version="3">
 	<created_date>Feb 12, 2017</created_date>
-	<modified_date>Aug 19, 2017 1:50 PM</modified_date>
+	<modified_date>Aug 26, 2018 4:57 PM</modified_date>
 	<profile>
 		<player_name>marcfaletti</player_name>
 		<name>R.C. Cleveland</name>
@@ -594,8 +594,10 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 		</portrait>
 	</profile>
 	<HP>1</HP>
+	<current_hp>7</current_hp>
 	<FP>1</FP>
-	<total_points>358</total_points>
+	<current_fp>12</current_fp>
+	<total_points>370</total_points>
 	<ST>10</ST>
 	<DX>13</DX>
 	<IQ>14</IQ>
@@ -611,87 +613,148 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 		<advantage_container version="2" open="yes">
 			<name>Archetypes</name>
 			<advantage version="2">
-				<name>Demeanor: Bon Vivant - Life is for pleasure.</name>
-				<type>Mental</type>
-				<notes>Regain a point of Willpower whenever you truly enjoy yourself and can fully express your exultation. At the Storyteller&#8217;s option, a particularly fabulous revel may yield multiple Willpower points.</notes>
-				<categories>
-					<category>Demeanor</category>
-				</categories>
+				<name>Demeanor</name>
+				<type>Physical</type>
+				<notes>BonVivant</notes>
 			</advantage>
 			<advantage version="2">
-				<name>Nature: Caregiver - Everyone needs nurturing.</name>
-				<type>Mental</type>
-				<notes>Regain a point of Willpower whenever you successfully protect or nurture someone else.</notes>
-				<categories>
-					<category>Nature</category>
-				</categories>
+				<name>Nature</name>
+				<type>Physical</type>
+				<notes>Caregiver</notes>
 			</advantage>
 		</advantage_container>
 		<advantage_container version="2" open="yes">
-			<name>Ethereal Sphere Magic</name>
-			<modifier version="1">
-				<name>Power Modifier</name>
-				<cost type="percentage">-10</cost>
-				<affects>total</affects>
-			</modifier>
+			<name>Advantages</name>
 			<advantage version="2">
-				<name>Medium</name>
-				<type>Mental, Supernatural</type>
-				<base_points>10</base_points>
-				<modifier version="1" enabled="no">
-					<name>Manifestation</name>
-					<cost type="percentage">100</cost>
-					<affects>total</affects>
-					<reference>P60</reference>
-				</modifier>
+				<name>Appearance</name>
+				<type>Physical</type>
 				<modifier version="1" enabled="no">
 					<name>Universal</name>
-					<cost type="percentage">50</cost>
+					<cost type="percentage">25</cost>
 					<affects>total</affects>
-					<reference>P60</reference>
 				</modifier>
 				<modifier version="1" enabled="no">
-					<name>Visual</name>
-					<cost type="percentage">50</cost>
-					<affects>total</affects>
-					<reference>P60</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Specialized</name>
+					<name>Off-the-Shelf Looks</name>
 					<cost type="percentage">-50</cost>
 					<affects>total</affects>
-					<reference>P60</reference>
-					<notes>@Class of Spirits@</notes>
 				</modifier>
-				<reference>B68</reference>
+				<modifier version="1">
+					<name>Androgynous</name>
+					<cost type="points">0</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Impressive</name>
+					<cost type="points">0</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Attractive</name>
+					<cost type="points">4</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Average</name>
+					<cost type="points">0</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Horrific</name>
+					<cost type="points">-24</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Monstrous</name>
+					<cost type="points">-20</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Hideous</name>
+					<cost type="points">-16</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Ugly</name>
+					<cost type="points">-8</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Unattractive</name>
+					<cost type="points">-4</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1">
+					<name>Handsome</name>
+					<cost type="points">12</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Beautiful</name>
+					<cost type="points">12</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Very Handsome</name>
+					<cost type="points">16</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Very Beautiful</name>
+					<cost type="points">16</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Transcendent</name>
+					<cost type="points">20</cost>
+					<affects>total</affects>
+				</modifier>
+				<reference>B21</reference>
 				<categories>
 					<category>Advantage</category>
 				</categories>
 			</advantage>
 			<advantage version="2">
-				<name>Spirit Empathy</name>
-				<type>Mental, Supernatural</type>
-				<base_points>10</base_points>
-				<modifier version="1" enabled="no">
-					<name>Specialized</name>
-					<cost type="percentage">-50</cost>
-					<affects>total</affects>
-					<reference>B87</reference>
-					<notes>@Type: Angels, Demons, Elementals, Faerie, Ghosts, etc.@</notes>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Remote</name>
-					<cost type="percentage">50</cost>
-					<affects>total</affects>
-					<reference>P48</reference>
-				</modifier>
-				<reference>B88</reference>
+				<name>Charisma</name>
+				<type>Mental</type>
+				<levels>2</levels>
+				<points_per_level>5</points_per_level>
+				<reference>B41</reference>
+				<notes>+1/level to Influence rolls</notes>
+				<categories>
+					<category>Advantage</category>
+				</categories>
+				<skill_bonus>
+					<name compare="is">fortune-telling</name>
+					<specialization compare="is anything"></specialization>
+					<amount per_level="yes">1</amount>
+				</skill_bonus>
+				<skill_bonus>
+					<name compare="is">leadership</name>
+					<specialization compare="is anything"></specialization>
+					<amount per_level="yes">1</amount>
+				</skill_bonus>
+				<skill_bonus>
+					<name compare="is">panhandling</name>
+					<specialization compare="is anything"></specialization>
+					<amount per_level="yes">1</amount>
+				</skill_bonus>
+				<skill_bonus>
+					<name compare="is">public speaking</name>
+					<specialization compare="is anything"></specialization>
+					<amount per_level="yes">1</amount>
+				</skill_bonus>
+			</advantage>
+			<advantage version="2">
+				<name>Clerical Investment</name>
+				<type>Social</type>
+				<base_points>5</base_points>
+				<reference>B43</reference>
 				<categories>
 					<category>Advantage</category>
 				</categories>
 			</advantage>
 			<advantage version="2">
-				<name>Aura Reading</name>
+				<name>Empathy</name>
 				<type>Mental</type>
 				<base_points>15</base_points>
 				<modifier version="1" enabled="no">
@@ -700,20 +763,7 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 					<affects>total</affects>
 					<reference>P48</reference>
 				</modifier>
-				<modifier version="1">
-					<name>Requires Will Roll</name>
-					<cost type="percentage">-5</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1">
-					<name>Requires Energy</name>
-					<cost type="percentage">-5</cost>
-					<levels>2</levels>
-					<affects>total</affects>
-					<notes>2 Will Points</notes>
-				</modifier>
 				<reference>B51</reference>
-				<notes>See Aura Spell</notes>
 				<categories>
 					<category>Advantage</category>
 				</categories>
@@ -733,6 +783,197 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 					<amount>3</amount>
 				</skill_bonus>
 			</advantage>
+			<advantage version="2">
+				<name>Perk: Relaxation Drill - Make Friends with a Stranger</name>
+				<type>Physical</type>
+				<base_points>1</base_points>
+				<notes>Try for 30 minutes: Regain 3 Will</notes>
+			</advantage>
+			<advantage version="2">
+				<name>Sphere Harmony: Chthonic</name>
+				<type>Physical</type>
+				<base_points>10</base_points>
+			</advantage>
+			<advantage version="2">
+				<name>Sphere Harmony: Ethereal</name>
+				<type>Physical</type>
+				<base_points>10</base_points>
+			</advantage>
+			<advantage version="2">
+				<name>Unusual Background</name>
+				<type>Mental</type>
+				<base_points>40</base_points>
+				<reference>B96</reference>
+				<notes>Inside the world of the Harmony of the Spheres</notes>
+				<categories>
+					<category>Advantage</category>
+				</categories>
+			</advantage>
+		</advantage_container>
+		<advantage_container version="2" open="yes">
+			<name>Disadvantages</name>
+			<advantage version="2">
+				<name>Absent-Mindedness</name>
+				<type>Mental</type>
+				<base_points>-15</base_points>
+				<reference>B122</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Chummy</name>
+				<type>Mental</type>
+				<base_points>-5</base_points>
+				<reference>B126</reference>
+				<notes>React to others at +2; -1 to IQ-based skills when alone</notes>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Compulsive Carousing</name>
+				<type>Mental</type>
+				<base_points>-5</base_points>
+				<cr>12</cr>
+				<reference>B128</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Curious</name>
+				<type>Mental</type>
+				<base_points>-5</base_points>
+				<cr>12</cr>
+				<reference>B129</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Pacifism: Cannot Harm Innocents</name>
+				<type>Mental</type>
+				<base_points>-10</base_points>
+				<modifier version="1" enabled="no">
+					<name>Species-Specific</name>
+					<cost type="percentage">-80</cost>
+					<affects>total</affects>
+					<reference>UT32</reference>
+				</modifier>
+				<reference>B148</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Secret (Access to Unusual Powers)</name>
+				<type>Social</type>
+				<modifier version="1" enabled="no">
+					<name>Serious Embarrassment</name>
+					<cost type="points">-5</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<modifier version="1">
+					<name>Utter Rejection</name>
+					<cost type="points">-10</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Imprisonment</name>
+					<cost type="points">-20</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Possible Death</name>
+					<cost type="points">-30</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<reference>B152</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Secret (Follower of Lucifer)</name>
+				<type>Social</type>
+				<modifier version="1" enabled="no">
+					<name>Serious Embarrassment</name>
+					<cost type="points">-5</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Utter Rejection</name>
+					<cost type="points">-10</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<modifier version="1">
+					<name>Imprisonment</name>
+					<cost type="points">-20</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Possible Death</name>
+					<cost type="points">-30</cost>
+					<affects>total</affects>
+					<reference>B152</reference>
+				</modifier>
+				<reference>B152</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Sense of Duty</name>
+				<type>Mental</type>
+				<modifier version="1" enabled="no">
+					<name>Friends and Companions</name>
+					<cost type="points">-5</cost>
+					<affects>total</affects>
+					<reference>B153</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>@Small Group@</name>
+					<cost type="points">-5</cost>
+					<affects>total</affects>
+					<reference>B153</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>@Individual@</name>
+					<cost type="points">-2</cost>
+					<affects>total</affects>
+					<reference>B153</reference>
+				</modifier>
+				<modifier version="1">
+					<name>Good Folks</name>
+					<cost type="points">-10</cost>
+					<affects>total</affects>
+					<reference>B153</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>@Entire Race@</name>
+					<cost type="points">-15</cost>
+					<affects>total</affects>
+					<reference>B153</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Every Living Being</name>
+					<cost type="points">-20</cost>
+					<affects>total</affects>
+					<reference>B153</reference>
+				</modifier>
+				<reference>B153</reference>
+				<categories>
+					<category>Disadvantage</category>
+				</categories>
+			</advantage>
 		</advantage_container>
 		<advantage_container version="2" open="yes">
 			<name>Chthonic Sphere Magic</name>
@@ -741,47 +982,6 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 				<cost type="percentage">-10</cost>
 				<affects>total</affects>
 			</modifier>
-			<advantage version="2">
-				<name>Wild Talent</name>
-				<type>Mental, Supernatural</type>
-				<levels>1</levels>
-				<points_per_level>20</points_per_level>
-				<modifier version="1" enabled="no">
-					<name>Retention</name>
-					<cost type="percentage">25</cost>
-					<affects>total</affects>
-					<reference>B99</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Emergencies Only</name>
-					<cost type="percentage">-30</cost>
-					<affects>total</affects>
-					<reference>B100</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Focused</name>
-					<cost type="percentage">-20</cost>
-					<affects>total</affects>
-					<reference>B99</reference>
-					<notes>@Type: Mental, Physical, Magical or Chi@</notes>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Wild Ability</name>
-					<cost type="percentage">50</cost>
-					<affects>total</affects>
-					<reference>P90</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>External</name>
-					<cost type="percentage">-20</cost>
-					<affects>total</affects>
-					<reference>P90</reference>
-				</modifier>
-				<reference>B99</reference>
-				<categories>
-					<category>Advantage</category>
-				</categories>
-			</advantage>
 			<advantage version="2">
 				<name>Detect Sphere Emanations</name>
 				<type>Mental/Physical, Exotic</type>
@@ -966,7 +1166,7 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 					<affects>total</affects>
 					<reference>P51</reference>
 				</modifier>
-				<modifier version="1">
+				<modifier version="1" enabled="no">
 					<name>Costs 2FP per use</name>
 					<cost type="percentage">-10</cost>
 					<affects>total</affects>
@@ -976,31 +1176,113 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 					<category>Advantage</category>
 				</categories>
 			</advantage>
-		</advantage_container>
-		<advantage_container version="2" open="yes">
-			<name>Advantages</name>
 			<advantage version="2">
-				<name>Unusual Background</name>
-				<type>Mental</type>
-				<base_points>40</base_points>
-				<reference>B96</reference>
-				<notes>Inside the world of the Harmony of the Spheres</notes>
+				<name>Energy Reserve (Will)</name>
+				<type>Physical, Exotic</type>
+				<levels>2</levels>
+				<points_per_level>3</points_per_level>
+				<modifier version="1" enabled="no">
+					<name>Abilities Only</name>
+					<cost type="percentage">-10</cost>
+					<affects>total</affects>
+					<reference>P119</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>One Power</name>
+					<cost type="percentage">-50</cost>
+					<affects>total</affects>
+					<reference>P117</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Slow Recharge</name>
+					<cost type="percentage">-20</cost>
+					<affects>total</affects>
+					<reference>P117</reference>
+					<notes>1/hour</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Slow Recharge</name>
+					<cost type="percentage">-60</cost>
+					<affects>total</affects>
+					<reference>P117</reference>
+					<notes>1/day</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Special Recharge</name>
+					<cost type="percentage">-70</cost>
+					<affects>total</affects>
+					<reference>P117</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Special Recharge</name>
+					<cost type="percentage">-80</cost>
+					<affects>total</affects>
+					<reference>P117</reference>
+					<notes>1/s bleed</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Stunts Only</name>
+					<cost type="percentage">-10</cost>
+					<affects>total</affects>
+					<reference>P117</reference>
+				</modifier>
+				<reference>P119</reference>
+				<categories>
+					<category>Advantage</category>
+					<category>Attribute</category>
+				</categories>
+			</advantage>
+			<advantage version="2">
+				<name>Wild Talent</name>
+				<type>Mental, Supernatural</type>
+				<levels>1</levels>
+				<points_per_level>20</points_per_level>
+				<modifier version="1" enabled="no">
+					<name>Retention</name>
+					<cost type="percentage">25</cost>
+					<affects>total</affects>
+					<reference>B99</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Emergencies Only</name>
+					<cost type="percentage">-30</cost>
+					<affects>total</affects>
+					<reference>B100</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Focused</name>
+					<cost type="percentage">-20</cost>
+					<affects>total</affects>
+					<reference>B99</reference>
+					<notes>@Type: Mental, Physical, Magical or Chi@</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Wild Ability</name>
+					<cost type="percentage">50</cost>
+					<affects>total</affects>
+					<reference>P90</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>External</name>
+					<cost type="percentage">-20</cost>
+					<affects>total</affects>
+					<reference>P90</reference>
+				</modifier>
+				<reference>B99</reference>
 				<categories>
 					<category>Advantage</category>
 				</categories>
 			</advantage>
+		</advantage_container>
+		<advantage_container version="2" open="yes">
+			<name>Ethereal Sphere Magic</name>
+			<modifier version="1">
+				<name>Power Modifier</name>
+				<cost type="percentage">-10</cost>
+				<affects>total</affects>
+			</modifier>
 			<advantage version="2">
-				<name>Sphere Harmony: Chthonic</name>
-				<type>Physical</type>
-				<base_points>10</base_points>
-			</advantage>
-			<advantage version="2">
-				<name>Sphere Harmony: Ethereal</name>
-				<type>Physical</type>
-				<base_points>10</base_points>
-			</advantage>
-			<advantage version="2">
-				<name>Empathy</name>
+				<name>Aura Reading</name>
 				<type>Mental</type>
 				<base_points>15</base_points>
 				<modifier version="1" enabled="no">
@@ -1009,7 +1291,20 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 					<affects>total</affects>
 					<reference>P48</reference>
 				</modifier>
+				<modifier version="1">
+					<name>Requires Will Roll</name>
+					<cost type="percentage">-5</cost>
+					<affects>total</affects>
+				</modifier>
+				<modifier version="1">
+					<name>Requires Energy</name>
+					<cost type="percentage">-5</cost>
+					<levels>2</levels>
+					<affects>total</affects>
+					<notes>2 Will Points</notes>
+				</modifier>
 				<reference>B51</reference>
+				<notes>See Aura Spell</notes>
 				<categories>
 					<category>Advantage</category>
 				</categories>
@@ -1030,401 +1325,109 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 				</skill_bonus>
 			</advantage>
 			<advantage version="2">
-				<name>Charisma</name>
-				<type>Mental</type>
-				<levels>2</levels>
-				<points_per_level>5</points_per_level>
-				<reference>B41</reference>
-				<notes>+1/level to Influence rolls</notes>
-				<categories>
-					<category>Advantage</category>
-				</categories>
-				<skill_bonus>
-					<name compare="is">fortune-telling</name>
-					<specialization compare="is anything"></specialization>
-					<amount per_level="yes">1</amount>
-				</skill_bonus>
-				<skill_bonus>
-					<name compare="is">leadership</name>
-					<specialization compare="is anything"></specialization>
-					<amount per_level="yes">1</amount>
-				</skill_bonus>
-				<skill_bonus>
-					<name compare="is">panhandling</name>
-					<specialization compare="is anything"></specialization>
-					<amount per_level="yes">1</amount>
-				</skill_bonus>
-				<skill_bonus>
-					<name compare="is">public speaking</name>
-					<specialization compare="is anything"></specialization>
-					<amount per_level="yes">1</amount>
-				</skill_bonus>
-			</advantage>
-			<advantage version="2">
-				<name>Appearance</name>
-				<type>Physical</type>
+				<name>Medium</name>
+				<type>Mental, Supernatural</type>
+				<base_points>10</base_points>
+				<modifier version="1" enabled="no">
+					<name>Manifestation</name>
+					<cost type="percentage">100</cost>
+					<affects>total</affects>
+					<reference>P60</reference>
+				</modifier>
 				<modifier version="1" enabled="no">
 					<name>Universal</name>
-					<cost type="percentage">25</cost>
+					<cost type="percentage">50</cost>
 					<affects>total</affects>
+					<reference>P60</reference>
 				</modifier>
 				<modifier version="1" enabled="no">
-					<name>Off-the-Shelf Looks</name>
+					<name>Visual</name>
+					<cost type="percentage">50</cost>
+					<affects>total</affects>
+					<reference>P60</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Specialized</name>
 					<cost type="percentage">-50</cost>
 					<affects>total</affects>
+					<reference>P60</reference>
+					<notes>@Class of Spirits@</notes>
 				</modifier>
-				<modifier version="1">
-					<name>Androgynous</name>
-					<cost type="points">0</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Impressive</name>
-					<cost type="points">0</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Attractive</name>
-					<cost type="points">4</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Average</name>
-					<cost type="points">0</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Horrific</name>
-					<cost type="points">-24</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Monstrous</name>
-					<cost type="points">-20</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Hideous</name>
-					<cost type="points">-16</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Ugly</name>
-					<cost type="points">-8</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Unattractive</name>
-					<cost type="points">-4</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1">
-					<name>Handsome</name>
-					<cost type="points">12</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Beautiful</name>
-					<cost type="points">12</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Very Handsome</name>
-					<cost type="points">16</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Very Beautiful</name>
-					<cost type="points">16</cost>
-					<affects>total</affects>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Transcendent</name>
-					<cost type="points">20</cost>
-					<affects>total</affects>
-				</modifier>
-				<reference>B21</reference>
+				<reference>B68</reference>
 				<categories>
 					<category>Advantage</category>
 				</categories>
 			</advantage>
 			<advantage version="2">
-				<name>Clerical Investment</name>
-				<type>Social</type>
-				<base_points>5</base_points>
-				<reference>B43</reference>
+				<name>Spirit Empathy</name>
+				<type>Mental, Supernatural</type>
+				<base_points>10</base_points>
+				<modifier version="1" enabled="no">
+					<name>Specialized</name>
+					<cost type="percentage">-50</cost>
+					<affects>total</affects>
+					<reference>B87</reference>
+					<notes>@Type: Angels, Demons, Elementals, Faerie, Ghosts, etc.@</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Remote</name>
+					<cost type="percentage">50</cost>
+					<affects>total</affects>
+					<reference>P48</reference>
+				</modifier>
+				<reference>B88</reference>
 				<categories>
 					<category>Advantage</category>
 				</categories>
-			</advantage>
-			<advantage version="2">
-				<name>Perk: Relaxation Drill - Make Friends with a Stranger</name>
-				<type>Physical</type>
-				<base_points>1</base_points>
-				<notes>Try for 30 minutes: Regain 3 Will</notes>
 			</advantage>
 		</advantage_container>
 		<advantage_container version="2" open="yes">
 			<name>Quirks</name>
 			<advantage version="2">
-				<name>Minor Obsession</name>
-				<type>Physical</type>
-				<base_points>-1</base_points>
-				<notes>Trying to create a Luciferian Order</notes>
-			</advantage>
-			<advantage version="2">
-				<name>Minor Delusion</name>
-				<type>Physical</type>
-				<base_points>-1</base_points>
-				<notes>All Spirits are "Good Folks" until proven otherwise</notes>
-			</advantage>
-			<advantage version="2">
-				<name>Broad Minded</name>
-				<type>Physical</type>
-				<base_points>-1</base_points>
-				<notes>"Gods Order" is wrong</notes>
-			</advantage>
-			<advantage version="2">
-				<name>Makes up bible verses to suit his purposes</name>
+				<name>All spirits are good folks (minor delusion)</name>
 				<type>Physical</type>
 				<base_points>-1</base_points>
 			</advantage>
 			<advantage version="2">
-				<name>Distrusts the Wealth</name>
+				<name>Broad-minded - God's order is wrong</name>
 				<type>Physical</type>
 				<base_points>-1</base_points>
 			</advantage>
-		</advantage_container>
-		<advantage_container version="2" open="yes">
-			<name>Disadvantages</name>
 			<advantage version="2">
-				<name>Secret (Follower of Lucifer)</name>
-				<type>Social</type>
-				<modifier version="1" enabled="no">
-					<name>Serious Embarrassment</name>
-					<cost type="points">-5</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Utter Rejection</name>
-					<cost type="points">-10</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<modifier version="1">
-					<name>Imprisonment</name>
-					<cost type="points">-20</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Possible Death</name>
-					<cost type="points">-30</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<reference>B152</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
+				<name>Quotes false bible verses to suit his purposes</name>
+				<type>Physical</type>
+				<base_points>-1</base_points>
 			</advantage>
 			<advantage version="2">
-				<name>Secret (Access to Unusual Powers)</name>
-				<type>Social</type>
-				<modifier version="1" enabled="no">
-					<name>Serious Embarrassment</name>
-					<cost type="points">-5</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<modifier version="1">
-					<name>Utter Rejection</name>
-					<cost type="points">-10</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Imprisonment</name>
-					<cost type="points">-20</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Possible Death</name>
-					<cost type="points">-30</cost>
-					<affects>total</affects>
-					<reference>B152</reference>
-				</modifier>
-				<reference>B152</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
+				<name>Thinks rich people got rich for the wrong reasons</name>
+				<type>Physical</type>
+				<base_points>-1</base_points>
 			</advantage>
 			<advantage version="2">
-				<name>Absent-Mindedness</name>
-				<type>Mental</type>
-				<base_points>-15</base_points>
-				<reference>B122</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
-			</advantage>
-			<advantage version="2">
-				<name>Curious</name>
-				<type>Mental</type>
-				<base_points>-5</base_points>
-				<cr>12</cr>
-				<reference>B129</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
-			</advantage>
-			<advantage version="2">
-				<name>Sense of Duty</name>
-				<type>Mental</type>
-				<modifier version="1" enabled="no">
-					<name>Friends and Companions</name>
-					<cost type="points">-5</cost>
-					<affects>total</affects>
-					<reference>B153</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>@Small Group@</name>
-					<cost type="points">-5</cost>
-					<affects>total</affects>
-					<reference>B153</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>@Individual@</name>
-					<cost type="points">-2</cost>
-					<affects>total</affects>
-					<reference>B153</reference>
-				</modifier>
-				<modifier version="1">
-					<name>Good Folks</name>
-					<cost type="points">-10</cost>
-					<affects>total</affects>
-					<reference>B153</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>@Entire Race@</name>
-					<cost type="points">-15</cost>
-					<affects>total</affects>
-					<reference>B153</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Every Living Being</name>
-					<cost type="points">-20</cost>
-					<affects>total</affects>
-					<reference>B153</reference>
-				</modifier>
-				<reference>B153</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
-			</advantage>
-			<advantage version="2">
-				<name>Pacifism: Cannot Harm Innocents</name>
-				<type>Mental</type>
-				<base_points>-10</base_points>
-				<modifier version="1" enabled="no">
-					<name>Species-Specific</name>
-					<cost type="percentage">-80</cost>
-					<affects>total</affects>
-					<reference>UT32</reference>
-				</modifier>
-				<reference>B148</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
-			</advantage>
-			<advantage version="2">
-				<name>Compulsive Carousing</name>
-				<type>Mental</type>
-				<base_points>-5</base_points>
-				<cr>12</cr>
-				<reference>B128</reference>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
-			</advantage>
-			<advantage version="2">
-				<name>Chummy</name>
-				<type>Mental</type>
-				<base_points>-5</base_points>
-				<reference>B126</reference>
-				<notes>React to others at +2; -1 to IQ-based skills when alone</notes>
-				<categories>
-					<category>Disadvantage</category>
-				</categories>
+				<name>Trying to form a Luciferian Order (minor obsession)</name>
+				<type>Physical</type>
+				<base_points>-1</base_points>
 			</advantage>
 		</advantage_container>
 		<advantage_container version="2" open="yes">
 			<name>Social Advantages</name>
 			<advantage version="2">
-				<name>Wealth</name>
-				<type>Social</type>
+				<name>Cultural Familiarity (Western)</name>
+				<type>Mental</type>
+				<base_points>1</base_points>
 				<modifier version="1" enabled="no">
-					<name>Dead Broke</name>
-					<cost type="points">-25</cost>
+					<name>Alien</name>
+					<cost type="points">1</cost>
 					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is $0</notes>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Poor</name>
-					<cost type="points">-15</cost>
-					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is 1/5 average</notes>
 				</modifier>
 				<modifier version="1">
-					<name>Struggling</name>
-					<cost type="points">-10</cost>
+					<name>Native</name>
+					<cost type="points">-1</cost>
 					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is 1/2 average</notes>
 				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Average</name>
-					<cost type="points">0</cost>
-					<affects>total</affects>
-					<reference>B25</reference>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Comfortable</name>
-					<cost type="points">10</cost>
-					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is 2x average</notes>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Wealthy</name>
-					<cost type="points">20</cost>
-					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is 5x average</notes>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Very Wealthy</name>
-					<cost type="points">30</cost>
-					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is 20x average</notes>
-				</modifier>
-				<modifier version="1" enabled="no">
-					<name>Filthy Rich</name>
-					<cost type="points">50</cost>
-					<affects>total</affects>
-					<reference>B25</reference>
-					<notes>Starting wealth is 100x average</notes>
-				</modifier>
-				<reference>B25</reference>
-				<notes>$2500 for TL5</notes>
+				<reference>B23</reference>
 				<categories>
 					<category>Advantage</category>
-					<category>Disadvantage</category>
 				</categories>
 			</advantage>
 			<advantage version="2">
@@ -1499,25 +1502,75 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 				</categories>
 			</advantage>
 			<advantage version="2">
-				<name>Cultural Familiarity (Western)</name>
-				<type>Mental</type>
-				<base_points>1</base_points>
+				<name>Wealth</name>
+				<type>Social</type>
 				<modifier version="1" enabled="no">
-					<name>Alien</name>
-					<cost type="points">1</cost>
+					<name>Dead Broke</name>
+					<cost type="points">-25</cost>
 					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is $0</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Poor</name>
+					<cost type="points">-15</cost>
+					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is 1/5 average</notes>
 				</modifier>
 				<modifier version="1">
-					<name>Native</name>
-					<cost type="points">-1</cost>
+					<name>Struggling</name>
+					<cost type="points">-10</cost>
 					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is 1/2 average</notes>
 				</modifier>
-				<reference>B23</reference>
+				<modifier version="1" enabled="no">
+					<name>Average</name>
+					<cost type="points">0</cost>
+					<affects>total</affects>
+					<reference>B25</reference>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Comfortable</name>
+					<cost type="points">10</cost>
+					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is 2x average</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Wealthy</name>
+					<cost type="points">20</cost>
+					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is 5x average</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Very Wealthy</name>
+					<cost type="points">30</cost>
+					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is 20x average</notes>
+				</modifier>
+				<modifier version="1" enabled="no">
+					<name>Filthy Rich</name>
+					<cost type="points">50</cost>
+					<affects>total</affects>
+					<reference>B25</reference>
+					<notes>Starting wealth is 100x average</notes>
+				</modifier>
+				<reference>B25</reference>
+				<notes>$2500 for TL5</notes>
 				<categories>
 					<category>Advantage</category>
+					<category>Disadvantage</category>
 				</categories>
 			</advantage>
 		</advantage_container>
+		<advantage version="2">
+			<name>Advantage</name>
+			<type>Physical</type>
+		</advantage>
 	</advantage_list>
 	<skill_list>
 		<skill version="2">
@@ -1956,8 +2009,14 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 			</default>
 			<default>
 				<type>Skill</type>
-				<name>Guns</name>
+				<name>Beam Weapons</name>
 				<specialization>Rifle</specialization>
+				<modifier>-4</modifier>
+			</default>
+			<default>
+				<type>Skill</type>
+				<name>Guns</name>
+				<specialization>Shotgun</specialization>
 				<modifier>-2</modifier>
 			</default>
 			<default>
@@ -1975,6 +2034,17 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 			<reference>B199</reference>
 			<categories>
 				<category>Knowledge</category>
+			</categories>
+		</skill>
+		<skill version="2">
+			<name>Hidden Lore</name>
+			<specialization>Spirit Lore</specialization>
+			<difficulty>IQ/A</difficulty>
+			<points>1</points>
+			<reference>B199</reference>
+			<categories>
+				<category>Knowledge</category>
+				<category>Occult/Magical</category>
 			</categories>
 		</skill>
 		<skill version="2">
@@ -2225,6 +2295,31 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 			</default>
 		</skill>
 		<skill version="2">
+			<name>Shadowing</name>
+			<difficulty>IQ/A</difficulty>
+			<points>1</points>
+			<reference>B219</reference>
+			<categories>
+				<category>Criminal/Street</category>
+				<category>Police</category>
+				<category>Spy</category>
+			</categories>
+			<default>
+				<type>IQ</type>
+				<modifier>-5</modifier>
+			</default>
+			<default>
+				<type>Skill</type>
+				<name>Observation</name>
+				<modifier>-5</modifier>
+			</default>
+			<default>
+				<type>Skill</type>
+				<name>Stealth</name>
+				<modifier>-4</modifier>
+			</default>
+		</skill>
+		<skill version="2">
 			<name>Sleight of Hand</name>
 			<difficulty>DX/H</difficulty>
 			<points>1</points>
@@ -2236,6 +2331,26 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 			<default>
 				<type>Skill</type>
 				<name>Filch</name>
+				<modifier>-5</modifier>
+			</default>
+		</skill>
+		<skill version="2">
+			<name>Stealth</name>
+			<encumbrance_penalty_multiplier>1</encumbrance_penalty_multiplier>
+			<difficulty>DX/A</difficulty>
+			<points>1</points>
+			<reference>B222</reference>
+			<categories>
+				<category>Criminal/Street</category>
+				<category>Police</category>
+				<category>Spy</category>
+			</categories>
+			<default>
+				<type>IQ</type>
+				<modifier>-5</modifier>
+			</default>
+			<default>
+				<type>DX</type>
 				<modifier>-5</modifier>
 			</default>
 		</skill>
@@ -2324,35 +2439,68 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 			</default>
 		</skill>
 		<skill version="2">
-			<name>Hidden Lore</name>
-			<specialization>Spirit Lore</specialization>
-			<difficulty>IQ/A</difficulty>
+			<name>Tracking</name>
+			<difficulty>Per/A</difficulty>
 			<points>1</points>
-			<reference>B199</reference>
+			<reference>B226</reference>
 			<categories>
-				<category>Knowledge</category>
-				<category>Occult/Magical</category>
+				<category>Outdoor/Exploration</category>
+			</categories>
+			<default>
+				<type>Per</type>
+				<modifier>-5</modifier>
+			</default>
+			<default>
+				<type>Skill</type>
+				<name>Naturalist</name>
+				<modifier>-5</modifier>
+			</default>
+		</skill>
+		<skill version="2">
+			<name>Wrestling</name>
+			<difficulty>DX/A</difficulty>
+			<points>1</points>
+			<reference>B228</reference>
+			<categories>
+				<category>Combat/Weapon</category>
+				<category>Melee Combat</category>
 			</categories>
 		</skill>
 		<skill version="2">
-			<name>Stealth</name>
-			<encumbrance_penalty_multiplier>1</encumbrance_penalty_multiplier>
-			<difficulty>DX/A</difficulty>
-			<points>1</points>
-			<reference>B222</reference>
+			<name>Bureaucrat!</name>
+			<difficulty>IQ/W</difficulty>
+			<points>3</points>
+			<notes>Administration, Acting, Accounting, Area Knowledge, Computer Operation, Current Affairs, Detect Lies, Diplomacy, Fast Talk, Finance, Forgery, Intimidation, Savoir Faire, Streetwise</notes>
 			<categories>
-				<category>Criminal/Street</category>
-				<category>Police</category>
-				<category>Spy</category>
+				<category>Academic</category>
 			</categories>
-			<default>
-				<type>IQ</type>
-				<modifier>-5</modifier>
-			</default>
-			<default>
-				<type>DX</type>
-				<modifier>-5</modifier>
-			</default>
+		</skill>
+		<skill version="2">
+			<name>Cleric!</name>
+			<difficulty>IQ/W</difficulty>
+			<points>6</points>
+			<notes>Any Philosophy, Religious Ritual, or Theology skill for the priest&#8217;s faith, plus Diagnosis, First Aid, Hidden Lore (Demons, Spirits, Undead, etc.), Occultism, Public Speaking, Surgery, and Teaching. Make a Will-based roll for Exorcism or Meditation, or a Per-based roll for Esoteric Medicine (Holy).</notes>
+			<categories>
+				<category>Academic</category>
+			</categories>
+		</skill>
+		<skill version="2">
+			<name>Conspiracy!</name>
+			<difficulty>IQ/W</difficulty>
+			<points>12</points>
+			<notes>Conspiracy Theory, all Fortune-Telling and Hidden Lore specialties, and Expert Skills such as Cryptozoology, Ufology, and Vampirology, and Weird Science. Also covers occult, supernatural, or weird aspects of Anthropology, Archaeology, Area Knowledge, Criminology, Current Affairs, History, Literature, Psychology, and Research.</notes>
+			<categories>
+				<category>Academic</category>
+			</categories>
+		</skill>
+		<skill version="2">
+			<name>Encyclopedist!</name>
+			<difficulty>IQ/W</difficulty>
+			<points>24</points>
+			<notes>Area Knowledge (any), Current Affairs (any), all Expert Skills, Games (only for knowledge of the rules), all IQ-based Hobby Skills, and Research</notes>
+			<categories>
+				<category>Academic</category>
+			</categories>
 		</skill>
 	</skill_list>
 	<spell_list>
@@ -2361,176 +2509,6 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 		</spell_container>
 	</spell_list>
 	<equipment_list>
-		<equipment version="4" state="equipped">
-			<quantity>1</quantity>
-			<description>Double Shotgun, 10G</description>
-			<tech_level>5</tech_level>
-			<legality_class>4</legality_class>
-			<value>450</value>
-			<weight>10 lb</weight>
-			<reference>B279</reference>
-			<ranged_weapon>
-				<damage>1d+2 pi</damage>
-				<strength>11&#8224;</strength>
-				<accuracy>3</accuracy>
-				<range>50/125</range>
-				<rate_of_fire>2x9</rate_of_fire>
-				<shots>2(3i)</shots>
-				<bulk>-5</bulk>
-				<recoil>1</recoil>
-				<default>
-					<type>DX</type>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Pistol</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Rifle</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Shotgun</specialization>
-					<modifier>0</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Light Machine Gun</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Submachine Gun</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Musket</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Grenade Launcher</specialization>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Gyroc</specialization>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Light Anti-Armor Weapon</specialization>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Gun!</name>
-					<modifier>0</modifier>
-				</default>
-			</ranged_weapon>
-			<categories>
-				<category>Missile Weapon</category>
-			</categories>
-		</equipment>
-		<equipment version="4" state="equipped">
-			<quantity>1</quantity>
-			<description>Revolver, .36</description>
-			<tech_level>5</tech_level>
-			<legality_class>3</legality_class>
-			<value>150</value>
-			<weight>2.5 lb</weight>
-			<reference>B278</reference>
-			<ranged_weapon>
-				<damage>2d-1 pi</damage>
-				<strength>10</strength>
-				<accuracy>1</accuracy>
-				<range>120/1300</range>
-				<rate_of_fire>1</rate_of_fire>
-				<shots>6(3i)</shots>
-				<bulk>-2</bulk>
-				<recoil>2</recoil>
-				<default>
-					<type>DX</type>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Pistol</specialization>
-					<modifier>0</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Rifle</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Shotgun</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Light Machine Gun</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Submachine Gun</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Musket</specialization>
-					<modifier>-2</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Grenade Launcher</specialization>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Gyroc</specialization>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Guns</name>
-					<specialization>Light Anti-Armor Weapon</specialization>
-					<modifier>-4</modifier>
-				</default>
-				<default>
-					<type>Skill</type>
-					<name>Gun!</name>
-					<modifier>0</modifier>
-				</default>
-			</ranged_weapon>
-			<categories>
-				<category>Missile Weapon</category>
-			</categories>
-		</equipment>
 		<equipment version="4" state="equipped">
 			<quantity>1</quantity>
 			<description>Large Knife</description>
@@ -2724,7 +2702,7 @@ kMTYvQoOOdC68hzg4B9Lx8gbc/B2sAAAAABJRU5ErkJggg==
 			</categories>
 		</equipment>
 	</equipment_list>
-	<print_settings printer="100.98.48.138" units="in">
+	<print_settings printer="192.168.0.4 2" units="in">
 		<orientation>portrait</orientation>
 		<width>8.5</width>
 		<height>11</height>

@@ -7,19 +7,29 @@ import org.crypticmission.gurpslack.model.parseRollSpec
 /**
  */
 fun relativeLevel(difficulty: String, points: Int) : Int {
-    val offset = when (difficulty) {
-        "E" -> 0
-        "A" -> -1
-        "H" -> -2
-        "VH" -> -3
-        else -> throw IllegalArgumentException("don't understand difficulty '${difficulty}'")
+    var relativeLevel = 0
+    if (difficulty == "W") {
+        return when (points) {
+            in 0..2 -> -10 // not legal level
+            in 3..5 -> -3
+            in 6..11 -> -2
+            else -> (points / 12) - 2
+        }
+    } else {
+        val offset = when (difficulty) {
+            "E" -> 0
+            "A" -> -1
+            "H" -> -2
+            "VH" -> -3
+            else -> throw IllegalArgumentException("don't understand difficulty '${difficulty}'")
+        }
+        val level = when (points) {
+            1 -> 0
+            in 2..3 -> 1
+            else -> 1 + (points / 4)
+        }
+        return offset + level
     }
-    val level = when (points) {
-        1 -> 0
-        in 2..3 -> 1
-        else -> 1 + (points/4)
-    }
-    return offset + level
 }
 
 fun getLevel(characterData: CharacterData, baseAttribute: String, difficulty:String, points: Int) : Int {

@@ -15,7 +15,7 @@
 <h2 th:text="|Played By: ${playerName}|">Played By: Player's Name</h2>
 <table cellspacing="0" cellpadding="5">
      <tbody th:each="trackedValueEntry : ${character.trackedValues}" th:with="statName=${trackedValueEntry.key},trackedValue=${trackedValueEntry.value}" th:class="|${statName}-section|">
-        <tr th:class="|${trackedValueEntry.key}-header|">
+        <tr class="title-row" th:id="|${trackedValueEntry.key}-header|">
             <th colspan="4">
                  <span th:text="${#strings.toUpperCase(statName)}">STAT</span> (Current / Max):
                  <span th:id="|${statName}-current|" th:text="${trackedValue.currentValue}">10</span>
@@ -71,10 +71,45 @@
             <td>&nbsp;</td>
         </tr>
     </tbody>
+
+    <tbody th:unless="${#maps.isEmpty(character.trackedAmounts)}" class="amt-section" >
+         <tr class="title-row">
+            <th colspan="4" >Tracked Amounts</th>
+         </tr>
+         <tr class="amt-column-headers">
+            <th>Tracking</th>
+            <th>Name</th>
+            <th colspan="2">Notes</th>
+        </tr>
+        <tr th:each="trackedAmountEntry, iStat : ${character.trackedAmounts}"
+            th:with="amountKey=${trackedAmountEntry.key},trackedAmount=${trackedAmountEntry.value}"
+            th:class="'amt-row-' + (${iStat.odd} ? 'odd' : 'even')">
+            >
+            <td class="bubbles">
+                <button
+                    th:each="i : ${#numbers.sequence(trackedAmount.maxValue, 0)}"
+                    th:class="(${i} == ${trackedAmount.currentValue}) ? 'bubble-selected' :
+                    ((${i} &gt; ${trackedAmount.currentValue}) ? 'bubble-used' : 'bubble')"
+                    th:attr="characterKey=${characterKey}, statName=${amountKey}, statValue=${i}"
+                    th:text="${i}" >10</button>
+            </td>
+            <td>
+                <a th:href="|/character/${characterKey}/amounts/${amountKey}/form|" th:text="${trackedAmount.name}">Name</a>
+            </td>
+            <td colspan="2">
+                <span th:text="${trackedAmount.notes}">Notes...</span>
+            </td>
+        </tr>
+    </tbody>
+    <tr>
+        <td>
+            <a th:href="|/character/${characterKey}/amounts/form|">Add New Amount</a>
+        </td>
+    </tr>
 </table>
 <div id="timestamp-div">
     <span>Last Updated:</span>
-    <span id="timestamp" th:text="${lastUpdated}">Last Updated Date</td>
+    <span id="timestamp" th:text="${lastUpdated}">Last Updated Date</span>
 </div>
 </body>
 </html>

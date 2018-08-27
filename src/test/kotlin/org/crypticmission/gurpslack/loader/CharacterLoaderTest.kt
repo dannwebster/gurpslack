@@ -113,7 +113,7 @@ class CharacterLoaderTest {
         assertEquals(15, character.will)
         assertEquals(12, character.per)
 
-        assertEquals(39, character.skillData?.size)
+        assertEquals(46, character.skillData?.size)
         val skillData = character.skillData?.get(0) ?: throw AssertionError("no skillData")
         assertEquals("Acting", skillData.name)
         assertEquals("IQ", skillData.baseAttribute)
@@ -121,10 +121,23 @@ class CharacterLoaderTest {
         assertEquals(1, skillData.points)
 
         val skills = character.skills
-        assertEquals(39, skills.size)
+        assertEquals(46, skills.size)
         val skill = character.skills.get("Acting") ?: throw AssertionError("no Acting Skill")
         assertEquals("Acting", skill.name)
         assertEquals(13, skill.level)
+
+        // testing wildcard skill levels
+        val bureaucrat = character.skills.get("Bureaucrat!")
+        assertEquals(11, bureaucrat?.level)
+
+        val cleric = character.skills.get("Cleric!")
+        assertEquals(12, cleric?.level)
+
+        val conspiracy = character.skills.get("Conspiracy!")
+        assertEquals(13, conspiracy?.level)
+
+        val encyclopedist = character.skills.get("Encyclopedist!")
+        assertEquals(14, encyclopedist?.level)
 
         val spiritLore = character.skills.get("Hidden Lore (Spirit Lore)")
         assertEquals(13, spiritLore?.level)

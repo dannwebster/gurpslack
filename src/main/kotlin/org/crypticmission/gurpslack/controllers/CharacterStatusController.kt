@@ -1,7 +1,9 @@
 package org.crypticmission.gurpslack.controllers
 
+import org.crypticmission.gurpslack.entities.TrackedAmount
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.repositories.CharacterSheetRepository
+import org.crypticmission.gurpslack.repositories.TrackedAmountRespository
 import org.crypticmission.gurpslack.repositories.TrackedStatService
 import org.slf4j.LoggerFactory
 import org.springframework.stereotype.Controller
@@ -14,7 +16,6 @@ import java.time.Clock
 @Controller
 class CharacterStatusController(val characterSheetRepository: CharacterSheetRepository,
                                 val characterRepository: CharacterRepository,
-                                val trackedStatService: TrackedStatService,
                                 val clock: Clock) {
 
     private val logger = LoggerFactory.getLogger(CharacterStatusController::class.java)
@@ -22,12 +23,9 @@ class CharacterStatusController(val characterSheetRepository: CharacterSheetRepo
     @GetMapping("/character/{key}/stats")
     fun getStats(@PathVariable("key") key: String): ModelAndView {
         val char = characterRepository.getByKey(key)
-        val meta = characterSheetRepository.findOneByCharacterKey(key)
-        val playerName = meta?.userName ?: "GM"
         return ModelAndView("stats.html", mapOf(
                 "characterKey" to key,
                 "character" to char,
-                "playerName" to playerName,
                 "lastUpdated" to clock.instant().toString()
         ))
     }
@@ -65,5 +63,6 @@ class CharacterStatusUpdateController(val trackedStatService: TrackedStatService
                 "lastUpdated" to clock.instant().toString()
                 )
     }
+
 
 }

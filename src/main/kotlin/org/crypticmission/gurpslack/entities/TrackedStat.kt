@@ -8,7 +8,7 @@ import javax.persistence.Id
 /**
  */
 @Entity
-class TrackedStat(
+data class TrackedStat(
     var characterKey: String = "",
     var statName: String = "",
     var value: Int = 10,

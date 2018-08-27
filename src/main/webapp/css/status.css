@@ -27,36 +27,63 @@
     color: black;
 }
 
-.hp-header {
+.title-row {
     background: white;
     color: black;
     outline: thin solid black;
 }
-.wp-header {
-    background: white;
-    color: black;
+
+
+.selected-row {
     outline: thin solid black;
+    font-weight: bold;
+    font-style: italic;
 }
-.fp-header {
-    background: white;
-    color: black;
-    outline: thin solid black;
+
+.adjust-button-row {
+    background: black;
+    outline: thin solid Black;
 }
+
+.column {
+    float: left;
+    width: 33.33%;
+}
+
+/* Clear floats after the columns */
+.row:after {
+    content: "";
+    display: table;
+    clear: both;
+}
+
+.dec-buttons {
+    text-align: left;
+}
+
+.amt-buttons {
+    text-align: center;
+}
+
+.inc-buttons {
+    text-align: right;
+}
+
+/* Hit Points */
+#hp-amt {
+    background: PaleGreen;
+}
+
+#hp-adjust-button-row button {
+    background: PaleGreen;
+}
+
 .hp-column-headers {
     background: DarkGreen;
     outline: thin solid DarkGreen;
     color: white;
 }
-.wp-column-headers {
-    background: darkblue;
-    outline: thin solid DarkBlue;
-    color: white;
-}
-.fp-column-headers {
-    background: Indigo;
-    outline: thin solid Indigo;
-    color: white;
-}
+
 .hp-0 {
     background: PaleGreen;
     outline: thin solid PaleGreen;
@@ -105,6 +132,18 @@
     color: white;
 }
 
+
+/* FATIGUE */
+#fp-adjust-button-row button {
+    background: MediumPurple;
+}
+
+.fp-column-headers {
+    background: Indigo;
+    outline: thin solid Indigo;
+    color: white;
+}
+
 .fp-0 {
     background: MediumPurple;
     outline: thin solid MediumPurple;
@@ -126,6 +165,15 @@
 .fp-3 {
     background: Indigo;
     outline: thin solid Indigo;
+    color: white;
+}
+
+
+
+/* Will Power */
+.wp-column-headers {
+    background: darkblue;
+    outline: thin solid DarkBlue;
     color: white;
 }
 
@@ -156,66 +204,47 @@
     color: white;
 }
 
-.selected-row {
-    outline: thin solid black;
-    font-weight: bold;
-    font-style: italic;
-}
-
-.adjust-button-row {
-    background: black;
-    outline: thin solid Black;
-}
-
-.column {
-    float: left;
-    width: 33.33%;
-}
-
-/* Clear floats after the columns */
-.row:after {
-    content: "";
-    display: table;
-    clear: both;
-}
-
-.dec-buttons {
-    text-align: left;
-}
-
-.amt-buttons {
-    text-align: center;
-}
-
-.inc-buttons {
-    text-align: right;
-}
-
 .adjust-button-row button {
     border-radius: 20%;
     border: thin solid black;
     margin: 1px;
 }
 
-#hp-adjust-button-row button {
-    background: PaleGreen;
-}
 
-#fp-adjust-button-row button {
-    background: MediumPurple;
-}
 
 #wp-adjust-button-row button {
     background: LightSkyBlue;
 }
-#hp-amt {
-    background: PaleGreen;
-}
-
 #fp-amt {
     background: MediumPurple;
 }
 
 #wp-amt {
     background: LightSkyBlue;
+}
+
+/* Energy Reserve*/
+#er-amt {
+    background: gold;
+}
+
+
+.amt-column-headers {
+    background: DarkGoldenrod;
+    outline: thin solid DarkGoldenrod;
+    color: black;
+}
+
+.amt-row-odd {
+    background: gold;
+    outline: thin solid gold;
+}
+
+.amt-row-even {
+    background: GoldenRod;
+    outline: thin solid GoldenRod;
+}
+
+#amt-0-adjust-button-row button {
+    background: gold;
 }

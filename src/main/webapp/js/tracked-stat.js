@@ -1,6 +1,7 @@
 $(document).ready(function() {
     addPutAndDeleteMethods();
-    addUpdateButtonCallbacks();
+    addStatUpdateButtonCallbacks();
+    addAmountUpdateButtonCallbacks();
     updateRowHighlights();
 });
 
@@ -24,24 +25,32 @@ function addPutAndDeleteMethods() {
     });
 }
 
-function addUpdateButtonCallbacks() {
-    $(".bubbles button").click(function() {
+function addStatUpdateButtonCallbacks() {
+    addUpdateButtonCallbacks("stats", "", updatePage);
+}
+
+function addAmountUpdateButtonCallbacks() {
+    addUpdateButtonCallbacks("amounts", "#amt-section ", updateAmount);
+}
+
+function addUpdateButtonCallbacks(resourceName, selectorPrefix, callbackFunction) {
+    $(selectorPrefix + ".bubbles button").click(function() {
         var characterKey = $(this).attr('characterKey');
         var statName = $(this).attr('statName');
         var statValue = $(this).attr('statValue');
-        updateStat(characterKey, statName, statValue);
+        updateStat(characterKey, statName, statValue, resourceName, callbackFunction);
     });
 }
 
-function updateStat(characterKey, statName, statValue) {
-    var url = "/character/" + characterKey + "/stats/" + statName;
+function updateStat(characterKey, statName, statValue, resourceName, callbackFunction) {
+    var url = "/character/" + characterKey + "/" + resourceName + "/" + statName;
     console.log("putting to " + url);
     var data = { value: statValue };
     $.put(
         url,
         data,
         function(data, status){
-            updatePage(characterKey, statName, data, status);
+            callbackFunction(characterKey, statName, data, status);
         },
         "json"
     );
@@ -60,12 +69,23 @@ function updatePage(characterKey, statName, data, status) {
     updateRowHighlights();
 }
 
+function updateAmount(characterKey, statName, data, status) {
+    var newStatValue = data.value;
+    var timestamp = data.lastUpdated;
+
+    console.log("updating amount from data '" + data + "' with timestamp " + timestamp + " and newStatValue " + newStatValue);
+
+    updateButtonClasses(characterKey, "amt", newStatValue, data, status);
+    updateTimestamp(timestamp);
+}
+
 function updateCurrentValue(characterKey, statName, statValue, data, status) {
     $('.' + statName + '-current').text(statValue)
 }
 
 function updateButtonClasses(characterKey, statName, statValue, data, status) {
     var iStatValue = parseInt(statValue);
+    console.log("iStatValue: " + iStatValue)
     var buttons = $("." + statName + "-section button");
     buttons.removeClass();
     buttons.each(function(index){
@@ -73,6 +93,11 @@ function updateButtonClasses(characterKey, statName, statValue, data, status) {
         var newClass = (iStatValue < iButtonStatValue) ? "bubble-used" :
             (iStatValue == iButtonStatValue) ? "bubble-selected" :
             "bubble";
+
+        console.log("iButtonStatValue: " + iButtonStatValue)
+        console.log("iStatValue: " + iStatValue)
+        console.log("newClass: " + newClass)
+
         $(this).addClass(newClass);
     });
 }

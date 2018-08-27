@@ -7,7 +7,7 @@ import javax.persistence.Id
 
 
 @Entity
-class CharacterSheet(
+data class CharacterSheet(
     var characterKey: String = "",
     var characterXml: String = "",
     var userName: String = "",

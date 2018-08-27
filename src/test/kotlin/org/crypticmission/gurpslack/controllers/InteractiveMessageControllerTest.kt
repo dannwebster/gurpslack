@@ -4,9 +4,12 @@ import org.crypticmission.gurpslack.model.Attribute
 import org.crypticmission.gurpslack.model.CharacterRoller
 import org.crypticmission.gurpslack.repositories.CharacterRepository
 import org.crypticmission.gurpslack.repositories.Randomizer
+import org.crypticmission.gurpslack.repositories.TrackedAmountRespository
+import org.crypticmission.gurpslack.repositories.TrackedStatService
 import org.junit.Assert.*
 import org.junit.Test
 import org.junit.runner.RunWith
+import org.mockito.Mockito
 import org.springframework.beans.factory.annotation.Autowired
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc
 import org.springframework.boot.test.context.SpringBootTest
@@ -22,6 +25,10 @@ import org.springframework.test.web.servlet.result.MockMvcResultMatchers.*
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @AutoConfigureMockMvc
 class InteractiveMessageControllerTest {
+
+
+    val trackedStatService = Mockito.mock(TrackedStatService::class.java)
+    val trackedAmountRespository = Mockito.mock(TrackedAmountRespository::class.java)
 
     @Autowired
     lateinit var mockMvc: MockMvc
@@ -76,9 +83,9 @@ class InteractiveMessageControllerTest {
     @Test
     fun shouldRollSkillWhenCallingCharacterWithSkill() {
         // given
-        val cr = CharacterRoller(Randomizer.MAX, "character name")
+        val cr = CharacterRoller(Randomizer.MAX, "character name", "player name")
         cr.addSkill(Attribute("skill-name", 10))
-        val repo = CharacterRepository()
+        val repo = CharacterRepository(trackedStatService, trackedAmountRespository)
         repo.put("character-key", null, cr)
 
         val subject = InteractiveMessageController(repo)
@@ -102,7 +109,7 @@ class InteractiveMessageControllerTest {
     @Test
     fun shouldMessageMissingCharacterWhenCallingWrongCharacter() {
         // given
-        val repo = CharacterRepository()
+        val repo = CharacterRepository(trackedStatService, trackedAmountRespository)
 
         val subject = InteractiveMessageController(repo)
 
@@ -117,8 +124,8 @@ class InteractiveMessageControllerTest {
     @Test
     fun shouldMessageMissingSkillWhenCallingWrongSkill() {
         // given
-        val cr = CharacterRoller(Randomizer.MAX, "character name")
-        val repo = CharacterRepository()
+        val cr = CharacterRoller(Randomizer.MAX, "character name", "player-name")
+        val repo = CharacterRepository(trackedStatService, trackedAmountRespository)
         repo.put("character-key", null, cr)
 
         val subject = InteractiveMessageController(repo)
